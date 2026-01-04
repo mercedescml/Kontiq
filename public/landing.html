@@ -1,0 +1,1543 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kontiq - Finanzielle Transparenz und schnelle Liquiditätsplanung für KMU</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Brand Colors */
+            --navy: #0A2540;
+            --teal: #0EB17A;
+            
+            /* Neutrals */
+            --black: #1F2937;
+            --gray: #6B7280;
+            --light-gray: #F3F4F6;
+            --border-gray: #E5E7EB;
+            --white: #FFFFFF;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--white);
+            color: var(--navy);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        a { text-decoration: none; }
+
+        header {
+            position: sticky;
+            top: 0;
+            background: var(--white);
+            z-index: 100;
+            border-bottom: 1px solid var(--border-gray);
+            box-shadow: 0 1px 3px rgba(10,37,64,0.08);
+        }
+
+        nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+        }
+        
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #0A2540 50%, #0EB17A 50%);
+            border-radius: 12px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            font-weight: 800;
+            box-shadow: 0 4px 12px rgba(10, 37, 64, 0.2);
+        }
+        
+        .logo-text {
+            font-size: 36px;
+            font-weight: 800;
+            color: var(--navy);
+            letter-spacing: -1px;
+        }
+        
+        .logo-text span { color: var(--teal); }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 8px;
+            padding: 0;
+            margin: 0;
+            align-items: center;
+        }
+
+        nav a {
+            color: var(--gray);
+            font-weight: 500;
+            font-size: 14px;
+            padding: 8px 12px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        nav a:hover { 
+            color: var(--navy);
+        }
+        
+        nav a.active { 
+            color: var(--teal);
+        }
+
+        .nav-buttons { display: flex; gap: 12px; }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: 1px solid transparent;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary { 
+            background: var(--teal);
+            color: white;
+            border-color: var(--teal);
+        }
+        
+        .btn-primary:hover { 
+            background: #0D9F6A;
+            border-color: #0D9F6A;
+        }
+        
+        .btn-secondary { 
+            background: white; 
+            color: var(--navy); 
+            border-color: var(--navy);
+        }
+        
+        .btn-secondary:hover { 
+            background: var(--navy); 
+            color: white; 
+        }
+
+
+
+        .main-content { 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            padding: 0 24px 80px; 
+        }
+
+        .page-section { 
+            display: none;
+            opacity: 0;
+            transform: translateY(15px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+        
+        .page-section.active { 
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+            animation: fadeInUp 0.5s ease;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero { 
+            text-align: center; 
+            padding: 100px 0 80px;
+            background: var(--white);
+        }
+        
+        .hero h1 { 
+            font-size: 48px; 
+            font-weight: 700;
+            margin: 0 0 20px; 
+            color: var(--navy); 
+            line-height: 1.2;
+            letter-spacing: -1px;
+        }
+        
+        .hero .highlight { 
+            color: var(--teal);
+        }
+        
+        .hero p { 
+            color: var(--gray); 
+            font-size: 18px; 
+            line-height: 1.6;
+            max-width: 680px; 
+            margin: 0 auto 32px;
+            font-weight: 400;
+        }
+        
+        .hero-buttons { 
+            display: flex; 
+            gap: 16px; 
+            justify-content: center; 
+            flex-wrap: wrap; 
+        }
+        
+        .hero-buttons .btn { 
+            padding: 12px 28px; 
+            font-size: 16px;
+        }
+
+        .stats { 
+            padding: 80px 0;
+            background: transparent;
+        }
+        
+        .stats-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); 
+            gap: 24px; 
+        }
+        
+        .stat-item { 
+            background: white;
+            border: 1px solid var(--border-gray); 
+            border-radius: 12px; 
+            padding: 32px 24px; 
+            text-align: center; 
+            box-shadow: 0 1px 3px rgba(10, 37, 64, 0.08);
+            transition: all 0.2s ease;
+        }
+        
+        .stat-item:hover {
+            box-shadow: 0 4px 12px rgba(10, 37, 64, 0.12);
+        }
+        
+        .stat-item h3 { 
+            margin: 0 0 12px; 
+            font-size: 40px; 
+            font-weight: 700;
+            color: var(--navy);
+            font-family: 'Roboto Mono', monospace;
+        }
+        
+        .stat-item p { 
+            margin: 0; 
+            color: var(--gray);
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .section-header { 
+            text-align: center; 
+            margin: 80px 0 48px; 
+        }
+        
+        .section-header h2 { 
+            margin: 0 0 16px; 
+            font-size: 36px; 
+            font-weight: 700;
+            color: var(--navy);
+            letter-spacing: -0.5px;
+            line-height: 1.3;
+        }
+        
+        .section-header p { 
+            margin: 0; 
+            color: var(--gray);
+            font-size: 16px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
+        }
+
+        .features { 
+            background: white;
+            padding: 80px 0; 
+        }
+        
+        .features-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
+            gap: 24px; 
+        }
+        
+        .feature-card { 
+            background: white; 
+            border: 1px solid var(--border-gray);
+            border-radius: 12px; 
+            padding: 28px 24px; 
+            box-shadow: 0 1px 3px rgba(10, 37, 64, 0.08);
+            transition: all 0.2s ease;
+        }
+        
+        .feature-card:hover {
+            box-shadow: 0 4px 12px rgba(10, 37, 64, 0.12);
+            border-color: var(--teal);
+        }
+        
+        .feature-card .icon {
+            width: 48px;
+            height: 48px;
+            background: rgba(14, 177, 122, 0.1);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            font-size: 24px;
+            color: var(--teal);
+        }
+        
+        .feature-card h3 { 
+            margin: 0 0 12px; 
+            font-size: 18px; 
+            font-weight: 600;
+            color: var(--navy);
+        }
+        
+        .feature-card p { 
+            margin: 0; 
+            color: var(--gray);
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        .comparison { margin-top: 60px; }
+        .comparison-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); 
+            gap: 32px; 
+        }
+        
+        .comparison-card { 
+            background: white; 
+            border: 1px solid rgba(229, 231, 235, 0.8); 
+            border-radius: 20px; 
+            padding: 40px 36px; 
+            box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .comparison-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(180deg, var(--teal), #059669);
+            transform: scaleY(0);
+            transition: transform 0.4s ease;
+            transform-origin: top;
+        }
+        
+        .comparison-card:hover::before {
+            transform: scaleY(1);
+        }
+        
+        .comparison-card:hover {
+            box-shadow: 0 12px 32px rgba(10, 37, 64, 0.1);
+            transform: translateY(-4px);
+            border-color: rgba(14, 177, 122, 0.2);
+        }
+        
+        .comparison-card.highlight {
+            border-color: var(--teal);
+            box-shadow: 0 8px 24px rgba(14, 177, 122, 0.15);
+            background: linear-gradient(135deg, #FFFFFF 0%, #F0F9FF 100%);
+        }
+        
+        .comparison-card.highlight::before {
+            transform: scaleY(1);
+            width: 4px;
+        }
+        
+        .comparison-card h3 { 
+            margin: 0 0 24px; 
+            color: var(--navy);
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+        
+        .comparison-list { 
+            list-style: none; 
+            padding: 0; 
+            margin: 0; 
+            color: var(--gray);
+        }
+        
+        .comparison-list li { 
+            margin: 16px 0;
+            padding-left: 32px;
+            position: relative;
+            line-height: 1.7;
+            font-size: 16px;
+        }
+        
+        .comparison-list li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--teal);
+            font-weight: 800;
+            font-size: 18px;
+        }
+
+        .pricing { padding: 60px 0; }
+        .pricing-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); 
+            gap: 32px; 
+        }
+        
+        .pricing-card { 
+            background: white; 
+            border: 1px solid rgba(229, 231, 235, 0.8); 
+            border-radius: 24px; 
+            padding: 48px 40px; 
+            box-shadow: 0 4px 16px rgba(0,0,0,0.05); 
+            position: relative;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+        }
+        
+        .pricing-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(14, 177, 122, 0.01) 0%, transparent 100%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        
+        .pricing-card:hover::before {
+            opacity: 1;
+        }
+        
+        .pricing-card:hover {
+            box-shadow: 0 16px 40px rgba(10, 37, 64, 0.12);
+            transform: translateY(-8px);
+            border-color: rgba(14, 177, 122, 0.3);
+        }
+        
+        .pricing-card.featured { 
+            border-color: var(--teal); 
+            box-shadow: 0 12px 32px rgba(14, 177, 122, 0.2);
+            background: linear-gradient(135deg, #FFFFFF 0%, #F0F9FF 100%);
+        }
+        
+        .pricing-card.featured::before {
+            opacity: 0.5;
+        }
+        
+        .pricing-badge { 
+            position: absolute; 
+            top: -14px; 
+            right: 28px; 
+            background: linear-gradient(135deg, var(--teal), #059669);
+            color: white; 
+            padding: 8px 20px; 
+            border-radius: 999px; 
+            font-size: 13px; 
+            font-weight: 800;
+            letter-spacing: 0.6px;
+            text-transform: uppercase;
+            box-shadow: 0 4px 12px rgba(14, 177, 122, 0.4);
+        }
+        
+        .pricing-card h3 { 
+            margin: 0 0 14px; 
+            color: var(--navy);
+            font-size: 26px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .price { 
+            font-size: 56px; 
+            font-weight: 800; 
+            color: var(--navy);
+            background: linear-gradient(135deg, var(--navy) 0%, var(--teal) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin: 20px 0 10px;
+            letter-spacing: -2px;
+            font-family: 'Roboto Mono', monospace;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .price span { 
+            font-size: 18px; 
+            color: var(--gray);
+            font-weight: 500;
+            font-family: 'Inter', sans-serif;
+            letter-spacing: 0;
+        }
+        
+        .pricing-features { 
+            list-style: none; 
+            padding: 0; 
+            margin: 32px 0 0; 
+            color: var(--gray);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .pricing-features li { 
+            margin: 16px 0;
+            padding-left: 32px;
+            position: relative;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+        
+        .pricing-features li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--teal);
+            font-weight: 800;
+            font-size: 18px;
+        }
+
+        .testimonials { padding: 60px 0; }
+        .testimonials-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); 
+            gap: 32px; 
+        }
+        
+        .testimonial-card { 
+            background: white; 
+            border: 1px solid rgba(229, 231, 235, 0.8); 
+            border-radius: 20px; 
+            padding: 40px 36px; 
+            box-shadow: 0 4px 16px rgba(0,0,0,0.05);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .testimonial-card::before {
+            content: '"';
+            position: absolute;
+            top: 20px;
+            right: 28px;
+            font-size: 120px;
+            font-weight: 800;
+            color: rgba(14, 177, 122, 0.05);
+            line-height: 1;
+            font-family: Georgia, serif;
+            z-index: 0;
+        }
+        
+        .testimonial-card > * {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .testimonial-card:hover {
+            box-shadow: 0 12px 32px rgba(14, 177, 122, 0.12);
+            transform: translateY(-4px);
+            border-color: rgba(14, 177, 122, 0.3);
+        }
+        
+        .rating { 
+            color: #FFC107; 
+            margin-bottom: 20px;
+            font-size: 22px;
+            letter-spacing: 2px;
+        }
+        
+        .testimonial-quote { 
+            color: var(--navy); 
+            margin: 0 0 28px;
+            font-size: 17px;
+            line-height: 1.8;
+            font-weight: 500;
+        }
+        
+        .testimonial-author-info h4 { 
+            margin: 0 0 4px; 
+            color: var(--navy);
+            font-size: 17px;
+            font-weight: 700;
+            letter-spacing: -0.2px;
+        }
+        
+        .testimonial-author-info p { 
+            margin: 4px 0 0; 
+            color: var(--gray);
+            font-size: 14px;
+        }
+
+        .demo-section { 
+            background: var(--light-bg); 
+            padding: 50px 32px; 
+            border-radius: 20px; 
+            margin-bottom: 40px; 
+        }
+        
+        .demo-container { 
+            background: white; 
+            border: 1px solid var(--light-gray); 
+            border-radius: 16px; 
+            padding: 40px 36px; 
+            box-shadow: 0 4px 16px rgba(0,0,0,0.05); 
+        }
+        
+        .demo-container h2 {
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
+        
+        .demo-container > p {
+            font-size: 16px;
+            color: var(--gray);
+            margin-bottom: 32px;
+        }
+        
+        .form-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); 
+            gap: 20px; 
+        }
+        
+        .form-group { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 10px; 
+        }
+        
+        .form-group label { 
+            font-weight: 600; 
+            color: var(--navy);
+            font-size: 15px;
+            letter-spacing: -0.1px;
+        }
+        
+        .form-group input, .form-group select { 
+            padding: 16px 18px; 
+            border-radius: 12px; 
+            border: 1px solid rgba(229, 231, 235, 0.8); 
+            font-size: 16px;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: white;
+        }
+        
+        .form-group input:focus, .form-group select:focus { 
+            outline: none;
+            border-color: var(--teal);
+            box-shadow: 0 0 0 4px rgba(14, 177, 122, 0.08);
+            transform: translateY(-2px);
+        }
+
+        /* Modern Custom Select Dropdown */
+        .custom-select {
+            position: relative;
+        }
+        
+        .custom-select select {
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background: white;
+            cursor: pointer;
+            padding-right: 48px;
+        }
+        
+        .custom-select::after {
+            content: "▼";
+            position: absolute;
+            right: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+            color: var(--teal);
+            font-size: 11px;
+            font-weight: 800;
+        }
+        
+        .booking-btn { 
+            width: 100%; 
+            padding: 18px; 
+            border: none; 
+            border-radius: 14px; 
+            background: linear-gradient(135deg, var(--teal), #059669); 
+            color: white; 
+            font-weight: 700; 
+            font-size: 17px;
+            cursor: pointer; 
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-top: 16px;
+            box-shadow: 0 6px 16px rgba(14, 177, 122, 0.25);
+            letter-spacing: 0.3px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .booking-btn::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, #059669, var(--teal));
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        
+        .booking-btn:hover::before {
+            opacity: 1;
+        }
+        
+        .booking-btn > * {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .booking-btn:hover { 
+            box-shadow: 0 12px 28px rgba(14, 177, 122, 0.35);
+            transform: translateY(-3px);
+        }
+        
+        .booking-btn:active {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(14, 177, 122, 0.3);
+        }
+
+        .cta { 
+            text-align: center; 
+            padding: 60px 0; 
+        }
+        
+        .cta h2 {
+            font-size: 40px;
+            font-weight: 800;
+            margin-bottom: 16px;
+            letter-spacing: -0.5px;
+        }
+        
+        .cta p {
+            font-size: 18px;
+            color: var(--gray);
+            margin-bottom: 32px;
+        }
+
+        .about, .contact { padding: 60px 0; }
+        .about-content { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); 
+            gap: 32px; 
+        }
+        
+        .about-text h3 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            letter-spacing: -0.3px;
+        }
+        
+        .about-text p {
+            margin-bottom: 20px;
+            line-height: 1.7;
+            font-size: 16px;
+            color: var(--gray);
+        }
+        
+        .about-values { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); 
+            gap: 20px; 
+        }
+        
+        .value-item { 
+            background: var(--light-bg); 
+            padding: 28px 24px; 
+            border-radius: 16px;
+            transition: all 0.3s;
+        }
+        
+        .value-item:hover {
+            background: white;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+            transform: translateY(-4px);
+        }
+        
+        .value-item h4 {
+            margin: 0 0 10px;
+            color: var(--navy);
+            font-size: 18px;
+            font-weight: 700;
+        }
+        
+        .value-item p {
+            margin: 0;
+            color: var(--gray);
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        .contact-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); 
+            gap: 24px; 
+        }
+        
+        .contact-card { 
+            background: white; 
+            border: 1px solid var(--light-gray); 
+            border-radius: 16px; 
+            padding: 32px 28px; 
+            box-shadow: 0 4px 16px rgba(0,0,0,0.05);
+            transition: all 0.3s;
+        }
+        
+        .contact-card:hover {
+            box-shadow: 0 12px 32px rgba(0,0,0,0.1);
+            transform: translateY(-4px);
+        }
+        
+        .contact-icon { 
+            font-size: 32px; 
+            margin-bottom: 16px;
+        }
+        
+        .contact-card h3 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+        
+        .contact-card p {
+            color: var(--gray);
+            font-size: 15px;
+            margin: 8px 0;
+        }
+        
+        .contact-card a {
+            color: var(--teal);
+            font-weight: 600;
+            display: block;
+            margin: 8px 0;
+        }
+
+        footer { 
+            text-align: center; 
+            padding: 60px 24px; 
+            background: linear-gradient(135deg, #F8FAFC 0%, #FFFFFF 100%);
+            color: var(--gray); 
+            border-top: 1px solid rgba(229, 231, 235, 0.8);
+            font-size: 15px;
+        }
+        
+        footer p {
+            margin: 10px 0;
+            line-height: 1.6;
+        }
+        
+        footer a {
+            color: var(--teal);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.2s ease;
+        }
+        
+        footer a:hover {
+            color: #059669;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.6);
+            backdrop-filter: blur(4px);
+        }
+
+        .modal.show { 
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            animation: fadeIn 0.3s;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            max-width: 520px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: slideUp 0.3s;
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            color: var(--navy);
+            font-size: 28px;
+            font-weight: 800;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 32px;
+            cursor: pointer;
+            color: var(--gray);
+            padding: 0;
+            width: 36px;
+            height: 36px;
+            line-height: 1;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+        
+        .modal-close:hover {
+            background: var(--light-bg);
+            color: var(--navy);
+        }
+
+        /* Process Diagram */
+        .process-diagram {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 60px 0;
+            padding: 40px;
+            background: var(--light-bg);
+            border-radius: 20px;
+            overflow-x: auto;
+        }
+        
+        .process-step {
+            flex: 1;
+            text-align: center;
+            padding: 0 20px;
+            position: relative;
+        }
+        
+        .process-step:not(:last-child)::after {
+            content: "→";
+            position: absolute;
+            right: -20px;
+            top: 40px;
+            font-size: 24px;
+            color: var(--teal);
+            font-weight: 800;
+        }
+        
+        .process-icon {
+            width: 80px;
+            height: 80px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 36px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+        }
+        
+        .process-step h4 {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--navy);
+        }
+        
+        .process-step p {
+            font-size: 14px;
+            color: var(--gray);
+        }
+
+        @media (max-width: 768px) {
+
+            nav { flex-wrap: wrap; }
+            nav ul { 
+                display: none; 
+                position: absolute; 
+                top: 100%; 
+                left: 0; 
+                right: 0; 
+                background: white; 
+                flex-direction: column; 
+                padding: 16px; 
+                box-shadow: 0 10px 30px rgba(0,0,0,0.15); 
+            }
+            nav ul.active { display: flex; }
+            nav ul li { width: 100%; }
+            nav ul li a { 
+                padding: 14px 16px; 
+                display: block;
+                border-radius: 8px;
+            }
+            .nav-buttons { width: 100%; justify-content: flex-end; }
+            .hero h1 { font-size: 36px; }
+            .hero p { font-size: 18px; }
+            .section-header h2 { font-size: 32px; }
+            .process-diagram {
+                flex-direction: column;
+            }
+            .process-step:not(:last-child)::after {
+                content: "↓";
+                right: auto;
+                top: auto;
+                bottom: -30px;
+                left: 50%;
+                transform: translateX(-50%);
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo" onclick="showSection('home')">
+                <div class="logo-icon">K</div>
+                <div class="logo-text">KON<span>TIQ</span></div>
+            </div>
+            <ul id="navMenu">
+                <li><a id="nav-home" href="#" onclick="showSection('home'); closeMenu(); return false;" class="active">Home</a></li>
+                <li><a id="nav-features" href="#" onclick="showSection('features'); closeMenu(); return false;">Funktionen</a></li>
+                <li><a id="nav-pricing" href="#" onclick="showSection('pricing'); closeMenu(); return false;">Preise</a></li>
+                <li><a id="nav-testimonials" href="#" onclick="showSection('testimonials'); closeMenu(); return false;">Referenzen</a></li>
+                <li><a id="nav-demo" href="#" onclick="showSection('demo'); closeMenu(); return false;">Demo</a></li>
+                <li><a id="nav-about" href="#" onclick="showSection('about'); closeMenu(); return false;">Über uns</a></li>
+                <li><a id="nav-kontakt" href="#" onclick="showSection('kontakt'); closeMenu(); return false;">Kontakt</a></li>
+            </ul>
+            <div class="nav-buttons">
+                <button class="btn btn-secondary" onclick="window.location.href='/auth/login.html';">Anmelden</button>
+            </div>
+        </nav>
+    </header>
+
+    <div class="main-content">
+        <!-- Home Section -->
+        <section class="page-section active" id="section-home">
+            <div class="hero">
+                <h1>Sofortige <span class="highlight">finanzielle Transparenz</span> für Ihr KMU</h1>
+                <p>Automatisieren Sie Ihr Controlling, optimieren Sie Ihre Liquidität und treffen Sie bessere Entscheidungen auf Basis aktueller Finanzdaten.</p>
+                <div class="hero-buttons">
+                    <button class="btn btn-primary" onclick="showSection('demo')">Jetzt Demo buchen</button>
+                    <a href="/auth/register.html" class="btn btn-secondary">Kostenlos testen</a>
+                </div>
+            </div>
+
+            <!-- Process Diagram -->
+            <div class="process-diagram">
+                <div class="process-step">
+                    <div class="process-icon">📊</div>
+                    <h4>Daten verbinden</h4>
+                    <p>Verbinden Sie Ihre Buchhaltung in wenigen Minuten</p>
+                </div>
+                <div class="process-step">
+                    <div class="process-icon">⚡</div>
+                    <h4>Automatisieren</h4>
+                    <p>KI analysiert und strukturiert Ihre Finanzdaten</p>
+                </div>
+                <div class="process-step">
+                    <div class="process-icon">📈</div>
+                    <h4>Optimieren</h4>
+                    <p>Treffen Sie bessere Entscheidungen</p>
+                </div>
+                <div class="process-step">
+                    <div class="process-icon">💰</div>
+                    <h4>Wachsen</h4>
+                    <p>Skalieren Sie Ihr Unternehmen profitabel</p>
+                </div>
+            </div>
+
+            <div class="stats">
+                <div class="stats-grid">
+                    <div class="stat-item"><h3>1.200+</h3><p>Unternehmen vertrauen auf Kontiq</p></div>
+                    <div class="stat-item"><h3>95%</h3><p>Zeitersparnis bei der Finanzplanung</p></div>
+                    <div class="stat-item"><h3>100%</h3><p>Transparenz über Ihre Liquidität</p></div>
+                    <div class="stat-item"><h3>24/7</h3><p>Zugriff auf Ihre Finanzdaten</p></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="page-section" id="section-features">
+            <div class="features">
+                <div class="section-header">
+                    <h2>Das schätzen unsere Anwender besonders</h2>
+                    <p>Leistungsstarke Funktionen für Planung, Controlling und Liquidität</p>
+                </div>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="icon">📊</div>
+                        <h3>Übersichtliches Cockpit</h3>
+                        <p>Behalten Sie die wichtigsten Zahlen immer im Blick. Inklusive Ihrer wichtigsten Kennzahlen und Soll-Ist-Vergleichen.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="icon">🔮</div>
+                        <h3>Automatische Liquiditätsprognose</h3>
+                        <p>Der beruhigende Blick in die Zukunft - aus Ihren Ist- und Planzahlen erstellt Kontiq automatisch Prognosen.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="icon">⚡</div>
+                        <h3>Schnelle Budgetplanung</h3>
+                        <p>Dank intelligenter Assistenten erstellen und aktualisieren Sie Budgetpläne so schnell wie nie zuvor.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="icon">📝</div>
+                        <h3>Vertragsmanagement</h3>
+                        <p>Alle Verträge zentral verwalten und automatische Erinnerungen vor Ablaufdaten erhalten.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="icon">📈</div>
+                        <h3>Automatische Charts und Kennzahlen</h3>
+                        <p>Ihre Buchhaltungsdaten werden automatisch in aussagekräftige Charts und Kennzahlen umgewandelt.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="icon">🚀</div>
+                        <h3>Schneller Datenimport</h3>
+                        <p>Dank Datenupload stehen alle Informationen sofort und ohne Fehler zur Verfügung.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <section class="comparison">
+                <div class="section-header">
+                    <h2>Kontiq beendet Ihren manuellen Excel-Aufwand</h2>
+                    <p>Automatisiertes Controlling statt fehleranfälliger Excel-Tabellen</p>
+                </div>
+                <div class="comparison-grid">
+                    <div class="comparison-card">
+                        <h3>Manuelles Controlling auf Excel-Basis</h3>
+                        <ul class="comparison-list">
+                            <li>Unübersichtliche Excel-Tabellen - Finanzdaten werden mühsam in verschiedenen Tabellen gesammelt</li>
+                            <li>Keine zuverlässige Liquiditätsplanung - Engpässe werden häufig erst erkannt, wenn es zu spät ist</li>
+                            <li>Fehlende Analysen setzen falschen Fokus - Analysen müssen selber mit hohem Aufwand angepasst werden</li>
+                            <li>Hoher Zeitaufwand für Budgetierung - Die Planung in Excel ist komplex und wird selten aktuell gehalten</li>
+                            <li>Schwierige Übergabe - Selbst erstellte Formeln können kaum an neue Mitarbeiter übergeben werden</li>
+                        </ul>
+                    </div>
+                    <div class="comparison-card highlight">
+                        <h3>Automatisiertes Controlling mit Kontiq</h3>
+                        <ul class="comparison-list">
+                            <li>Zentrale Datenbasis - Alle relevanten Finanzdaten sind zentral aktuell und strukturiert verfügbar</li>
+                            <li>Transparente Liquiditätsplanung - Die Cashflow-Planung erlaubt die frühzeitige Identifikation von Engpässen</li>
+                            <li>Vergleichbare Zahlen - Verfügbare Auswertungen über unterschiedliche Zeiträume erlauben den Fokus auf Analyse</li>
+                            <li>Schnelle Planung und aktuelle Forecasts - Dank Komfortplanung eine schnelle Budgetplanung parallel zum Tagesgeschäft</li>
+                            <li>Übergabe nicht notwendig - Kontiq kann jederzeit neuen Nutzern zur Verfügung gestellt werden</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+        </section>
+
+        <!-- Pricing Section -->
+        <section class="page-section" id="section-pricing">
+            <div class="pricing">
+                <div class="section-header">
+                    <h2>Preise</h2>
+                    <p>Wählen Sie den Plan, der zu Ihren Bedürfnissen passt</p>
+                </div>
+                <div class="pricing-grid">
+                    <div class="pricing-card">
+                        <h3>Starter</h3>
+                        <div class="price">CHF 49<span>/Monat</span></div>
+                        <p style="color: var(--gray); margin-bottom: 14px;">Ideal für kleine Unternehmen</p>
+                        <ul class="pricing-features">
+                            <li>Bis zu 10 Benutzer</li>
+                            <li>Liquidität in Echtzeit</li>
+                            <li>Basis-Vertragsmanagement</li>
+                            <li>2 Bankkonten</li>
+                            <li>Support per E-Mail</li>
+                        </ul>
+                        <button class="btn btn-primary" onclick="bookDemo('Starter')" style="width: 100%; margin-top: 24px;">Jetzt starten</button>
+                    </div>
+                    <div class="pricing-card featured">
+                        <div class="pricing-badge">BELIEBT</div>
+                        <h3>Professional</h3>
+                        <div class="price">CHF 99<span>/Monat</span></div>
+                        <p style="color: var(--gray); margin-bottom: 14px;">Für wachsende Unternehmen</p>
+                        <ul class="pricing-features">
+                            <li>Bis zu 50 Benutzer</li>
+                            <li>Alle Starter-Funktionen</li>
+                            <li>Erweitertes Vertragsmanagement</li>
+                            <li>Unbegrenzte Verträge</li>
+                            <li>Individuelle Reports</li>
+                            <li>API-Integration</li>
+                            <li>Prioritäts-Support</li>
+                        </ul>
+                        <button class="btn btn-primary" onclick="bookDemo('Professional')" style="width: 100%; margin-top: 24px;">Jetzt starten</button>
+                    </div>
+                    <div class="pricing-card">
+                        <h3>Enterprise</h3>
+                        <div class="price">Auf<span>Anfrage</span></div>
+                        <p style="color: var(--gray); margin-bottom: 14px;">Für große Organisationen</p>
+                        <ul class="pricing-features">
+                            <li>Unbegrenzte Benutzer</li>
+                            <li>Alle Funktionen</li>
+                            <li>SSO/SAML</li>
+                            <li>Individuelle Integrationen</li>
+                            <li>Persönlicher Account Manager</li>
+                            <li>SLA garantiert</li>
+                            <li>24/7 Support</li>
+                        </ul>
+                        <button class="btn btn-primary" onclick="bookDemo('Enterprise')" style="width: 100%; margin-top: 24px;">Kontakt aufnehmen</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Testimonials Section -->
+        <section class="page-section" id="section-testimonials">
+            <div class="testimonials">
+                <div class="section-header">
+                    <h2>Das sagen unsere Kunden</h2>
+                    <p>Über 1.200 Unternehmen vertrauen auf Kontiq</p>
+                </div>
+                <div class="testimonials-grid">
+                    <div class="testimonial-card">
+                        <div class="rating">★★★★★</div>
+                        <p class="testimonial-quote">"Refinanzierung schon im ersten Monat. Ein No-brainer. Kontiq hat unser Controlling komplett transformiert. Wir haben jetzt volle Transparenz über unsere Liquidität und können viel schneller reagieren."</p>
+                        <div class="testimonial-author-info"><h4>Peter Gacek</h4><p>Geschäftsführer, HELO SYSTEMS GmbH</p></div>
+                    </div>
+                    <div class="testimonial-card">
+                        <div class="rating">★★★★★</div>
+                        <p class="testimonial-quote">"Kontiq war innerhalb von 15-30 Minuten eingerichtet. Zum heutigen Stand würde ich Kontiq nicht wieder hergeben wollen. Wir haben uns einige Lösungen im Markt angeschaut - bin ich froh, dass ich die richtige Lösung gefunden habe."</p>
+                        <div class="testimonial-author-info"><h4>Nils Kathagen</h4><p>Geschäftsführender Gesellschafter, IT-Systemhaus Ruhrgebiet GmbH</p></div>
+                    </div>
+                    <div class="testimonial-card">
+                        <div class="rating">★★★★★</div>
+                        <p class="testimonial-quote">"Das ist auf jeden Fall ein deutlich positiver Return-on-Invest. Kontiq macht mir das Leben einfacher und ist in Richtung der Stakeholder-Kommunikation ein großer Vorteil. Ich schätze den partnerschaftlichen Support."</p>
+                        <div class="testimonial-author-info"><h4>Franziska Kurz</h4><p>Geschäftsführerin, Impleco GmbH</p></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Demo Booking Section -->
+        <section class="page-section" id="section-demo">
+            <div class="demo-section">
+                <div class="demo-container">
+                    <h2>Buchen Sie eine kostenlose Demo</h2>
+                    <p>Erfahren Sie in 30 Minuten, wie Kontiq Ihr Controlling vereinfacht und verbessert</p>
+                    <form id="demoForm" onsubmit="submitDemoBooking(event)">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="firstName">Vorname *</label>
+                                <input type="text" id="firstName" name="firstName" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="lastName">Nachname *</label>
+                                <input type="text" id="lastName" name="lastName" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">E-Mail *</label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="company">Unternehmen *</label>
+                            <input type="text" id="company" name="company" required>
+                        </div>
+                        <div class="form-grid">
+                            <div class="form-group custom-select">
+                                <label for="employees">Anzahl Mitarbeiter *</label>
+                                <select id="employees" name="employees" required>
+                                    <option value="">-- Bitte wählen --</option>
+                                    <option value="1-10">1-10</option>
+                                    <option value="11-50">11-50</option>
+                                    <option value="51-200">51-200</option>
+                                    <option value="200+">200+</option>
+                                </select>
+                            </div>
+                            <div class="form-group custom-select">
+                                <label for="package">Paket *</label>
+                                <select id="package" name="package" required>
+                                    <option value="">-- Bitte wählen --</option>
+                                    <option value="Starter">Starter</option>
+                                    <option value="Professional">Professional</option>
+                                    <option value="Enterprise">Enterprise</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="message">Nachricht (optional)</label>
+                            <input type="text" id="message" name="message" placeholder="Ihre Fragen oder Anmerkungen...">
+                        </div>
+                        <button type="submit" class="booking-btn">Demo buchen</button>
+                    </form>
+                </div>
+            </div>
+            <div class="cta">
+                <h2>Bereit, Ihr Controlling zu transformieren?</h2>
+                <p>Schließen Sie sich hunderten von Unternehmen an, die auf Kontiq vertrauen</p>
+                <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; margin-top: 32px;">
+                    <button class="btn btn-primary" onclick="showSection('demo')">Jetzt Demo buchen</button>
+                    <a href="/auth/register.html" class="btn btn-secondary">Kostenlos testen</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section class="page-section" id="section-about">
+            <div class="about">
+                <div class="section-header">
+                    <h2>Über uns</h2>
+                    <p>Ihr Partner für modernes Finanzcontrolling</p>
+                </div>
+                <div class="about-content">
+                    <div class="about-text">
+                        <h3>Finanzielle Transparenz für erfolgreiche Unternehmen</h3>
+                        <p>Kontiq wurde 2020 von einem Team erfahrener Finanzexperten und Software-Entwickler gegründet, mit dem Ziel, Finanzcontrolling für kleine und mittelständische Unternehmen zu revolutionieren.</p>
+                        <p>Wir haben erkannt, dass viele KMU mit komplexen Excel-Tabellen und zeitaufwendigen manuellen Prozessen kämpfen. Unsere Mission ist es, Unternehmen die gleichen professionellen Controlling-Tools zur Verfügung zu stellen, die bisher nur Großkonzernen vorbehalten waren - einfach, intuitiv und erschwinglich.</p>
+                        <p>Heute vertrauen über 1.200 Unternehmen im deutschsprachigen Raum auf Kontiq, um ihre Liquidität zu planen, Budgets zu verwalten und fundierte Finanzentscheidungen zu treffen.</p>
+                    </div>
+                    <div class="about-values">
+                        <div class="value-item">
+                            <h4>Transparenz</h4>
+                            <p>Klare Einblicke in Ihre Finanzen - jederzeit und überall verfügbar.</p>
+                        </div>
+                        <div class="value-item">
+                            <h4>Effizienz</h4>
+                            <p>Automatisierung ersetzt manuelle Excel-Arbeit und spart wertvolle Zeit.</p>
+                        </div>
+                        <div class="value-item">
+                            <h4>Partnerschaft</h4>
+                            <p>Persönlicher Support und individuelle Beratung für Ihren Erfolg.</p>
+                        </div>
+                        <div class="value-item">
+                            <h4>Innovation</h4>
+                            <p>Kontinuierliche Weiterentwicklung basierend auf Kundenfeedback.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section class="page-section" id="section-kontakt">
+            <div class="contact">
+                <div class="contact-container">
+                    <div class="section-header">
+                        <h2>Kontakt</h2>
+                        <p>Wir sind für Sie da - nehmen Sie Kontakt mit uns auf</p>
+                    </div>
+                    <div class="contact-grid">
+                        <div class="contact-card">
+                            <div class="contact-icon">📧</div>
+                            <h3>E-Mail</h3>
+                            <p>Schreiben Sie uns Ihr Anliegen</p>
+                            <a href="mailto:info@kontiq.ch">info@kontiq.ch</a>
+                            <a href="mailto:support@kontiq.ch">support@kontiq.ch</a>
+                        </div>
+                        <div class="contact-card">
+                            <div class="contact-icon">📞</div>
+                            <h3>Telefon</h3>
+                            <p>Rufen Sie uns an</p>
+                            <a href="tel:+41441234567">+41 (0)44 123 45 67</a>
+                            <p style="font-size: 13px; margin-top: 10px;">Mo-Fr: 08:00 - 18:00 Uhr</p>
+                        </div>
+                        <div class="contact-card">
+                            <div class="contact-icon">🏢</div>
+                            <h3>Adresse</h3>
+                            <p>Besuchen Sie uns</p>
+                            <p><strong>Kontiq AG</strong><br>Bahnhofstrasse 50<br>8001 Zürich<br>Schweiz</p>
+                        </div>
+                    </div>
+                    <div style="text-align: center; margin-top: 50px;">
+                        <h3 style="color: var(--navy); margin-bottom: 24px; font-size: 24px;">Oder buchen Sie direkt eine Demo</h3>
+                        <button class="btn btn-primary" onclick="showSection('demo')" style="padding: 16px 40px; font-size: 16px;">Zur Demo-Buchung</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Kontiq AG - Finanzielle Transparenz für KMU. Alle Rechte vorbehalten.</p>
+        <p>info@kontiq.ch | +41 (0)44 123 45 67 | Bahnhofstrasse 50, 8001 Zürich</p>
+    </footer>
+
+    <!-- Success Modal -->
+    <div class="modal" id="successModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Anfrage erhalten!</h2>
+                <button class="modal-close" onclick="closeModal()">×</button>
+            </div>
+            <p style="color: var(--gray); margin-bottom: 24px; line-height: 1.6;">
+                Vielen Dank für Ihr Interesse an Kontiq. Unser Team wird sich in Kürze mit Ihnen in Verbindung setzen, um Ihren Termin zu bestätigen.
+            </p>
+            <p style="color: var(--gray); font-size: 15px; padding: 20px; background: var(--light-bg); border-radius: 12px;">
+                <strong>Bestätigungs-E-Mail gesendet an:</strong><br>
+                <span id="confirmEmail" style="color: var(--teal); font-weight: 600;"></span>
+            </p>
+            <button class="btn btn-primary" onclick="closeModal()" style="width: 100%; margin-top: 24px;">Schließen</button>
+        </div>
+    </div>
+
+    <script>
+        // Section navigation
+        function showSection(sectionName) {
+            const sections = document.querySelectorAll('.page-section');
+            sections.forEach(section => section.classList.remove('active'));
+
+            const targetSection = document.getElementById('section-' + sectionName);
+            if (targetSection) {
+                targetSection.classList.add('active');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+
+            const navLinks = document.querySelectorAll('nav a');
+            navLinks.forEach(link => link.classList.remove('active'));
+            const activeLink = document.getElementById('nav-' + sectionName);
+            if (activeLink) activeLink.classList.add('active');
+        }
+
+        // Mobile menu
+        function toggleMenu() {
+            const menu = document.getElementById('navMenu');
+            const toggle = document.getElementById('menuToggle');
+            menu.classList.toggle('active');
+            toggle.classList.toggle('active');
+        }
+
+        function closeMenu() {
+            const menu = document.getElementById('navMenu');
+            const toggle = document.getElementById('menuToggle');
+            menu.classList.remove('active');
+            toggle.classList.remove('active');
+        }
+
+        // Demo booking
+        function bookDemo(packageName) {
+            const packageSelect = document.getElementById('package');
+            if (packageSelect) packageSelect.value = packageName;
+            showSection('demo');
+        }
+
+        // Form submission
+        async function submitDemoBooking(event) {
+            event.preventDefault();
+            
+            const formData = {
+                firstName: document.getElementById('firstName').value,
+                lastName: document.getElementById('lastName').value,
+                email: document.getElementById('email').value,
+                company: document.getElementById('company').value,
+                employees: document.getElementById('employees').value,
+                package: document.getElementById('package').value,
+                message: document.getElementById('message').value
+            };
+
+            try {
+                // API call would go here
+                document.getElementById('confirmEmail').textContent = formData.email;
+                document.getElementById('successModal').classList.add('show');
+                document.getElementById('demoForm').reset();
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Es gab einen Fehler beim Absenden. Bitte versuchen Sie es später erneut.');
+            }
+        }
+
+        // Modal
+        function closeModal() {
+            document.getElementById('successModal').classList.remove('show');
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('successModal');
+            if (event.target === modal) closeModal();
+        }
+
+        // Load user data (placeholder)
+        function loadUserData() {
+            const userData = {
+                firstName: localStorage.getItem('userFirstName') || null,
+                companyName: localStorage.getItem('userCompanyName') || null
+            };
+
+            if (userData.firstName) {
+                document.querySelectorAll('.user-greeting').forEach(el => {
+                    el.textContent = `Hallo ${userData.firstName}`;
+                });
+            }
+
+            if (userData.companyName) {
+                document.querySelectorAll('.company-name').forEach(el => {
+                    el.textContent = userData.companyName;
+                });
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadUserData);
+    </script>
+</body>
+</html>

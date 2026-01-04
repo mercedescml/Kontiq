@@ -1,0 +1,1271 @@
+<style>
+    .contracts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+            margin-top: 24px;
+        }
+
+    .contract-card {
+        background: white;
+        border: 1px solid #E5E7EB;
+        border-radius: 12px;
+        padding: 20px;
+        transition: all 0.2s;
+        cursor: pointer;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+
+    .contract-card:hover {
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        transform: translateY(-2px);
+        border-color: var(--teal);
+    }
+
+    .contract-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: start;
+        margin-bottom: 16px;
+    }
+
+    .contract-title {
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--navy);
+        margin-bottom: 4px;
+        letter-spacing: -0.3px;
+    }
+
+    .contract-partner {
+        font-size: 13px;
+        color: var(--gray);
+        font-weight: 500;
+    }
+
+    .contract-status {
+        padding: 4px 10px;
+        border-radius: 6px;
+        font-size: 11px;
+        font-weight: 600;
+    }
+
+    .status-active {
+        background: var(--light-teal);
+        color: var(--teal);
+    }
+
+    .status-warning {
+        background: #FEF3C7;
+        color: var(--warning);
+    }
+
+    .status-expired {
+        background: #FEE2E2;
+        color: var(--error);
+    }
+
+    .contract-info {
+        display: grid;
+        gap: 10px;
+        margin-top: 16px;
+        padding-top: 16px;
+        border-top: 1px solid var(--light-gray);
+    }
+
+    .contract-info-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 12px;
+    }
+
+    .info-label {
+        color: var(--gray);
+    }
+
+    .info-value {
+        font-weight: 600;
+        color: var(--dark-gray);
+    }
+
+    .upload-zone {
+        border: 2px dashed #E5E7EB;
+        border-radius: 12px;
+        padding: 40px;
+        text-align: center;
+        background: #F8FAFC;
+        cursor: pointer;
+        transition: all 0.2s;
+        margin-bottom: 24px;
+    }
+
+    .upload-zone:hover {
+        border-color: var(--teal);
+        background: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    .upload-zone.dragover {
+        border-color: var(--teal);
+        background: var(--light-teal);
+    }
+
+    .modal {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.5);
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .modal.active {
+        display: flex;
+    }
+
+    .modal-content {
+        background: white;
+        border-radius: 12px;
+        max-width: 800px;
+        width: 90%;
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+
+    .modal-header {
+        padding: 20px 24px;
+        border-bottom: 1px solid var(--light-gray);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .modal-header h2 {
+        margin: 0;
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--navy);
+    }
+
+    .close-modal {
+        background: none;
+        border: none;
+        font-size: 24px;
+        cursor: pointer;
+        color: #6B7280;
+        padding: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s;
+        border-radius: 6px;
+        width: 36px;
+        height: 36px;
+        flex-shrink: 0;
+    }
+
+    .close-modal:hover {
+        color: var(--navy);
+        background: #F3F4F6;
+    }
+
+    .modal-body {
+        padding: 24px;
+    }
+
+    .modal-footer {
+        padding: 16px 24px;
+        border-top: 1px solid var(--light-gray);
+        display: flex;
+        gap: 12px;
+        justify-content: flex-end;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-label {
+        display: block;
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--dark-gray);
+        margin-bottom: 8px;
+    }
+
+    .form-input, .form-select, .form-textarea {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid var(--light-gray);
+        border-radius: 8px;
+        font-size: 14px;
+        font-family: inherit;
+    }
+
+    .form-textarea {
+        resize: vertical;
+        min-height: 100px;
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+    }
+
+    .btn {
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        border: none;
+    }
+
+    .btn-primary {
+        background: var(--navy);
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background: #0D3A5F;
+    }
+
+    .btn-secondary {
+        background: var(--light-gray);
+        color: var(--dark-gray);
+    }
+
+    .btn-secondary:hover {
+        background: #D1D5DB;
+    }
+
+    .btn-success {
+        background: var(--teal);
+        color: white;
+    }
+
+    .btn-success:hover {
+        background: #059669;
+    }
+
+    .comparison-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+
+    .comparison-table th,
+    .comparison-table td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid var(--light-gray);
+    }
+
+    .comparison-table th {
+        background: var(--light-bg);
+        font-weight: 600;
+        color: var(--navy);
+    }
+
+    .comparison-table tr:hover {
+        background: var(--light-bg);
+    }
+
+    .highlight-better {
+        color: var(--teal);
+        font-weight: 600;
+    }
+
+    .highlight-worse {
+        color: var(--error);
+        font-weight: 600;
+    }
+
+    .extracted-info {
+        background: var(--light-bg);
+        padding: 16px;
+        border-radius: 8px;
+        margin: 16px 0;
+    }
+
+    .extracted-info h4 {
+        margin-bottom: 12px;
+        color: var(--navy);
+    }
+
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+
+    .info-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px;
+        background: white;
+        border-radius: 6px;
+    }
+
+    .tabs {
+        display: flex;
+        gap: 8px;
+        border-bottom: 2px solid var(--light-gray);
+        margin-bottom: 24px;
+    }
+
+    .tab {
+        padding: 12px 20px;
+        cursor: pointer;
+        border-bottom: 2px solid transparent;
+        margin-bottom: -2px;
+        font-weight: 500;
+        color: var(--gray);
+        transition: all 0.2s;
+    }
+
+    .tab.active {
+        color: var(--navy);
+        border-bottom-color: var(--teal);
+        font-weight: 600;
+    }
+
+    .tab:hover {
+        color: var(--navy);
+    }
+
+    .alert {
+        padding: 12px 16px;
+        border-radius: 8px;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .alert-warning {
+        background: #FEF3C7;
+        color: #92400E;
+        border: 1px solid #FCD34D;
+    }
+
+    .alert-info {
+        background: #DBEAFE;
+        color: #1E40AF;
+        border: 1px solid #93C5FD;
+    }
+
+    .linked-invoices {
+        margin-top: 20px;
+    }
+
+    .invoice-link {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px;
+        background: var(--light-bg);
+        border-radius: 8px;
+        margin-bottom: 8px;
+    }
+
+    .invoice-link:hover {
+        background: #E5E7EB;
+    }
+
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+    }
+
+    .page-title {
+        font-size: 28px;
+        font-weight: 700;
+        color: var(--navy);
+    }
+</style>
+
+<div class="page-header">
+    <h1 class="page-title">Vertragsmanagement</h1>
+    <button class="btn btn-primary" onclick="openUploadModal()">
+        <span>📄</span> Vertrag hochladen
+    </button>
+</div>
+
+<div class="tabs">
+    <div class="tab active" data-tab="all" onclick="switchTab('all')">Alle Verträge</div>
+    <div class="tab" data-tab="active" onclick="switchTab('active')">Aktiv</div>
+    <div class="tab" data-tab="expiring" onclick="switchTab('expiring')">Bald auslaufend</div>
+    <div class="tab" data-tab="compare" onclick="switchTab('compare')">Vergleichen</div>
+</div>
+
+<div id="allContracts" class="tab-content">
+    <div class="contracts-grid" id="contractsGrid">
+        <!-- Contracts will be loaded here -->
+    </div>
+</div>
+
+<div id="compareContracts" class="tab-content" style="display: none;">
+    <div class="alert alert-info">
+        <span>ℹ️</span>
+        <span>Wählen Sie bis zu 3 Verträge zum Vergleichen aus</span>
+    </div>
+    <div id="comparisonArea"></div>
+</div>
+
+<!-- Upload Modal -->
+<div id="uploadModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Vertrag hochladen</h2>
+            <button onclick="closeUploadModal()" class="close-modal">×</button>
+        </div>
+        <div class="modal-body">
+            <div class="upload-zone" id="uploadZone" onclick="document.getElementById('fileInput').click()">
+                <input type="file" id="fileInput" accept=".pdf,.doc,.docx" style="display: none;" onchange="handleFileSelect(event)">
+                <div style="font-size: 48px; margin-bottom: 12px;">📁</div>
+                <div style="font-size: 16px; font-weight: 600; margin-bottom: 8px;">Vertrag hier ablegen oder klicken</div>
+                <div style="font-size: 13px; color: var(--gray);">PDF, DOC, DOCX bis 10MB</div>
+            </div>
+            <div id="uploadProgress" style="display: none;">
+                <div style="text-align: center; margin: 20px 0;">
+                    <div style="font-size: 14px; margin-bottom: 8px;">Analysiere Vertrag...</div>
+                    <div style="width: 100%; height: 4px; background: var(--light-gray); border-radius: 2px; overflow: hidden;">
+                        <div id="progressBar" style="width: 0%; height: 100%; background: var(--teal); transition: width 0.3s;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Contract Details Modal -->
+<div id="detailsModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="detailsTitle">Vertragsdetails</h2>
+            <button onclick="closeDetailsModal()" class="close-modal">×</button>
+        </div>
+        <div class="modal-body" id="detailsBody">
+            <!-- Details will be loaded here -->
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="closeDetailsModal()">Schließen</button>
+            <button class="btn btn-primary" onclick="editContract()">Bearbeiten</button>
+        </div>
+    </div>
+</div>
+
+<!-- Confirmation Modal -->
+<div id="confirmModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Extrahierte Informationen bestätigen</h2>
+            <button onclick="closeConfirmModal()" class="close-modal">×</button>
+        </div>
+        <div class="modal-body">
+            <div class="alert alert-info">
+                <span>🤖</span>
+                <span>Bitte überprüfen Sie die automatisch extrahierten Daten</span>
+            </div>
+            <div id="extractedData">
+                <!-- Extracted data will be shown here -->
+            </div>
+            <form id="contractForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Vertragsname *</label>
+                        <input type="text" class="form-input" id="contractName" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Vertragspartner *</label>
+                        <input type="text" class="form-input" id="contractPartner" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Vertragsnummer</label>
+                        <input type="text" class="form-input" id="contractNumber">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Vertragstyp</label>
+                        <select class="form-select" id="contractType">
+                            <option>Dienstleistung</option>
+                            <option>Miete</option>
+                            <option>Lieferant</option>
+                            <option>Wartung</option>
+                            <option>Software/IT</option>
+                            <option>Versicherung</option>
+                            <option>Sonstiges</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Startdatum *</label>
+                        <input type="date" class="form-input" id="startDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Enddatum</label>
+                        <input type="date" class="form-input" id="endDate">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Monatlicher Betrag (€)</label>
+                        <input type="number" step="0.01" class="form-input" id="monthlyAmount">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Zahlungsrhythmus</label>
+                        <select class="form-select" id="paymentFrequency">
+                            <option>Monatlich</option>
+                            <option>Vierteljährlich</option>
+                            <option>Halbjährlich</option>
+                            <option>Jährlich</option>
+                            <option>Einmalig</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Nächste Zahlung</label>
+                        <input type="date" class="form-input" id="nextPayment">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Kündigungsfrist (Monate)</label>
+                        <input type="number" class="form-input" id="noticePeriod">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Verzugszinsen (%)</label>
+                        <input type="number" step="0.01" class="form-input" id="defaultInterest">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Zahlungsziel (Tage)</label>
+                        <input type="number" class="form-input" id="paymentTerm">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Notizen</label>
+                    <textarea class="form-textarea" id="notes"></textarea>
+                </div>
+                <div class="form-group">
+                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                        <input type="checkbox" id="autoRenew">
+                        <span>Automatische Verlängerung</span>
+                    </label>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="closeConfirmModal()">Abbrechen</button>
+            <button class="btn btn-success" onclick="saveContract()">Bestätigen & Speichern</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Variables globales pour la page Verträge
+    var contracts = [];
+    var selectedFile = null;
+    var extractedInfo = {};
+    var currentTab = 'all';
+    var selectedForComparison = [];
+
+    // Load contracts from localStorage - IMMÉDIAT
+    window.loadContracts = function() {
+        console.log('Loading contracts...');
+        const stored = localStorage.getItem('kontiq_contracts');
+        contracts = stored ? JSON.parse(stored) : [];
+        
+        // Si vide, charger les données de démo
+        if (contracts.length === 0) {
+            loadSampleContracts();
+        } else {
+            renderContracts();
+        }
+    };
+
+    // Render contracts
+    window.renderContracts = function() {
+        console.log('renderContracts called, contracts:', contracts.length);
+        const grid = document.getElementById('contractsGrid');
+        if (!grid) {
+            console.warn('contractsGrid not found, retrying in 100ms...');
+            setTimeout(renderContracts, 100);
+            return;
+        }
+        
+        let filtered = contracts;
+
+        if (currentTab === 'active') {
+            filtered = contracts.filter(c => new Date(c.endDate) > new Date());
+        } else if (currentTab === 'expiring') {
+            const threeMonths = new Date();
+            threeMonths.setMonth(threeMonths.getMonth() + 3);
+            filtered = contracts.filter(c => {
+                const end = new Date(c.endDate);
+                return end > new Date() && end <= threeMonths;
+            });
+        }
+
+        if (filtered.length === 0) {
+            grid.innerHTML = '<p style="color: var(--gray); grid-column: 1/-1; text-align: center; padding: 40px;">Keine Verträge gefunden. Laden Sie Ihren ersten Vertrag hoch!</p>';
+            return;
+        }
+
+        grid.innerHTML = filtered.map(contract => {
+            const status = getContractStatus(contract);
+            return `
+                <div class="contract-card" onclick="openContractDetails('${contract.id}')">
+                    <div class="contract-header">
+                        <div>
+                            <div class="contract-title">${contract.name}</div>
+                            <div class="contract-partner">${contract.partner}</div>
+                        </div>
+                        <span class="contract-status status-${status.class}">${status.text}</span>
+                    </div>
+                    <div class="contract-info">
+                        <div class="contract-info-row">
+                            <span class="info-label">Typ</span>
+                            <span class="info-value">${contract.type}</span>
+                        </div>
+                        <div class="contract-info-row">
+                            <span class="info-label">Betrag</span>
+                            <span class="info-value">${contract.monthlyAmount ? formatCurrency(contract.monthlyAmount) + '/Monat' : 'N/A'}</span>
+                        </div>
+                        <div class="contract-info-row">
+                            <span class="info-label">Nächste Zahlung</span>
+                            <span class="info-value">${formatDate(contract.nextPayment)}</span>
+                        </div>
+                        <div class="contract-info-row">
+                            <span class="info-label">Endet am</span>
+                            <span class="info-value">${formatDate(contract.endDate)}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    };
+
+    function getContractStatus(contract) {
+        if (!contract.endDate) return { class: 'active', text: 'Aktiv' };
+        
+        const end = new Date(contract.endDate);
+        const now = new Date();
+        const threeMonths = new Date();
+        threeMonths.setMonth(threeMonths.getMonth() + 3);
+
+        if (end < now) return { class: 'expired', text: 'Abgelaufen' };
+        if (end <= threeMonths) return { class: 'warning', text: 'Läuft bald aus' };
+        return { class: 'active', text: 'Aktiv' };
+    }
+
+    // Upload Modal
+    function openUploadModal() {
+        document.getElementById('uploadModal').classList.add('active');
+    }
+
+    function closeUploadModal() {
+        document.getElementById('uploadModal').classList.remove('active');
+        document.getElementById('uploadProgress').style.display = 'none';
+        document.getElementById('progressBar').style.width = '0%';
+        selectedFile = null;
+    }
+
+    // Drag & Drop - Setup function to handle SPA loading
+    function setupDragDrop() {
+        const uploadZone = document.getElementById('uploadZone');
+        if (!uploadZone) {
+            console.log('uploadZone not found, retrying...');
+            setTimeout(setupDragDrop, 100);
+            return;
+        }
+        
+        uploadZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadZone.classList.add('dragover');
+        });
+
+        uploadZone.addEventListener('dragleave', () => {
+            uploadZone.classList.remove('dragover');
+        });
+
+        uploadZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadZone.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleFile(files[0]);
+            }
+        });
+    }
+    
+    // Initialize drag-drop when DOM is ready
+    setupDragDrop();
+
+    function handleFileSelect(event) {
+        const file = event.target.files[0];
+        if (file) handleFile(file);
+    }
+
+    function handleFile(file) {
+        selectedFile = file;
+        
+        // Show progress
+        document.getElementById('uploadProgress').style.display = 'block';
+        
+        // Simulate AI extraction (in production, this would call your backend API)
+        simulateExtraction();
+    }
+
+    function simulateExtraction() {
+        let progress = 0;
+        const interval = setInterval(() => {
+            progress += 10;
+            document.getElementById('progressBar').style.width = progress + '%';
+            
+            if (progress >= 100) {
+                clearInterval(interval);
+                setTimeout(() => {
+                    extractedInfo = extractContractInfo();
+                    closeUploadModal();
+                    openConfirmModal();
+                }, 500);
+            }
+        }, 200);
+    }
+
+    function extractContractInfo() {
+        // Simulated AI extraction - in production, this would be real OCR/NLP
+        return {
+            name: 'Mietvertrag Bürofläche',
+            partner: 'Immobilien GmbH',
+            number: 'MV-2024-001',
+            type: 'Miete',
+            startDate: '2024-01-01',
+            endDate: '2026-12-31',
+            monthlyAmount: 2500,
+            paymentFrequency: 'Monatlich',
+            nextPayment: '2026-02-01',
+            noticePeriod: 3,
+            defaultInterest: 5,
+            paymentTerm: 14,
+            autoRenew: true
+        };
+    }
+
+    // Confirmation Modal
+    function openConfirmModal() {
+        document.getElementById('confirmModal').classList.add('active');
+        
+        // Show extracted data
+        const extractedHtml = `
+            <div class="extracted-info">
+                <h4>🤖 Automatisch erkannte Informationen:</h4>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span style="color: var(--gray);">Name:</span>
+                        <strong>${extractedInfo.name}</strong>
+                    </div>
+                    <div class="info-item">
+                        <span style="color: var(--gray);">Partner:</span>
+                        <strong>${extractedInfo.partner}</strong>
+                    </div>
+                    <div class="info-item">
+                        <span style="color: var(--gray);">Betrag:</span>
+                        <strong>${formatCurrency(extractedInfo.monthlyAmount)}</strong>
+                    </div>
+                    <div class="info-item">
+                        <span style="color: var(--gray);">Laufzeit:</span>
+                        <strong>${formatDate(extractedInfo.startDate)} - ${formatDate(extractedInfo.endDate)}</strong>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        document.getElementById('extractedData').innerHTML = extractedHtml;
+        
+        // Fill form with extracted data
+        document.getElementById('contractName').value = extractedInfo.name || '';
+        document.getElementById('contractPartner').value = extractedInfo.partner || '';
+        document.getElementById('contractNumber').value = extractedInfo.number || '';
+        document.getElementById('contractType').value = extractedInfo.type || 'Dienstleistung';
+        document.getElementById('startDate').value = extractedInfo.startDate || '';
+        document.getElementById('endDate').value = extractedInfo.endDate || '';
+        document.getElementById('monthlyAmount').value = extractedInfo.monthlyAmount || '';
+        document.getElementById('paymentFrequency').value = extractedInfo.paymentFrequency || 'Monatlich';
+        document.getElementById('nextPayment').value = extractedInfo.nextPayment || '';
+        document.getElementById('noticePeriod').value = extractedInfo.noticePeriod || '';
+        document.getElementById('defaultInterest').value = extractedInfo.defaultInterest || '';
+        document.getElementById('paymentTerm').value = extractedInfo.paymentTerm || '';
+        document.getElementById('autoRenew').checked = extractedInfo.autoRenew || false;
+    }
+
+    function closeConfirmModal() {
+        document.getElementById('confirmModal').classList.remove('active');
+    }
+
+    function saveContract() {
+        const contract = {
+            id: Date.now().toString(),
+            name: document.getElementById('contractName').value,
+            partner: document.getElementById('contractPartner').value,
+            number: document.getElementById('contractNumber').value,
+            type: document.getElementById('contractType').value,
+            startDate: document.getElementById('startDate').value,
+            endDate: document.getElementById('endDate').value,
+            monthlyAmount: parseFloat(document.getElementById('monthlyAmount').value) || 0,
+            paymentFrequency: document.getElementById('paymentFrequency').value,
+            nextPayment: document.getElementById('nextPayment').value,
+            noticePeriod: parseInt(document.getElementById('noticePeriod').value) || 0,
+            defaultInterest: parseFloat(document.getElementById('defaultInterest').value) || 0,
+            paymentTerm: parseInt(document.getElementById('paymentTerm').value) || 0,
+            notes: document.getElementById('notes').value,
+            autoRenew: document.getElementById('autoRenew').checked,
+            fileName: selectedFile ? selectedFile.name : '',
+            createdAt: new Date().toISOString(),
+            linkedInvoices: []
+        };
+
+        contracts.push(contract);
+        localStorage.setItem('kontiq_contracts', JSON.stringify(contracts));
+        
+        closeConfirmModal();
+        renderContracts();
+        
+        // Show success message
+        alert('✅ Vertrag erfolgreich gespeichert!');
+    }
+
+    // Contract Details
+    function openContractDetails(id) {
+        const contract = contracts.find(c => c.id === id);
+        if (!contract) return;
+
+        document.getElementById('detailsTitle').textContent = contract.name;
+        
+        const detailsHtml = `
+            <div style="display: grid; gap: 20px;">
+                <div>
+                    <h3 style="margin-bottom: 12px; color: var(--navy);">Grundinformationen</h3>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <span style="color: var(--gray);">Partner:</span>
+                            <strong>${contract.partner}</strong>
+                        </div>
+                        <div class="info-item">
+                            <span style="color: var(--gray);">Nummer:</span>
+                            <strong>${contract.number || 'N/A'}</strong>
+                        </div>
+                        <div class="info-item">
+                            <span style="color: var(--gray);">Typ:</span>
+                            <strong>${contract.type}</strong>
+                        </div>
+                        <div class="info-item">
+                            <span style="color: var(--gray);">Datei:</span>
+                            <strong>${contract.fileName || 'N/A'}</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 style="margin-bottom: 12px; color: var(--navy);">Laufzeit & Konditionen</h3>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <span style="color: var(--gray);">Start:</span>
+                            <strong>${formatDate(contract.startDate)}</strong>
+                        </div>
+                        <div class="info-item">
+                            <span style="color: var(--gray);">Ende:</span>
+                            <strong>${formatDate(contract.endDate)}</strong>
+                        </div>
+                        <div class="info-item">
+                            <span style="color: var(--gray);">Kündigungsfrist:</span>
+                            <strong>${contract.noticePeriod} Monate</strong>
+                        </div>
+                        <div class="info-item">
+                            <span style="color: var(--gray);">Auto-Verlängerung:</span>
+                            <strong>${contract.autoRenew ? 'Ja' : 'Nein'}</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 style="margin-bottom: 12px; color: var(--navy);">Zahlungsbedingungen</h3>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <span style="color: var(--gray);">Betrag:</span>
+                            <strong>${formatCurrency(contract.monthlyAmount)}</strong>
+                        </div>
+                        <div class="info-item">
+                            <span style="color: var(--gray);">Rhythmus:</span>
+                            <strong>${contract.paymentFrequency}</strong>
+                        </div>
+                        <div class="info-item">
+                            <span style="color: var(--gray);">Nächste Zahlung:</span>
+                            <strong>${formatDate(contract.nextPayment)}</strong>
+                        </div>
+                        <div class="info-item">
+                            <span style="color: var(--gray);">Zahlungsziel:</span>
+                            <strong>${contract.paymentTerm} Tage</strong>
+                        </div>
+                        <div class="info-item">
+                            <span style="color: var(--gray);">Verzugszinsen:</span>
+                            <strong>${contract.defaultInterest}%</strong>
+                        </div>
+                    </div>
+                </div>
+
+                ${contract.notes ? `
+                <div>
+                    <h3 style="margin-bottom: 12px; color: var(--navy);">Notizen</h3>
+                    <div style="padding: 12px; background: var(--light-bg); border-radius: 8px;">
+                        ${contract.notes}
+                    </div>
+                </div>
+                ` : ''}
+
+                <div class="linked-invoices">
+                    <h3 style="margin-bottom: 12px; color: var(--navy);">Verknüpfte Rechnungen</h3>
+                    ${contract.linkedInvoices.length > 0 ? 
+                        contract.linkedInvoices.map(inv => `
+                            <div class="invoice-link">
+                                <span>Rechnung #${inv.number}</span>
+                                <span>${formatCurrency(inv.amount)} - ${formatDate(inv.date)}</span>
+                            </div>
+                        `).join('') 
+                        : '<p style="color: var(--gray);">Keine verknüpften Rechnungen</p>'
+                    }
+                </div>
+            </div>
+        `;
+
+        document.getElementById('detailsBody').innerHTML = detailsHtml;
+        document.getElementById('detailsModal').classList.add('active');
+    }
+
+    function closeDetailsModal() {
+        document.getElementById('detailsModal').classList.remove('active');
+    }
+
+    // Tab switching
+    function switchTab(tab) {
+        currentTab = tab;
+        
+        // Update tab UI
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        event.target.classList.add('active');
+
+        // Show/hide content
+        if (tab === 'compare') {
+            document.getElementById('allContracts').style.display = 'none';
+            document.getElementById('compareContracts').style.display = 'block';
+            renderComparison();
+        } else {
+            document.getElementById('allContracts').style.display = 'block';
+            document.getElementById('compareContracts').style.display = 'none';
+            renderContracts();
+        }
+    }
+
+    // Comparison
+    function renderComparison() {
+        if (contracts.length < 2) {
+            document.getElementById('comparisonArea').innerHTML = '<p style="color: var(--gray); text-align: center; padding: 40px;">Mindestens 2 Verträge erforderlich für Vergleich</p>';
+            return;
+        }
+
+        const sameType = contracts.reduce((acc, c) => {
+            acc[c.type] = (acc[c.type] || []).concat(c);
+            return acc;
+        }, {});
+
+        let html = '<div style="display: grid; gap: 20px;">';
+        
+        for (const [type, typeContracts] of Object.entries(sameType)) {
+            if (typeContracts.length < 2) continue;
+
+            html += `
+                <div>
+                    <h3 style="margin-bottom: 16px; color: var(--navy);">${type} Verträge</h3>
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Vertragsname</th>
+                                <th>Partner</th>
+                                <th>Monatl. Betrag</th>
+                                <th>Zahlungsziel</th>
+                                <th>Verzugszinsen</th>
+                                <th>Laufzeit</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${typeContracts.map(c => {
+                                const amounts = typeContracts.map(tc => tc.monthlyAmount);
+                                const minAmount = Math.min(...amounts);
+                                const maxAmount = Math.max(...amounts);
+                                
+                                return `
+                                    <tr>
+                                        <td>${c.name}</td>
+                                        <td>${c.partner}</td>
+                                        <td class="${c.monthlyAmount === minAmount ? 'highlight-better' : c.monthlyAmount === maxAmount ? 'highlight-worse' : ''}">
+                                            ${formatCurrency(c.monthlyAmount)}
+                                        </td>
+                                        <td>${c.paymentTerm} Tage</td>
+                                        <td>${c.defaultInterest}%</td>
+                                        <td>${formatDate(c.startDate)} - ${formatDate(c.endDate)}</td>
+                                    </tr>
+                                `;
+                            }).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+        }
+
+        html += '</div>';
+        document.getElementById('comparisonArea').innerHTML = html;
+    }
+
+    // Helper functions
+    function formatCurrency(amount) {
+        return new Intl.NumberFormat('de-DE', { 
+            style: 'currency', 
+            currency: 'EUR' 
+        }).format(amount);
+    }
+
+    function formatDate(dateStr) {
+        if (!dateStr) return 'N/A';
+        return new Date(dateStr).toLocaleDateString('de-DE');
+    }
+
+    function editContract() {
+        alert('Bearbeitungsfunktion wird implementiert...');
+    }
+
+    // Charger les données sample si localStorage est vide
+    function loadSampleContracts() {
+        const sampleContracts = [
+            {
+                id: '1704297600000',
+                name: 'Mietvertrag Bürofläche',
+                partner: 'Immobilien Schmidt GmbH',
+                number: 'MV-2024-001',
+                type: 'Miete',
+                startDate: '2024-01-01',
+                endDate: '2026-12-31',
+                monthlyAmount: 2500,
+                paymentFrequency: 'Monatlich',
+                nextPayment: '2026-02-01',
+                noticePeriod: 3,
+                defaultInterest: 5,
+                paymentTerm: 14,
+                notes: 'Büro im 3. Stock, 120m², inkl. Nebenkosten',
+                autoRenew: true,
+                fileName: 'mietvertrag_2024.pdf',
+                createdAt: '2024-01-03T10:00:00Z',
+                linkedInvoices: [
+                    { number: 'MV-2024-12', amount: 2500, date: '2024-12-01', status: 'bezahlt' },
+                    { number: 'MV-2025-01', amount: 2500, date: '2025-01-01', status: 'bezahlt' },
+                    { number: 'MV-2026-01', amount: 2500, date: '2026-01-01', status: 'offen' }
+                ]
+            },
+            {
+                id: '1704384000000',
+                name: 'Software-Lizenz Microsoft 365',
+                partner: 'Microsoft Deutschland GmbH',
+                number: 'MS-365-2024',
+                type: 'Software/IT',
+                startDate: '2024-03-01',
+                endDate: '2027-02-28',
+                monthlyAmount: 450,
+                paymentFrequency: 'Jährlich',
+                nextPayment: '2026-03-01',
+                noticePeriod: 1,
+                defaultInterest: 8,
+                paymentTerm: 30,
+                notes: '15 Business Premium Lizenzen',
+                autoRenew: true,
+                fileName: 'microsoft_365_vertrag.pdf',
+                createdAt: '2024-03-01T09:30:00Z',
+                linkedInvoices: [
+                    { number: 'MS-2024-001', amount: 5400, date: '2024-03-01', status: 'bezahlt' },
+                    { number: 'MS-2025-001', amount: 5400, date: '2025-03-01', status: 'bezahlt' },
+                    { number: 'MS-2026-001', amount: 5400, date: '2026-03-01', status: 'offen' }
+                ]
+            },
+            {
+                id: '1704470400000',
+                name: 'Wartungsvertrag Klimaanlage',
+                partner: 'Klima-Service Müller',
+                number: 'KL-2024-089',
+                type: 'Wartung',
+                startDate: '2024-06-01',
+                endDate: '2026-05-31',
+                monthlyAmount: 180,
+                paymentFrequency: 'Vierteljährlich',
+                nextPayment: '2026-04-01',
+                noticePeriod: 2,
+                defaultInterest: 5,
+                paymentTerm: 14,
+                notes: 'Wartung alle 6 Monate, inkl. Notdienst',
+                autoRenew: false,
+                fileName: 'wartung_klima.pdf',
+                createdAt: '2024-06-01T14:20:00Z',
+                linkedInvoices: [
+                    { number: 'KL-Q4-2024', amount: 540, date: '2024-10-01', status: 'bezahlt' },
+                    { number: 'KL-Q1-2025', amount: 540, date: '2025-01-01', status: 'bezahlt' },
+                    { number: 'KL-Q4-2025', amount: 540, date: '2025-10-01', status: 'bezahlt' },
+                    { number: 'KL-Q1-2026', amount: 540, date: '2026-01-01', status: 'offen' }
+                ]
+            },
+            {
+                id: '1704556800000',
+                name: 'Internet & Telefon Business',
+                partner: 'Telekom Deutschland',
+                number: 'TEL-2024-567234',
+                type: 'Dienstleistung',
+                startDate: '2024-01-15',
+                endDate: '2026-01-14',
+                monthlyAmount: 89.90,
+                paymentFrequency: 'Monatlich',
+                nextPayment: '2026-02-15',
+                noticePeriod: 3,
+                defaultInterest: 5,
+                paymentTerm: 7,
+                notes: '500 Mbit/s, Flatrate Telefon Deutschland',
+                autoRenew: true,
+                fileName: 'telekom_business.pdf',
+                createdAt: '2024-01-15T11:45:00Z',
+                linkedInvoices: [
+                    { number: 'TEL-NOV-2025', amount: 89.90, date: '2025-11-15', status: 'bezahlt' },
+                    { number: 'TEL-DEZ-2025', amount: 89.90, date: '2025-12-15', status: 'bezahlt' },
+                    { number: 'TEL-JAN-2026', amount: 89.90, date: '2026-01-15', status: 'offen' }
+                ]
+            },
+            {
+                id: '1704643200000',
+                name: 'Leasingvertrag Firmenwagen',
+                partner: 'BMW Leasing GmbH',
+                number: 'BMW-LS-2024-1234',
+                type: 'Sonstiges',
+                startDate: '2024-04-01',
+                endDate: '2028-03-31',
+                monthlyAmount: 550,
+                paymentFrequency: 'Monatlich',
+                nextPayment: '2026-02-01',
+                noticePeriod: 0,
+                defaultInterest: 6,
+                paymentTerm: 5,
+                notes: 'BMW 320d, 10.000 km/Jahr, Service inkl.',
+                autoRenew: false,
+                fileName: 'bmw_leasing.pdf',
+                createdAt: '2024-04-01T08:15:00Z',
+                linkedInvoices: [
+                    { number: 'BMW-12-2025', amount: 550, date: '2025-12-01', status: 'bezahlt' },
+                    { number: 'BMW-01-2026', amount: 550, date: '2026-01-01', status: 'offen' }
+                ]
+            },
+            {
+                id: '1704729600000',
+                name: 'Versicherung Betriebshaftpflicht',
+                partner: 'Allianz Versicherung AG',
+                number: 'ALZ-BH-2024-8901',
+                type: 'Versicherung',
+                startDate: '2024-01-01',
+                endDate: '2025-12-31',
+                monthlyAmount: 125,
+                paymentFrequency: 'Jährlich',
+                nextPayment: '2026-01-01',
+                noticePeriod: 3,
+                defaultInterest: 5,
+                paymentTerm: 30,
+                notes: 'Deckungssumme 5 Mio €, weltweite Geltung',
+                autoRenew: true,
+                fileName: 'allianz_haftpflicht.pdf',
+                createdAt: '2024-01-01T00:00:00Z',
+                linkedInvoices: [
+                    { number: 'ALZ-2024-001', amount: 1500, date: '2024-01-01', status: 'bezahlt' },
+                    { number: 'ALZ-2025-001', amount: 1500, date: '2025-01-01', status: 'bezahlt' },
+                    { number: 'ALZ-2026-001', amount: 1500, date: '2026-01-01', status: 'fällig' }
+                ]
+            },
+            {
+                id: '1704816000000',
+                name: 'Cloud-Hosting AWS',
+                partner: 'Amazon Web Services',
+                number: 'AWS-2024-DEU-4567',
+                type: 'Software/IT',
+                startDate: '2024-02-01',
+                endDate: '2025-01-31',
+                monthlyAmount: 380,
+                paymentFrequency: 'Monatlich',
+                nextPayment: '2026-02-01',
+                noticePeriod: 1,
+                defaultInterest: 8,
+                paymentTerm: 7,
+                notes: 'EC2 Instanzen, S3 Storage, RDS Datenbank',
+                autoRenew: true,
+                fileName: 'aws_contract.pdf',
+                createdAt: '2024-02-01T16:30:00Z',
+                linkedInvoices: [
+                    { number: 'AWS-NOV-2025', amount: 380, date: '2025-11-01', status: 'bezahlt' },
+                    { number: 'AWS-DEZ-2025', amount: 398, date: '2025-12-01', status: 'bezahlt' },
+                    { number: 'AWS-JAN-2026', amount: 380, date: '2026-01-01', status: 'offen' }
+                ]
+            },
+            {
+                id: '1704902400000',
+                name: 'Liefervertrag Büromaterial',
+                partner: 'Office Depot Deutschland',
+                number: 'OD-2024-LV-789',
+                type: 'Lieferant',
+                startDate: '2024-05-01',
+                endDate: '2026-04-30',
+                monthlyAmount: 250,
+                paymentFrequency: 'Monatlich',
+                nextPayment: '2026-02-15',
+                noticePeriod: 1,
+                defaultInterest: 5,
+                paymentTerm: 30,
+                notes: 'Monatliche Lieferung, 10% Mengenrabatt',
+                autoRenew: false,
+                fileName: 'office_depot_vertrag.pdf',
+                createdAt: '2024-05-01T12:00:00Z',
+                linkedInvoices: [
+                    { number: 'OD-12-2025', amount: 267, date: '2025-12-15', status: 'bezahlt' },
+                    { number: 'OD-01-2026', amount: 245, date: '2026-01-15', status: 'offen' }
+                ]
+            }
+        ];
+        
+        contracts = sampleContracts;
+        localStorage.setItem('kontiq_contracts', JSON.stringify(contracts));
+        renderContracts();
+    }
+
+    // Chargement immédiat des contrats
+    console.log('Verträge page: Initializing...');
+    
+    // S'assurer que le DOM est prêt
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', loadContracts);
+    } else {
+        // DOM déjà prêt, exécuter immédiatement
+        loadContracts();
+    }
+    
+    // Backup: aussi appeler après un court délai pour les cas SPA
+    setTimeout(loadContracts, 50);
+</script>

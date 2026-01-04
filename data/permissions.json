@@ -1,0 +1,54 @@
+{
+  "globalPermissions": {
+    "christianmeli71@gmail.com": {
+      "role": "geschaeftsfuehrer",
+      "permissions": {
+        "entitaeten": { "view": true, "edit": true, "delete": true, "manage": true },
+        "bankkonten": { "view": true, "edit": true, "delete": true },
+        "kosten": { "view": true, "edit": true, "delete": true },
+        "forderungen": { "view": true, "edit": true, "delete": true },
+        "zahlungen": { "view": true, "edit": true, "delete": true },
+        "vertrage": { "view": true, "edit": true, "delete": true },
+        "liquiditat": { "view": true, "edit": true },
+        "reports": { "view": true, "edit": true },
+        "kpis": { "view": true, "edit": true },
+        "einstellungen": { "view": true, "edit": true },
+        "permissions": { "view": true, "edit": true }
+      }
+    },
+    "laurichtatiss@gmail.com": {
+      "role": "geschaeftsfuehrer",
+      "permissions": {
+        "entitaeten": { "view": true, "edit": true, "delete": true, "manage": true },
+        "bankkonten": { "view": true, "edit": true, "delete": true },
+        "kosten": { "view": true, "edit": true, "delete": true },
+        "forderungen": { "view": true, "edit": true, "delete": true },
+        "zahlungen": { "view": true, "edit": true, "delete": true },
+        "vertrage": { "view": true, "edit": true, "delete": true },
+        "liquiditat": { "view": true, "edit": true },
+        "reports": { "view": true, "edit": true },
+        "kpis": { "view": true, "edit": true },
+        "einstellungen": { "view": true, "edit": true },
+        "permissions": { "view": true, "edit": true }
+      }
+    },
+    "Bonbonama@yahoo.com": {
+      "role": "geschaeftsfuehrer",
+      "permissions": {
+        "entitaeten": { "view": true, "edit": true, "delete": true, "manage": true },
+        "bankkonten": { "view": true, "edit": true, "delete": true },
+        "kosten": { "view": true, "edit": true, "delete": true },
+        "forderungen": { "view": true, "edit": true, "delete": true },
+        "zahlungen": { "view": true, "edit": true, "delete": true },
+        "vertrage": { "view": true, "edit": true, "delete": true },
+        "liquiditat": { "view": true, "edit": true },
+        "reports": { "view": true, "edit": true },
+        "kpis": { "view": true, "edit": true },
+        "einstellungen": { "view": true, "edit": true },
+        "permissions": { "view": true, "edit": true }
+      }
+    }
+  },
+  "entityPermissions": {},
+  "invitations": []
+}

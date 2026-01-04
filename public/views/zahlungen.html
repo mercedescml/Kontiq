@@ -1,0 +1,2727 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zahlungsmanagement - Kontiq</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --navy: #0A2540;
+            --teal: #0EB17A;
+            --gray: #6B7280;
+            --dark-gray: #4B5563;
+            --light-gray: #E5E7EB;
+            --light-bg: #F8FAFC;
+            --white: #FFFFFF;
+            --error: #DC2626;
+            --warning: #F59E0B;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--light-bg);
+            color: var(--navy);
+        }
+
+        /* Modern Select/Dropdown Styling */
+        select {
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background: var(--white) url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="%236B7280"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>') no-repeat right 12px center;
+            background-size: 20px;
+            padding: 10px 40px 10px 12px;
+            border: 1.5px solid var(--light-gray);
+            border-radius: 8px;
+            font-size: 14px;
+            color: var(--dark-gray);
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        select:hover {
+            border-color: var(--teal);
+        }
+
+        select:focus {
+            outline: none;
+            border-color: var(--teal);
+            box-shadow: 0 0 0 3px rgba(14, 177, 122, 0.1);
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+        }
+
+        .page-title {
+            font-size: 28px;
+            color: var(--navy);
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            font-family: inherit;
+        }
+
+        .btn-primary {
+            background: var(--teal);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #059669;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--navy);
+            border: 1.5px solid var(--light-gray);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--navy);
+        }
+
+        /* Stats Bar */
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .stat-card {
+            background: var(--white);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+            border: 1px solid var(--light-gray);
+            transition: all 0.2s;
+        }
+
+        .stat-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            transform: translateY(-2px);
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: var(--gray);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--navy);
+            font-family: 'Roboto Mono', monospace;
+            margin-bottom: 4px;
+            letter-spacing: -0.5px;
+        }
+
+        .stat-meta {
+            font-size: 12px;
+            color: var(--gray);
+            font-weight: 500;
+        }
+
+        /* Recommended Payments Section */
+        .recommended-section {
+            background: var(--white);
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+            border: 1px solid var(--light-gray);
+            margin-bottom: 24px;
+        }
+
+        .recommended-header {
+            margin-bottom: 20px;
+        }
+
+        .recommended-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--navy);
+            letter-spacing: -0.3px;
+        }
+
+        .recommended-subtitle {
+            font-size: 13px;
+            color: var(--gray);
+            margin-top: 4px;
+        }
+
+        .recommended-cards {
+            display: grid;
+            gap: 12px;
+        }
+
+        .recommended-card {
+            background: #F9FAFB;
+            border: 1px solid var(--light-gray);
+            border-left: 3px solid var(--teal);
+            border-radius: 10px;
+            padding: 16px 20px;
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            gap: 16px;
+            align-items: center;
+            transition: all 0.2s;
+        }
+
+        .recommended-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            transform: translateY(-1px);
+        }
+
+        .recommended-card.critical {
+            border-left-color: var(--navy);
+            background: linear-gradient(90deg, rgba(10, 37, 64, 0.03) 0%, #F9FAFB 100%);
+        }
+
+        .priority-indicator {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            background: var(--navy);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .recommended-content {
+            flex: 1;
+        }
+
+        .recommended-vendor {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--navy);
+            margin-bottom: 4px;
+        }
+
+        .recommended-reason {
+            font-size: 13px;
+            color: var(--gray);
+            margin-bottom: 6px;
+        }
+
+        .recommended-savings {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--teal);
+            background: rgba(14, 177, 122, 0.1);
+            padding: 4px 10px;
+            border-radius: 6px;
+        }
+
+        .recommended-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        /* Filters */
+        .filter-section {
+            background: var(--white);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+            border: 1px solid var(--light-gray);
+            margin-bottom: 20px;
+        }
+
+        .filter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .filter-label {
+            font-size: 12px;
+            color: var(--gray);
+            font-weight: 600;
+        }
+
+        input {
+            padding: 10px 12px;
+            border: 1.5px solid var(--light-gray);
+            border-radius: 8px;
+            font-size: 14px;
+            color: var(--navy);
+            background: var(--white);
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--teal);
+            box-shadow: 0 0 0 3px rgba(14, 177, 122, 0.1);
+        }
+
+        /* Table */
+        .table-section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .table-section-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--navy);
+        }
+
+        .payments-table {
+            background: var(--white);
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+            border: 1px solid var(--light-gray);
+            overflow: hidden;
+        }
+
+        .table-header {
+            display: grid;
+            grid-template-columns: 40px 180px 120px 100px 120px 120px 100px 140px;
+            padding: 15px 20px;
+            background: #F9FAFB;
+            border-bottom: 1px solid var(--light-gray);
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--gray);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        .payment-row {
+            display: grid;
+            grid-template-columns: 40px 180px 120px 100px 120px 120px 100px 140px;
+            padding: 16px 20px;
+            border-bottom: 1px solid #F3F4F6;
+            align-items: center;
+            transition: background 0.2s;
+            font-size: 13px;
+        }
+
+        .payment-row:hover {
+            background: #F9FAFB;
+        }
+
+        .payment-row.overdue {
+            background: rgba(220, 38, 38, 0.04);
+            border-left: 3px solid var(--error);
+        }
+
+        .payment-row.overdue:hover {
+            background: rgba(220, 38, 38, 0.08);
+        }
+
+        .payment-row.paid {
+            opacity: 0.6;
+        }
+
+        .vendor-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .vendor-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--navy);
+        }
+
+        .invoice-number {
+            font-size: 11px;
+            color: var(--gray);
+        }
+
+        .date-info {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .date-main {
+            font-size: 13px;
+            font-weight: 600;
+            font-family: 'Roboto Mono', monospace;
+        }
+
+        .date-sub {
+            font-size: 11px;
+            color: var(--gray);
+        }
+
+        .skonto-info {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .skonto-amount {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--teal);
+            font-family: 'Roboto Mono', monospace;
+        }
+
+        .skonto-deadline {
+            font-size: 11px;
+            color: var(--gray);
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            background: #F3F4F6;
+            color: var(--navy);
+        }
+
+        .amount {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--navy);
+            font-family: 'Roboto Mono', monospace;
+        }
+
+        .btn-zahlen {
+            padding: 8px 14px;
+            background: var(--teal);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        .btn-zahlen:hover {
+            background: #059669;
+            transform: translateY(-1px);
+        }
+
+        .btn-verschieben {
+            padding: 8px 14px;
+            background: white;
+            color: var(--navy);
+            border: 1.5px solid var(--light-gray);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        .btn-verschieben:hover {
+            border-color: var(--navy);
+            transform: translateY(-1px);
+        }
+
+        .btn-details {
+            padding: 8px 12px;
+            background: white;
+            color: var(--gray);
+            border: 1.5px solid var(--light-gray);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: 600;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        .btn-details:hover {
+            border-color: var(--navy);
+            color: var(--navy);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+
+        /* MODAL */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 700px;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            padding: 24px;
+            border-bottom: 1px solid var(--light-gray);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--navy);
+        }
+
+        .close-modal {
+            font-size: 28px;
+            color: var(--gray);
+            cursor: pointer;
+            background: none;
+            border: none;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .close-modal:hover {
+            background: var(--light-bg);
+            color: var(--navy);
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .modal-footer {
+            padding: 20px 24px;
+            border-top: 1px solid var(--light-gray);
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        /* Upload Methods */
+        .upload-methods {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .upload-method {
+            padding: 16px;
+            border: 2px solid var(--light-gray);
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: white;
+        }
+
+        .upload-method:hover {
+            border-color: var(--teal);
+            background: #F9FAFB;
+        }
+
+        .upload-method.active {
+            border-color: var(--teal);
+            background: rgba(14, 177, 122, 0.05);
+        }
+
+        .upload-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--navy);
+        }
+
+        .form-content {
+            display: none;
+        }
+
+        .form-content.active {
+            display: block;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-label {
+            font-size: 12px;
+            color: var(--gray);
+            font-weight: 600;
+        }
+
+        .form-input {
+            padding: 12px;
+            border: 1.5px solid var(--light-gray);
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--teal);
+            box-shadow: 0 0 0 3px rgba(14, 177, 122, 0.1);
+        }
+
+        textarea.form-input {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        /* Bank Account Card */
+        .bank-account-card {
+            position: relative;
+            padding: 16px;
+            border: 2px solid var(--light-gray);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .bank-account-card:hover {
+            border-color: var(--teal);
+            background: #F9FAFB;
+        }
+
+        .bank-account-card.selected {
+            border-color: var(--teal);
+            background: rgba(14, 177, 122, 0.05);
+        }
+
+        .account-checkmark {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: 24px;
+            height: 24px;
+            background: var(--teal);
+            border-radius: 50%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .bank-account-card.selected .account-checkmark {
+            display: flex;
+        }
+
+        /* Simulator Styles */
+        .simulator-modal .modal-content {
+            max-width: 900px;
+        }
+
+        .modal-subtitle {
+            font-size: 13px;
+            color: var(--gray);
+            margin-top: 4px;
+        }
+
+        /* Simulator Hero */
+        .sim-hero {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px;
+            background: var(--white);
+            border: 1px solid var(--light-gray);
+            border-radius: 12px;
+            margin-bottom: 24px;
+        }
+
+        .sim-hero-label {
+            font-size: 11px;
+            color: var(--gray);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .sim-hero-value {
+            font-size: 36px;
+            font-weight: 800;
+            color: var(--navy);
+            font-family: 'Roboto Mono', monospace;
+            letter-spacing: -1px;
+            margin-bottom: 8px;
+        }
+
+        .sim-hero-dates {
+            font-size: 14px;
+            color: var(--gray);
+            font-family: 'Roboto Mono', monospace;
+        }
+
+        .sim-hero-arrow {
+            margin: 0 8px;
+            color: var(--teal);
+        }
+
+        .sim-hero-stats {
+            display: flex;
+            gap: 32px;
+        }
+
+        .sim-hero-stat {
+            text-align: center;
+        }
+
+        .sim-hero-stat-value {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--navy);
+            font-family: 'Roboto Mono', monospace;
+        }
+
+        .sim-hero-stat-label {
+            font-size: 11px;
+            color: var(--gray);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 4px;
+        }
+
+        /* Simulator Slider */
+        .sim-slider-section {
+            margin-bottom: 24px;
+        }
+
+        .sim-slider-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: var(--gray);
+            margin-top: 8px;
+        }
+
+        /* Simulator Payments Section */
+        .sim-payments-section {
+            background: var(--white);
+            border: 1px solid var(--light-gray);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+
+        .sim-section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .sim-section-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--navy);
+        }
+
+        .sim-section-count {
+            font-size: 12px;
+            color: var(--gray);
+        }
+
+        .sim-payments-list {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .sim-payments-empty {
+            text-align: center;
+            padding: 32px;
+            color: var(--gray);
+        }
+
+        .sim-payments-empty-icon {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .sim-payments-empty-text {
+            font-size: 13px;
+        }
+
+        .sim-payment-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background: #F9FAFB;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            border-left: 3px solid var(--teal);
+        }
+
+        .sim-payment-item.has-risk {
+            border-left-color: var(--error);
+        }
+
+        .sim-payment-vendor {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--navy);
+        }
+
+        .sim-payment-invoice {
+            font-size: 11px;
+            color: var(--gray);
+        }
+
+        .sim-payment-amount {
+            font-size: 14px;
+            font-weight: 700;
+            font-family: 'Roboto Mono', monospace;
+            color: var(--navy);
+        }
+
+        .sim-payment-risk {
+            font-size: 11px;
+            color: var(--error);
+            margin-top: 4px;
+        }
+
+        /* Simulator Comparison Cards */
+        .sim-comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .sim-card {
+            background: var(--white);
+            border: 1px solid var(--light-gray);
+            border-radius: 12px;
+            padding: 20px;
+            position: relative;
+        }
+
+        .sim-card-current {
+            border-color: var(--teal);
+            background: linear-gradient(135deg, rgba(14, 177, 122, 0.03) 0%, var(--white) 100%);
+        }
+
+        .sim-card-postponed {
+            border-color: var(--light-gray);
+        }
+
+        .sim-card-badge {
+            position: absolute;
+            top: -10px;
+            left: 16px;
+            background: var(--teal);
+            color: white;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .sim-card-header {
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .sim-card-title {
+            font-size: 11px;
+            color: var(--gray);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .sim-card-date {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--navy);
+            font-family: 'Roboto Mono', monospace;
+        }
+
+        .sim-card-rows {
+            margin-bottom: 16px;
+        }
+
+        .sim-card-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            font-size: 13px;
+            color: var(--gray);
+        }
+
+        .sim-card-value {
+            font-weight: 600;
+            font-family: 'Roboto Mono', monospace;
+            color: var(--navy);
+        }
+
+        .sim-card-positive {
+            color: var(--teal);
+        }
+
+        .sim-card-negative {
+            color: var(--error);
+        }
+
+        .sim-card-total {
+            display: flex;
+            justify-content: space-between;
+            padding-top: 12px;
+            border-top: 2px solid var(--navy);
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--navy);
+        }
+
+        .sim-card-total span:last-child {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 16px;
+        }
+
+        /* Simulator Impact */
+        .sim-impact {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .sim-impact-item {
+            background: var(--white);
+            border: 1px solid var(--light-gray);
+            border-radius: 10px;
+            padding: 16px;
+            text-align: center;
+        }
+
+        .sim-impact-label {
+            font-size: 11px;
+            color: var(--gray);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .sim-impact-value {
+            font-size: 20px;
+            font-weight: 800;
+            font-family: 'Roboto Mono', monospace;
+        }
+
+        .sim-impact-positive {
+            color: var(--teal);
+        }
+
+        .sim-impact-negative {
+            color: var(--error);
+        }
+
+        /* Simulator Recommendation */
+        .sim-recommendation {
+            display: flex;
+            gap: 16px;
+            background: #F9FAFB;
+            border: 1px solid var(--light-gray);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .sim-recommendation-icon {
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .sim-recommendation-content {
+            flex: 1;
+        }
+
+        .sim-recommendation-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--navy);
+            margin-bottom: 6px;
+        }
+
+        .sim-recommendation-text {
+            font-size: 13px;
+            color: var(--gray);
+            line-height: 1.5;
+        }
+
+        .sim-recommendation-alt {
+            font-size: 13px;
+            color: var(--teal);
+            font-weight: 600;
+            margin-top: 8px;
+        }
+
+        /* Postpone Modal Styles */
+        .postpone-invoice {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px;
+            background: #F9FAFB;
+            border: 1px solid var(--light-gray);
+            border-radius: 10px;
+            margin-bottom: 24px;
+        }
+
+        .postpone-invoice-vendor {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--navy);
+        }
+
+        .postpone-invoice-meta {
+            font-size: 12px;
+            color: var(--gray);
+            margin-top: 4px;
+        }
+
+        .postpone-invoice-amount {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--navy);
+            font-family: 'Roboto Mono', monospace;
+        }
+
+        .postpone-days {
+            margin-bottom: 24px;
+        }
+
+        .postpone-days-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--navy);
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .postpone-days-input {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .postpone-days-btn {
+            width: 40px;
+            height: 40px;
+            border: 1.5px solid var(--light-gray);
+            background: var(--white);
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--navy);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .postpone-days-btn:hover {
+            border-color: var(--teal);
+            background: rgba(14, 177, 122, 0.05);
+        }
+
+        .postpone-days-field {
+            flex: 1;
+            text-align: center;
+            font-size: 24px;
+            font-weight: 700;
+            font-family: 'Roboto Mono', monospace;
+            color: var(--navy);
+            border: 1.5px solid var(--light-gray);
+            border-radius: 8px;
+            padding: 8px;
+        }
+
+        .postpone-days-field:focus {
+            outline: none;
+            border-color: var(--teal);
+        }
+
+        .postpone-days-unit {
+            font-size: 14px;
+            color: var(--gray);
+            font-weight: 500;
+        }
+
+        .postpone-new-date {
+            font-size: 13px;
+            color: var(--gray);
+            margin-top: 10px;
+        }
+
+        .postpone-new-date strong {
+            color: var(--navy);
+        }
+
+        .postpone-costs {
+            background: var(--white);
+            border: 1px solid var(--light-gray);
+            border-radius: 10px;
+            padding: 16px;
+        }
+
+        .postpone-costs-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--navy);
+            margin-bottom: 12px;
+        }
+
+        .postpone-cost-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            font-size: 13px;
+            color: var(--gray);
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .postpone-cost-row:last-of-type {
+            border-bottom: none;
+        }
+
+        .postpone-cost-value {
+            font-weight: 600;
+            font-family: 'Roboto Mono', monospace;
+            color: var(--navy);
+        }
+
+        .postpone-cost-negative .postpone-cost-value {
+            color: var(--error);
+        }
+
+        .postpone-cost-total {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0 8px;
+            margin-top: 8px;
+            border-top: 2px solid var(--navy);
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--navy);
+        }
+
+        .postpone-cost-total span:last-child {
+            font-family: 'Roboto Mono', monospace;
+        }
+
+        .postpone-cost-extra {
+            display: flex;
+            justify-content: space-between;
+            padding-top: 8px;
+            font-size: 12px;
+            color: var(--error);
+        }
+
+        .postpone-cost-extra span:last-child {
+            font-weight: 700;
+            font-family: 'Roboto Mono', monospace;
+        }
+
+        .timeline-container {
+            margin: 30px 0;
+        }
+
+        .timeline-track {
+            position: relative;
+            height: 8px;
+            background: #E5E7EB;
+            border-radius: 10px;
+            cursor: pointer;
+            margin: 40px 0 30px 0;
+        }
+
+        .timeline-range {
+            position: absolute;
+            left: 0%;
+            width: 0%;
+            height: 100%;
+            background: var(--teal);
+            border-radius: 10px;
+            transition: width 0.15s ease;
+        }
+
+        .timeline-handle {
+            position: absolute;
+            top: 50%;
+            left: 0%;
+            transform: translate(-50%, -50%);
+            width: 20px;
+            height: 20px;
+            background: white;
+            border: 3px solid var(--teal);
+            border-radius: 50%;
+            cursor: grab;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            transition: all 0.2s ease;
+            z-index: 10;
+        }
+
+        .timeline-handle:hover {
+            transform: translate(-50%, -50%) scale(1.2);
+        }
+
+        .timeline-handle:active {
+            cursor: grabbing;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .timeline-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            font-size: 12px;
+            color: var(--gray);
+        }
+
+        .affected-payments {
+            background: white;
+            border: 1px solid var(--light-gray);
+            padding: 20px;
+            border-radius: 16px;
+            margin-bottom: 24px;
+        }
+
+        .comparison-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 30px;
+        }
+
+        .scenario-card {
+            background: white;
+            border: 1px solid var(--light-gray);
+            border-radius: 16px;
+            padding: 24px;
+            transition: all 0.3s ease;
+        }
+
+        .scenario-card:hover {
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            transform: translateY(-2px);
+        }
+
+        .scenario-card.current {
+            background: linear-gradient(135deg, #f0fdf4 0%, #ffffff 100%);
+            border-color: var(--teal);
+        }
+
+        .scenario-card.postponed {
+            background: linear-gradient(135deg, #fef2f2 0%, #ffffff 100%);
+            border-color: #fca5a5;
+        }
+
+        .scenario-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #F3F4F6;
+        }
+
+        .scenario-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--gray);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .scenario-date {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--navy);
+            font-family: 'Roboto Mono', monospace;
+        }
+
+        .metric-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            font-size: 14px;
+        }
+
+        .metric-label {
+            color: var(--dark-gray);
+            font-size: 13px;
+        }
+
+        .metric-value {
+            font-weight: 700;
+            font-family: 'Roboto Mono', monospace;
+            font-size: 15px;
+            color: var(--navy);
+        }
+
+        .metric-positive {
+            color: var(--teal);
+        }
+
+        .metric-negative {
+            color: var(--error);
+        }
+
+        .total-row {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid var(--navy);
+            display: flex;
+            justify-content: space-between;
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--navy);
+        }
+
+        .total-row span:last-child {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 18px;
+        }
+
+        .impact-summary {
+            background: white;
+            border: 1px solid var(--light-gray);
+            padding: 24px;
+            border-radius: 16px;
+            margin-top: 24px;
+        }
+
+        .impact-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .impact-item {
+            text-align: center;
+            padding: 20px;
+            background: #F9FAFB;
+            border-radius: 12px;
+            transition: all 0.2s ease;
+        }
+
+        .impact-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .sim-intro {
+            background: #F9FAFB;
+            border: 1px solid var(--light-gray);
+            border-radius: 14px;
+            padding: 18px 20px;
+            margin-bottom: 16px;
+        }
+
+        .sim-intro .sim-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--navy);
+            margin-bottom: 6px;
+        }
+
+        .sim-intro p {
+            margin: 0;
+            font-size: 13px;
+            color: var(--gray);
+            line-height: 1.5;
+        }
+
+        .sim-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .sim-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 10px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+            border: 1px solid var(--light-gray);
+            background: white;
+        }
+
+        .sim-chip.primary {
+            color: var(--teal);
+            border-color: rgba(14, 177, 122, 0.25);
+            background: rgba(14, 177, 122, 0.06);
+        }
+
+        .sim-chip.warning {
+            color: var(--warning);
+            border-color: rgba(245, 158, 11, 0.35);
+            background: rgba(245, 158, 11, 0.08);
+        }
+
+        .sim-chip.neutral {
+            color: var(--navy);
+            border-color: var(--light-gray);
+            background: #F9FAFB;
+        }
+
+        .sim-legend {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            align-items: center;
+            font-size: 12px;
+            color: var(--gray);
+            margin: 10px 0 6px 0;
+        }
+
+        .sim-legend-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 10px;
+            background: #F9FAFB;
+            border: 1px solid var(--light-gray);
+            border-radius: 10px;
+        }
+
+        .sim-legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .sim-days-selector {
+            margin-bottom: 30px;
+        }
+
+        .sim-days-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 12px;
+        }
+
+        .sim-days-label {
+            font-size: 12px;
+            color: var(--gray);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 700;
+        }
+
+        .sim-days-meta {
+            font-size: 12px;
+            color: var(--gray);
+        }
+
+        .sim-days-value {
+            font-size: 42px;
+            font-weight: 800;
+            color: var(--navy);
+            margin-bottom: 8px;
+            font-family: 'Roboto Mono', monospace;
+            letter-spacing: -1.5px;
+        }
+
+        .sim-days-range {
+            font-size: 14px;
+            color: var(--dark-gray);
+            font-family: 'Roboto Mono', monospace;
+        }
+
+        .sim-arrow {
+            color: var(--gray);
+            margin: 0 8px;
+        }
+
+        .affected-payments-title {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--gray);
+            margin-bottom: 16px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .sim-empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--gray);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .sim-empty-icon {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .recommendation-summary {
+            margin-top: 20px;
+            padding: 16px;
+            background: #F9FAFB;
+            border-radius: 10px;
+            border-left: 3px solid var(--navy);
+        }
+
+        .recommendation-summary-content {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .recommendation-summary-icon {
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .recommendation-summary-text {
+            flex: 1;
+        }
+
+        .recommendation-summary-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--navy);
+            margin-bottom: 6px;
+        }
+
+        .recommendation-summary-desc {
+            font-size: 13px;
+            color: var(--gray);
+            line-height: 1.6;
+        }
+
+        .highlight-teal {
+            color: var(--teal);
+        }
+
+        .recommendation-summary-actions {
+            margin-top: 12px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .postpone-summary {
+            background: #F9FAFB;
+            padding: 16px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 3px solid var(--navy);
+        }
+
+        .postpone-summary-vendor {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--navy);
+            margin-bottom: 4px;
+        }
+
+        .postpone-summary-meta {
+            font-size: 13px;
+            color: var(--gray);
+        }
+
+        .form-hint {
+            font-size: 12px;
+            color: var(--gray);
+            margin-top: 5px;
+        }
+
+        .form-hint-value {
+            font-weight: 600;
+            color: var(--navy);
+        }
+
+        .impact-label {
+            font-size: 11px;
+            color: var(--gray);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .impact-value {
+            font-size: 20px;
+            font-weight: 700;
+            font-family: 'Roboto Mono', monospace;
+        }
+
+        .recommendation-box {
+            background: linear-gradient(135deg, #f0f9ff 0%, #ffffff 100%);
+            border: 1px solid #bfdbfe;
+            border-radius: 16px;
+            padding: 24px;
+            margin-top: 24px;
+        }
+
+        .recommendation-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--navy);
+            margin-bottom: 16px;
+        }
+
+        .recommendation-text {
+            font-size: 14px;
+            line-height: 1.6;
+            color: var(--dark-gray);
+            margin-bottom: 12px;
+        }
+
+        @media (max-width: 1200px) {
+            .table-header, .payment-row {
+                grid-template-columns: 40px 160px 110px 90px 110px 110px 90px 120px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .upload-methods {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .comparison-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .impact-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .recommended-card {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+            
+            .recommended-actions {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-header">
+        <h1 class="page-title">Zahlungsmanagement</h1>
+        <div class="header-actions">
+            <button class="btn btn-secondary" onclick="openSimulator()">Zahlungsaufschub-Simulator</button>
+            <button class="btn btn-primary" onclick="openAddPayment()">Neue Rechnung</button>
+        </div>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats-bar">
+        <div class="stat-card">
+            <div class="stat-label">Gesamt</div>
+            <div class="stat-value">28</div>
+            <div class="stat-meta">Alle Rechnungen</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Offen</div>
+            <div class="stat-value">12</div>
+            <div class="stat-meta">35.200€</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Bezahlt</div>
+            <div class="stat-value">16</div>
+            <div class="stat-meta">48.750€</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Fixkosten</div>
+            <div class="stat-value">64%</div>
+            <div class="stat-meta">18 Rechnungen</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Skonto verfügbar</div>
+            <div class="stat-value">545€</div>
+            <div class="stat-meta">5 Rechnungen</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Diese Woche</div>
+            <div class="stat-value">8</div>
+            <div class="stat-meta">18.450€ fällig</div>
+        </div>
+    </div>
+
+    <!-- RECOMMENDED PAYMENTS SECTION -->
+    <div class="recommended-section">
+        <div class="recommended-header">
+            <div>
+                <div class="recommended-title">💡 Intelligente Zahlungsempfehlungen</div>
+                <div class="recommended-subtitle">Basierend auf Skonto-Fristen, Liquidität und Priorität</div>
+            </div>
+        </div>
+
+        <div class="recommended-cards">
+            <div class="recommended-card critical">
+                <div class="priority-indicator">!</div>
+                <div class="recommended-content">
+                    <div class="recommended-vendor">Müller GmbH · 2.450€</div>
+                    <div class="recommended-reason">
+                        <strong>Skonto läuft heute ab (23:59 Uhr)</strong> · Letzte Chance, 49€ zu sparen
+                    </div>
+                    <div class="recommended-savings">💰 Sparpotenzial: 49€ (2%)</div>
+                </div>
+                <div class="recommended-actions">
+                    <button class="btn btn-primary" onclick="openPaymentModal('INV-1523', 'Müller GmbH', 2450)">Jetzt zahlen</button>
+                    <button class="btn btn-details" onclick="openPaymentDetails('INV-1523')">Details</button>
+                </div>
+            </div>
+
+            <div class="recommended-card">
+                <div class="priority-indicator" style="background: var(--teal);">✓</div>
+                <div class="recommended-content">
+                    <div class="recommended-vendor">Schmidt AG · 1.200€</div>
+                    <div class="recommended-reason">
+                        <strong>Skonto-Frist: 10.12. (in 2 Tagen)</strong> · Monatliche Rechnung mit gutem Discount
+                    </div>
+                    <div class="recommended-savings">💰 Sparpotenzial: 24€ (2%)</div>
+                </div>
+                <div class="recommended-actions">
+                    <button class="btn btn-primary" onclick="openPaymentModal('RE-9845', 'Schmidt AG', 1200)">Jetzt zahlen</button>
+                    <button class="btn btn-details" onclick="openPaymentDetails('RE-9845')">Details</button>
+                </div>
+            </div>
+
+            <div class="recommended-card">
+                <div class="priority-indicator" style="background: #6B7280;">→</div>
+                <div class="recommended-content">
+                    <div class="recommended-vendor">Weber KG · 8.900€</div>
+                    <div class="recommended-reason">
+                        <strong>Kann verschoben werden</strong> · Skonto-Frist bereits abgelaufen. Liquidität schonen empfohlen.
+                    </div>
+                    <div style="font-size: 12px; color: var(--gray); margin-top: 4px;">
+                        💡 Verschieben empfohlen, um Liquidität für wichtigere Zahlungen zu sichern
+                    </div>
+                </div>
+                <div class="recommended-actions">
+                    <button class="btn btn-secondary" onclick="openPaymentModal('WK-2024-156', 'Weber KG', 8900)">Trotzdem zahlen</button>
+                    <button class="btn btn-details" onclick="openPaymentDetails('WK-2024-156')">Details</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="recommendation-summary">
+            <div class="recommendation-summary-content">
+                <div class="recommendation-summary-icon">🤖</div>
+                <div class="recommendation-summary-text">
+                    <div class="recommendation-summary-title">
+                        Zusammenfassung: Heute optimal zahlen
+                    </div>
+                    <div class="recommendation-summary-desc">
+                        <strong>Empfehlung:</strong> Zahlen Sie Müller GmbH und Schmidt AG heute (Gesamt: 3.650€).
+                        <strong class="highlight-teal">Sie sparen 73€ durch Skonto-Nutzung.</strong>
+                        Weber KG kann sicher bis Ende des Monats warten.
+                    </div>
+                    <div class="recommendation-summary-actions">
+                        <button class="btn btn-primary" onclick="payRecommended()">Empfohlene Zahlungen ausführen (2)</button>
+                        <button class="btn btn-secondary" onclick="openSimulator()">Im Zahlungsaufschub-Simulator prüfen</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FILTERS -->
+    <div class="filter-section">
+        <div class="filter-grid">
+            <div class="filter-group">
+                <label class="filter-label">Status</label>
+                <select>
+                    <option>Alle</option>
+                    <option>Offen</option>
+                    <option>Bezahlt</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label class="filter-label">Kategorie</label>
+                <select>
+                    <option>Alle</option>
+                    <option>Wareneinkauf</option>
+                    <option>IT/Software</option>
+                    <option>Miete</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label class="filter-label">Zahlungsart</label>
+                <select>
+                    <option>Alle</option>
+                    <option>Überweisung</option>
+                    <option>Lastschrift</option>
+                    <option>Dauerauftrag</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label class="filter-label">Kostentyp</label>
+                <select>
+                    <option>Alle</option>
+                    <option>Fixkosten</option>
+                    <option>Variable</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label class="filter-label">Suche</label>
+                <input type="text" placeholder="Lieferant, Rechnung...">
+            </div>
+        </div>
+    </div>
+
+    <!-- TABLE SECTION -->
+    <div class="table-section-header">
+        <h2 class="table-section-title">Alle Rechnungen</h2>
+        <div style="font-size: 13px; color: var(--gray);">12 offen · 16 bezahlt</div>
+    </div>
+
+    <div class="payments-table">
+        <div class="table-header">
+            <div><input type="checkbox"></div>
+            <div>Lieferant</div>
+            <div>Kategorie</div>
+            <div>Zahlungsart</div>
+            <div>Fälligkeit</div>
+            <div>Skonto</div>
+            <div>Betrag</div>
+            <div></div>
+        </div>
+
+        <div class="payment-row overdue">
+            <div><input type="checkbox"></div>
+            <div class="vendor-info">
+                <div class="vendor-name">Müller GmbH</div>
+                <div class="invoice-number">#INV-1523</div>
+            </div>
+            <div>Wareneinkauf</div>
+            <div><span class="badge">Überweisung</span></div>
+            <div class="date-info">
+                <div class="date-main" style="color: var(--error);">05.12.2025</div>
+                <div class="date-sub" style="color: var(--error);">Überfällig</div>
+            </div>
+            <div class="skonto-info">
+                <div class="skonto-amount">-49€</div>
+                <div class="skonto-deadline">bis heute</div>
+            </div>
+            <div class="amount">2.450€</div>
+            <div class="action-buttons">
+                <button class="btn-zahlen" onclick="openPaymentModal('INV-1523', 'Müller GmbH', 2450)">Zahlen</button>
+                <button class="btn-verschieben" onclick="openPostponeModal('INV-1523', 'Müller GmbH', 2450, '05.12.2025', 49, '04.01.2026')">Verschieben</button>
+                <button class="btn-details" onclick="openPaymentDetails('INV-1523')">Details</button>
+            </div>
+        </div>
+
+        <div class="payment-row">
+            <div><input type="checkbox"></div>
+            <div class="vendor-info">
+                <div class="vendor-name">Schmidt AG</div>
+                <div class="invoice-number">#RE-9845</div>
+            </div>
+            <div>IT/Software</div>
+            <div><span class="badge">Lastschrift</span></div>
+            <div class="date-info">
+                <div class="date-main">10.12.2025</div>
+                <div class="date-sub">In 2 Tagen</div>
+            </div>
+            <div class="skonto-info">
+                <div class="skonto-amount">-24€</div>
+                <div class="skonto-deadline">bis 10.12.</div>
+            </div>
+            <div class="amount">1.200€</div>
+            <div class="action-buttons">
+                <button class="btn-zahlen" onclick="openPaymentModal('RE-9845', 'Schmidt AG', 1200)">Zahlen</button>
+                <button class="btn-verschieben" onclick="openPostponeModal('RE-9845', 'Schmidt AG', 1200, '10.12.2025', 24, '10.12.2025')">Verschieben</button>
+                <button class="btn-details" onclick="openPaymentDetails('RE-9845')">Details</button>
+            </div>
+        </div>
+
+        <div class="payment-row paid">
+            <div><input type="checkbox"></div>
+            <div class="vendor-info">
+                <div class="vendor-name">Telekom GmbH</div>
+                <div class="invoice-number">#TEL-11-2024</div>
+            </div>
+            <div>IT/Telekom</div>
+            <div><span class="badge">Lastschrift</span></div>
+            <div class="date-info">
+                <div class="date-main" style="color: var(--teal);">01.12.2025</div>
+                <div class="date-sub" style="color: var(--teal);">Bezahlt</div>
+            </div>
+            <div>—</div>
+            <div class="amount">320€</div>
+            <div>
+                <button class="btn-details">Details</button>
+            </div>
+        </div>
+
+        <div class="payment-row">
+            <div><input type="checkbox"></div>
+            <div class="vendor-info">
+                <div class="vendor-name">Weber KG</div>
+                <div class="invoice-number">#WK-2024-156</div>
+            </div>
+            <div>Wareneinkauf</div>
+            <div><span class="badge">Überweisung</span></div>
+            <div class="date-info">
+                <div class="date-main">22.12.2025</div>
+                <div class="date-sub">In 14 Tagen</div>
+            </div>
+            <div class="skonto-info">
+                <div class="skonto-amount">-178€</div>
+                <div class="skonto-deadline" style="color: var(--error);">verpasst</div>
+            </div>
+            <div class="amount">8.900€</div>
+            <div class="action-buttons">
+                <button class="btn-zahlen" onclick="openPaymentModal('WK-2024-156', 'Weber KG', 8900)">Zahlen</button>
+                <button class="btn-verschieben" onclick="openPostponeModal('WK-2024-156', 'Weber KG', 8900, '22.12.2025', 178, '15.12.2025')">Verschieben</button>
+                <button class="btn-details" onclick="openPaymentDetails('WK-2024-156')">Details</button>
+            </div>
+        </div>
+
+        <div class="payment-row">
+            <div><input type="checkbox"></div>
+            <div class="vendor-info">
+                <div class="vendor-name">Büromiete Berlin</div>
+                <div class="invoice-number">#MIETE-12-2025</div>
+            </div>
+            <div>Miete</div>
+            <div><span class="badge">Dauerauftrag</span></div>
+            <div class="date-info">
+                <div class="date-main">01.01.2026</div>
+                <div class="date-sub">In 24 Tagen</div>
+            </div>
+            <div>—</div>
+            <div class="amount">3.500€</div>
+            <div class="action-buttons">
+                <button class="btn-zahlen" onclick="openPaymentModal('MIETE-12-2025', 'Büromiete Berlin', 3500)">Zahlen</button>
+                <button class="btn-verschieben" onclick="openPostponeModal('MIETE-12-2025', 'Büromiete Berlin', 3500, '01.01.2026', 0, null)">Verschieben</button>
+                <button class="btn-details" onclick="openPaymentDetails('MIETE-12-2025')">Details</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADD PAYMENT MODAL -->
+    <div class="modal" id="addPaymentModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">Neue Rechnung</div>
+                <button class="close-modal" onclick="closeAddPayment()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="upload-methods">
+                    <div class="upload-method active" onclick="selectMethod('manual')">
+                        <div class="upload-title">Manuell</div>
+                    </div>
+                    <div class="upload-method" onclick="selectMethod('pdf')">
+                        <div class="upload-title">PDF Upload</div>
+                    </div>
+                    <div class="upload-method" onclick="selectMethod('excel')">
+                        <div class="upload-title">Excel</div>
+                    </div>
+                    <div class="upload-method" onclick="selectMethod('email')">
+                        <div class="upload-title">Email</div>
+                    </div>
+                </div>
+
+                <div id="manualForm" class="form-content active">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Lieferant</label>
+                            <input type="text" class="form-input" placeholder="Name">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Rechnungsnummer</label>
+                            <input type="text" class="form-input" placeholder="#INV-...">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Betrag (€)</label>
+                            <input type="number" class="form-input" placeholder="0.00" step="0.01">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Fälligkeitsdatum</label>
+                            <input type="date" class="form-input">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Skonto %</label>
+                            <input type="number" class="form-input" placeholder="z.B. 2" step="0.1">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Skonto Frist</label>
+                            <input type="date" class="form-input">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Kategorie</label>
+                            <select class="form-input">
+                                <option>Wareneinkauf</option>
+                                <option>IT/Software</option>
+                                <option>Miete</option>
+                                <option>Personal</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Zahlungsart</label>
+                            <select class="form-input">
+                                <option>Überweisung</option>
+                                <option>Lastschrift</option>
+                                <option>Dauerauftrag</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group full-width">
+                        <label class="form-label">Notizen</label>
+                        <textarea class="form-input" placeholder="Optional..."></textarea>
+                    </div>
+                </div>
+
+                <div id="pdfForm" class="form-content">
+                    <div style="text-align: center; padding: 40px; border: 2px dashed var(--light-gray); border-radius: 12px;">
+                        <div style="font-size: 16px; font-weight: 600; color: var(--navy); margin-bottom: 10px;">PDF hochladen</div>
+                        <div style="font-size: 13px; color: var(--gray); margin-bottom: 20px;">Automatische Datenextraktion</div>
+                        <input type="file" accept=".pdf" style="display: none;" id="pdfUpload">
+                        <button class="btn btn-primary" onclick="document.getElementById('pdfUpload').click()">Datei wählen</button>
+                    </div>
+                </div>
+
+                <div id="excelForm" class="form-content">
+                    <div style="text-align: center; padding: 40px; border: 2px dashed var(--light-gray); border-radius: 12px;">
+                        <div style="font-size: 16px; font-weight: 600; color: var(--navy); margin-bottom: 10px;">Excel importieren</div>
+                        <div style="font-size: 13px; color: var(--gray); margin-bottom: 20px;">Mehrere Rechnungen gleichzeitig</div>
+                        <input type="file" accept=".xlsx,.xls,.csv" style="display: none;" id="excelUpload">
+                        <button class="btn btn-primary" onclick="document.getElementById('excelUpload').click()">Datei wählen</button>
+                    </div>
+                </div>
+
+                <div id="emailForm" class="form-content">
+                    <div class="form-group">
+                        <label class="form-label">Email-Adresse</label>
+                        <input type="email" class="form-input" placeholder="rechnungen@firma.de">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeAddPayment()">Abbrechen</button>
+                <button class="btn btn-primary">Speichern</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- PAYMENT MODAL -->
+    <div class="modal" id="paymentModal">
+        <div class="modal-content" style="max-width: 550px;">
+            <div class="modal-header">
+                <div class="modal-title">Zahlung vorbereiten</div>
+                <button class="close-modal" onclick="closePaymentModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div style="background: #F9FAFB; padding: 16px; border-radius: 12px; margin-bottom: 24px; border-left: 3px solid var(--teal);">
+                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 12px;">
+                        <div>
+                            <div style="font-size: 12px; color: var(--gray); text-transform: uppercase; margin-bottom: 4px; font-weight: 600;">Empfänger</div>
+                            <div style="font-size: 16px; font-weight: 700; color: var(--navy);" id="paymentVendor">-</div>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="font-size: 12px; color: var(--gray); text-transform: uppercase; margin-bottom: 4px; font-weight: 600;">Betrag</div>
+                            <div style="font-size: 20px; font-weight: 800; color: var(--teal); font-family: 'Roboto Mono', monospace;" id="paymentAmount">-</div>
+                        </div>
+                    </div>
+                    <div style="font-size: 12px; color: var(--gray);">
+                        Rechnung: <span style="font-weight: 600; color: var(--navy);" id="paymentInvoice">-</span>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 24px;">
+                    <label class="form-label" style="margin-bottom: 12px; display: block;">Bankkonto auswählen</label>
+                    <div id="bankAccountsList" style="display: flex; flex-direction: column; gap: 10px;"></div>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 24px;">
+                    <label class="form-label">Ausführungsdatum</label>
+                    <input type="date" id="paymentDate" class="form-input" value="2026-01-04">
+                </div>
+
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn btn-primary" style="flex: 1;" onclick="confirmPayment()">Zahlung bestätigen</button>
+                    <button class="btn btn-secondary" onclick="markAsAlreadyPaid()">Bereits bezahlt</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- POSTPONE MODAL -->
+    <div class="modal" id="postponeModal">
+        <div class="modal-content" style="max-width: 550px;">
+            <div class="modal-header">
+                <div class="modal-title">Zahlung verschieben</div>
+                <button class="close-modal" onclick="closePostponeModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <!-- Invoice Summary -->
+                <div class="postpone-invoice">
+                    <div class="postpone-invoice-main">
+                        <div class="postpone-invoice-vendor" id="postponeVendor">-</div>
+                        <div class="postpone-invoice-meta">
+                            <span id="postponeInvoice">-</span>
+                        </div>
+                    </div>
+                    <div class="postpone-invoice-amount" id="postponeAmount">-</div>
+                </div>
+
+                <!-- Days Selector -->
+                <div class="postpone-days">
+                    <label class="postpone-days-label">Verschieben um</label>
+                    <div class="postpone-days-input">
+                        <button class="postpone-days-btn" onclick="adjustPostponeDays(-7)">-7</button>
+                        <input type="number" id="postponeDays" min="1" max="90" value="30" class="postpone-days-field" oninput="calculatePostponeImpact()">
+                        <span class="postpone-days-unit">Tage</span>
+                        <button class="postpone-days-btn" onclick="adjustPostponeDays(7)">+7</button>
+                    </div>
+                    <div class="postpone-new-date">
+                        Neue Fälligkeit: <strong id="postponeNewDueDate">-</strong>
+                    </div>
+                </div>
+
+                <!-- Cost Breakdown -->
+                <div class="postpone-costs">
+                    <div class="postpone-costs-title">Kostenübersicht</div>
+                    <div class="postpone-cost-row">
+                        <span>Ursprünglicher Betrag</span>
+                        <span class="postpone-cost-value" id="postponeOriginalAmount">-</span>
+                    </div>
+                    <div class="postpone-cost-row postpone-cost-negative">
+                        <span>Skonto verpasst</span>
+                        <span class="postpone-cost-value" id="postponeSkontoLost">-</span>
+                    </div>
+                    <div class="postpone-cost-row postpone-cost-negative">
+                        <span>Verzugszinsen (9,12% p.a.)</span>
+                        <span class="postpone-cost-value" id="postponeInterest">-</span>
+                    </div>
+                    <div class="postpone-cost-row postpone-cost-negative">
+                        <span>Mahngebühren</span>
+                        <span class="postpone-cost-value" id="postponeFees">-</span>
+                    </div>
+                    <div class="postpone-cost-total">
+                        <span>Gesamtkosten</span>
+                        <span id="postponeTotalCost">-</span>
+                    </div>
+                    <div class="postpone-cost-extra">
+                        <span>Mehrkosten durch Verschiebung</span>
+                        <span id="postponeExtraCost">-</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closePostponeModal()">Abbrechen</button>
+                <button class="btn btn-primary" onclick="confirmPostpone()">Verschiebung bestätigen</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SIMULATOR MODAL -->
+    <div class="modal simulator-modal" id="simulatorModal">
+        <div class="modal-content" style="max-width: 900px;">
+            <div class="modal-header">
+                <div>
+                    <div class="modal-title">Zahlungsaufschub-Simulator</div>
+                    <div class="modal-subtitle">Analysieren Sie die Auswirkungen einer Verschiebung auf Liquidität und Kosten</div>
+                </div>
+                <button class="close-modal" onclick="closeSimulator()">×</button>
+            </div>
+            <div class="modal-body">
+                <!-- Hero Section -->
+                <div class="sim-hero">
+                    <div class="sim-hero-main">
+                        <div class="sim-hero-label">Verschiebung</div>
+                        <div class="sim-hero-value" id="daysShift">+0 Tage</div>
+                        <div class="sim-hero-dates">
+                            <span id="currentDate">04.01.2026</span>
+                            <span class="sim-hero-arrow">→</span>
+                            <span id="targetDate">04.01.2026</span>
+                        </div>
+                    </div>
+                    <div class="sim-hero-stats">
+                        <div class="sim-hero-stat">
+                            <div class="sim-hero-stat-value" id="affectedCount">0</div>
+                            <div class="sim-hero-stat-label">Rechnungen</div>
+                        </div>
+                        <div class="sim-hero-stat">
+                            <div class="sim-hero-stat-value" id="affectedTotal">0€</div>
+                            <div class="sim-hero-stat-label">Gesamtbetrag</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slider -->
+                <div class="sim-slider-section">
+                    <div class="timeline-track">
+                        <div class="timeline-range" id="timelineRange"></div>
+                        <div class="timeline-handle" id="timelineHandle"></div>
+                    </div>
+                    <div class="sim-slider-labels">
+                        <span>Heute</span>
+                        <span>30 Tage</span>
+                        <span>60 Tage</span>
+                        <span>90 Tage</span>
+                    </div>
+                </div>
+
+                <!-- Affected Payments -->
+                <div class="sim-payments-section">
+                    <div class="sim-section-header">
+                        <div class="sim-section-title">Betroffene Rechnungen</div>
+                        <div class="sim-section-count"><span id="affectedCountInline">0</span> Rechnungen</div>
+                    </div>
+                    <div class="sim-payments-list" id="affectedPaymentsList">
+                        <div class="sim-payments-empty">
+                            <div class="sim-payments-empty-icon">📋</div>
+                            <div class="sim-payments-empty-text">Bewegen Sie den Slider, um die Auswirkungen zu sehen</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Comparison Cards -->
+                <div class="sim-comparison">
+                    <div class="sim-card sim-card-current">
+                        <div class="sim-card-badge">Empfohlen</div>
+                        <div class="sim-card-header">
+                            <div class="sim-card-title">Heute zahlen</div>
+                            <div class="sim-card-date">04.01.2026</div>
+                        </div>
+                        <div class="sim-card-rows">
+                            <div class="sim-card-row">
+                                <span>Zahlbetrag</span>
+                                <span class="sim-card-value">0€</span>
+                            </div>
+                            <div class="sim-card-row">
+                                <span>Skonto genutzt</span>
+                                <span class="sim-card-value sim-card-positive">-0€</span>
+                            </div>
+                        </div>
+                        <div class="sim-card-total">
+                            <span>Effektive Kosten</span>
+                            <span>0€</span>
+                        </div>
+                    </div>
+
+                    <div class="sim-card sim-card-postponed">
+                        <div class="sim-card-header">
+                            <div class="sim-card-title">Verschieben auf</div>
+                            <div class="sim-card-date">04.01.2026</div>
+                        </div>
+                        <div class="sim-card-rows">
+                            <div class="sim-card-row">
+                                <span>Zahlbetrag</span>
+                                <span class="sim-card-value">0€</span>
+                            </div>
+                            <div class="sim-card-row">
+                                <span>Skonto verpasst</span>
+                                <span class="sim-card-value sim-card-negative">+0€</span>
+                            </div>
+                            <div class="sim-card-row">
+                                <span>Verzugszinsen</span>
+                                <span class="sim-card-value sim-card-negative">+0€</span>
+                            </div>
+                        </div>
+                        <div class="sim-card-total">
+                            <span>Effektive Kosten</span>
+                            <span>0€</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Impact Summary -->
+                <div class="sim-impact">
+                    <div class="sim-impact-item">
+                        <div class="sim-impact-label">Mehrkosten</div>
+                        <div class="sim-impact-value sim-impact-negative">+0€</div>
+                    </div>
+                    <div class="sim-impact-item">
+                        <div class="sim-impact-label">Prozentual</div>
+                        <div class="sim-impact-value sim-impact-negative">+0%</div>
+                    </div>
+                    <div class="sim-impact-item">
+                        <div class="sim-impact-label">Liquidität geschont</div>
+                        <div class="sim-impact-value sim-impact-positive">+0€</div>
+                    </div>
+                </div>
+
+                <!-- AI Recommendation -->
+                <div class="sim-recommendation" id="recommendationBox">
+                    <div class="sim-recommendation-icon">💡</div>
+                    <div class="sim-recommendation-content">
+                        <div class="sim-recommendation-title">Empfehlung</div>
+                        <div class="sim-recommendation-text" id="recommendationText">Bewegen Sie den Slider, um eine Analyse zu erhalten.</div>
+                        <div class="sim-recommendation-alt" id="recommendationAlternative"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeSimulator()">Schließen</button>
+                <button class="btn btn-primary" onclick="applySimulatorRecommendation()">Empfehlung anwenden</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentPaymentData = null;
+        let currentPostponeData = null;
+
+        // Simulator Data
+        let simulatorData = {
+            currentDate: new Date(2026, 0, 4),
+            daysShift: 0,
+            isDragging: false,
+            payments: [
+                { id: 1, vendor: 'Müller GmbH', invoice: 'INV-1523', amount: 2450, dueDate: new Date(2025, 11, 5), skonto: 49, skontoDeadline: new Date(2026, 0, 4) },
+                { id: 2, vendor: 'Schmidt AG', invoice: 'RE-9845', amount: 1200, dueDate: new Date(2025, 11, 10), skonto: 24, skontoDeadline: new Date(2025, 11, 10) },
+                { id: 3, vendor: 'Weber KG', invoice: 'WK-2024-156', amount: 8900, dueDate: new Date(2025, 11, 22), skonto: 178, skontoDeadline: new Date(2025, 11, 15) },
+                { id: 4, vendor: 'Büromiete Berlin', invoice: 'MIETE-12-2025', amount: 3500, dueDate: new Date(2026, 0, 1), skonto: 0, skontoDeadline: null }
+            ]
+        };
+
+        // Modal Functions
+        function openAddPayment() {
+            document.getElementById('addPaymentModal').classList.add('active');
+        }
+
+        function closeAddPayment() {
+            document.getElementById('addPaymentModal').classList.remove('active');
+        }
+
+        function selectMethod(method) {
+            document.querySelectorAll('.upload-method').forEach(el => el.classList.remove('active'));
+            event.target.closest('.upload-method').classList.add('active');
+            
+            document.querySelectorAll('.form-content').forEach(el => el.classList.remove('active'));
+            document.getElementById(method + 'Form').classList.add('active');
+        }
+
+        function openPaymentModal(invoiceNumber, vendor, amount) {
+            currentPaymentData = { invoiceNumber, vendor, amount };
+            
+            document.getElementById('paymentInvoice').textContent = invoiceNumber;
+            document.getElementById('paymentVendor').textContent = vendor;
+            document.getElementById('paymentAmount').textContent = amount.toLocaleString('de-DE') + '€';
+            
+            loadBankAccounts();
+            document.getElementById('paymentModal').classList.add('active');
+        }
+
+        function closePaymentModal() {
+            document.getElementById('paymentModal').classList.remove('active');
+            currentPaymentData = null;
+        }
+
+        function loadBankAccounts() {
+            const bankAccounts = [
+                { id: 1, name: 'Geschäftskonto', bank: 'Deutsche Bank', iban: 'DE89 3704 0044 0532 0130 00', balance: 125430.50 },
+                { id: 2, name: 'Sparkonto', bank: 'Commerzbank', iban: 'DE23 5001 0517 5407 3249 31', balance: 58200.00 }
+            ];
+
+            const container = document.getElementById('bankAccountsList');
+            container.innerHTML = bankAccounts.map((account, index) => `
+                <div class="bank-account-card ${index === 0 ? 'selected' : ''}" onclick="selectBankAccount(${account.id})" data-account-id="${account.id}">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <div style="width: 40px; height: 40px; background: var(--navy); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white;">
+                            💳
+                        </div>
+                        <div style="flex: 1;">
+                            <div style="font-size: 14px; font-weight: 600; color: var(--navy);">${account.name}</div>
+                            <div style="font-size: 11px; color: var(--gray);">${account.bank} • ${account.iban}</div>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="font-size: 14px; font-weight: 700; color: var(--navy); font-family: 'Roboto Mono', monospace;">${account.balance.toLocaleString('de-DE', {minimumFractionDigits: 2})}€</div>
+                        </div>
+                    </div>
+                    <div class="account-checkmark">✓</div>
+                </div>
+            `).join('');
+        }
+
+        function selectBankAccount(accountId) {
+            document.querySelectorAll('.bank-account-card').forEach(card => card.classList.remove('selected'));
+            document.querySelector(`[data-account-id="${accountId}"]`).classList.add('selected');
+        }
+
+        function confirmPayment() {
+            alert(`✅ Zahlung vorbereitet:\n\nEmpfänger: ${currentPaymentData.vendor}\nBetrag: ${currentPaymentData.amount}€`);
+            closePaymentModal();
+        }
+
+        function markAsAlreadyPaid() {
+            alert(`✅ Rechnung als bezahlt markiert`);
+            closePaymentModal();
+        }
+
+        function openPaymentDetails(invoiceNumber) {
+            alert(`Details für ${invoiceNumber}`);
+        }
+
+        function payRecommended() {
+            if (!confirm('Empfohlene Zahlungen ausführen?\n\n• Müller GmbH: 2.450€\n• Schmidt AG: 1.200€\n\nGesamt: 3.650€\nSkonto: 73€')) return;
+            alert('✅ Zahlungen werden vorbereitet!');
+        }
+
+        // Postpone Functions
+        function openPostponeModal(invoiceId, vendor, amount, dueDate, skonto, skontoDeadline) {
+            currentPostponeData = {
+                invoiceId, vendor, amount,
+                dueDate: new Date(dueDate.split('.').reverse().join('-')),
+                skonto: skonto || 0,
+                skontoDeadline: skontoDeadline ? new Date(skontoDeadline.split('.').reverse().join('-')) : null
+            };
+
+            document.getElementById('postponeVendor').textContent = vendor;
+            document.getElementById('postponeInvoice').textContent = invoiceId;
+            document.getElementById('postponeAmount').textContent = formatCurrency(amount);
+            document.getElementById('postponeDays').value = 30;
+            
+            calculatePostponeImpact();
+            document.getElementById('postponeModal').classList.add('active');
+        }
+
+        function closePostponeModal() {
+            document.getElementById('postponeModal').classList.remove('active');
+            currentPostponeData = null;
+        }
+
+        function calculatePostponeImpact() {
+            if (!currentPostponeData) return;
+
+            const days = parseInt(document.getElementById('postponeDays').value) || 0;
+            const { amount, skonto, skontoDeadline } = currentPostponeData;
+            
+            const today = new Date();
+            const newDueDate = new Date(today);
+            newDueDate.setDate(newDueDate.getDate() + days);
+
+            const skontoLost = (skontoDeadline && newDueDate > skontoDeadline) ? skonto : 0;
+            const interest = amount * 0.0912 / 365 * days;
+            const fees = days > 14 ? 15 : 0;
+            const totalCost = amount + skontoLost + interest + fees;
+            const extraCost = skontoLost + interest + fees;
+
+            document.getElementById('postponeNewDueDate').textContent = newDueDate.toLocaleDateString('de-DE');
+            document.getElementById('postponeOriginalAmount').textContent = formatCurrency(amount);
+            document.getElementById('postponeSkontoLost').textContent = skontoLost > 0 ? '+' + formatCurrency(skontoLost) : '0€';
+            document.getElementById('postponeInterest').textContent = '+' + formatCurrency(interest);
+            document.getElementById('postponeFees').textContent = fees > 0 ? '+' + formatCurrency(fees) : '0€';
+            document.getElementById('postponeTotalCost').textContent = formatCurrency(totalCost);
+            document.getElementById('postponeExtraCost').textContent = '+' + formatCurrency(extraCost);
+        }
+
+        function confirmPostpone() {
+            const days = parseInt(document.getElementById('postponeDays').value) || 0;
+            alert(`✅ Zahlung "${currentPostponeData.vendor}" wird um ${days} Tage verschoben.`);
+            closePostponeModal();
+        }
+
+        // Simulator Functions
+        function openSimulator() {
+            document.getElementById('simulatorModal').classList.add('active');
+            setTimeout(() => {
+                initSimulator();
+                updateSimulatorDisplay();
+            }, 100);
+        }
+
+        function closeSimulator() {
+            document.getElementById('simulatorModal').classList.remove('active');
+        }
+
+        function initSimulator() {
+            const handle = document.getElementById('timelineHandle');
+            const track = document.querySelector('.timeline-track');
+            
+            if (!handle || !track) return;
+
+            handle.addEventListener('mousedown', startDrag);
+            track.addEventListener('click', jumpToPosition);
+
+            function startDrag(e) {
+                e.preventDefault();
+                simulatorData.isDragging = true;
+                document.addEventListener('mousemove', drag);
+                document.addEventListener('mouseup', stopDrag);
+            }
+
+            function drag(e) {
+                if (!simulatorData.isDragging) return;
+                
+                const trackRect = track.getBoundingClientRect();
+                const mouseX = e.clientX - trackRect.left;
+                const percentage = Math.max(0, Math.min(100, (mouseX / trackRect.width) * 100));
+                updateSliderPosition(percentage);
+            }
+
+            function stopDrag() {
+                simulatorData.isDragging = false;
+                document.removeEventListener('mousemove', drag);
+                document.removeEventListener('mouseup', stopDrag);
+            }
+
+            function jumpToPosition(e) {
+                if (e.target === handle || handle.contains(e.target)) return;
+                const trackRect = track.getBoundingClientRect();
+                const mouseX = e.clientX - trackRect.left;
+                const percentage = Math.max(0, Math.min(100, (mouseX / trackRect.width) * 100));
+                updateSliderPosition(percentage);
+            }
+
+            function updateSliderPosition(percentage) {
+                const daysShift = Math.round((percentage / 100) * 90);
+                simulatorData.daysShift = daysShift;
+                handle.style.left = percentage + '%';
+                document.getElementById('timelineRange').style.width = percentage + '%';
+                updateSimulatorDisplay();
+            }
+        }
+
+        function updateSimulatorDisplay() {
+            const { currentDate, daysShift, payments } = simulatorData;
+            const targetDate = new Date(currentDate);
+            targetDate.setDate(targetDate.getDate() + daysShift);
+            
+            document.getElementById('currentDate').textContent = formatDate(currentDate);
+            document.getElementById('targetDate').textContent = formatDate(targetDate);
+            document.getElementById('daysShift').textContent = `+${daysShift} Tage`;
+            
+            const totalAmount = payments.reduce((sum, p) => sum + p.amount, 0);
+            document.getElementById('affectedCount').textContent = payments.length;
+            document.getElementById('affectedCountInline').textContent = payments.length;
+            document.getElementById('affectedTotal').textContent = formatCurrency(totalAmount);
+            
+            updateAffectedPaymentsList(payments);
+            updateComparisonCards(payments, daysShift);
+        }
+
+        function updateAffectedPaymentsList(payments) {
+            const container = document.getElementById('affectedPaymentsList');
+            const { daysShift } = simulatorData;
+            
+            if (daysShift === 0) {
+                container.innerHTML = `
+                    <div class="sim-payments-empty">
+                        <div class="sim-payments-empty-icon">📋</div>
+                        <div class="sim-payments-empty-text">Bewegen Sie den Slider, um die Auswirkungen zu sehen</div>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = payments.map(p => {
+                const skontoLost = (p.skontoDeadline && (new Date().getTime() + daysShift * 24 * 60 * 60 * 1000) > p.skontoDeadline.getTime()) ? p.skonto : 0;
+                const interest = calculateVerzugszinsen(p.amount, daysShift);
+                const hasRisk = skontoLost > 0 || interest > 5;
+                
+                return `
+                    <div class="sim-payment-item ${hasRisk ? 'has-risk' : ''}">
+                        <div>
+                            <div class="sim-payment-vendor">${p.vendor}</div>
+                            <div class="sim-payment-invoice">#${p.invoice}</div>
+                            ${hasRisk ? `<div class="sim-payment-risk">${skontoLost > 0 ? `Skonto -${formatCurrency(skontoLost)}` : ''} ${interest > 5 ? `Zinsen +${formatCurrency(interest)}` : ''}</div>` : ''}
+                        </div>
+                        <div class="sim-payment-amount">${formatCurrency(p.amount)}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function updateComparisonCards(payments, daysShift) {
+            const totalAmount = payments.reduce((sum, p) => sum + p.amount, 0);
+            const skontoToday = payments.reduce((sum, p) => p.skontoDeadline >= simulatorData.currentDate ? sum + p.skonto : sum, 0);
+            
+            const targetDate = new Date(simulatorData.currentDate);
+            targetDate.setDate(targetDate.getDate() + daysShift);
+            
+            const skontoLost = payments.reduce((sum, p) => p.skontoDeadline && targetDate > p.skontoDeadline ? sum + p.skonto : sum, 0);
+            const verzugszinsen = calculateVerzugszinsen(totalAmount, daysShift);
+            const mahngebuehren = daysShift > 14 ? 15 : 0;
+            
+            // Update current card
+            const currentCard = document.querySelector('.sim-card-current');
+            if (currentCard) {
+                currentCard.querySelectorAll('.sim-card-row')[0].querySelector('.sim-card-value').textContent = formatCurrency(totalAmount);
+                currentCard.querySelectorAll('.sim-card-row')[1].querySelector('.sim-card-value').textContent = skontoToday > 0 ? `-${formatCurrency(skontoToday)}` : '0€';
+                currentCard.querySelector('.sim-card-total span:last-child').textContent = formatCurrency(totalAmount - skontoToday);
+            }
+            
+            // Update postponed card
+            const postponedCard = document.querySelector('.sim-card-postponed');
+            if (postponedCard) {
+                postponedCard.querySelector('.sim-card-date').textContent = daysShift > 0 ? `${formatDate(targetDate)} (+${daysShift}d)` : formatDate(targetDate);
+                postponedCard.querySelectorAll('.sim-card-row')[0].querySelector('.sim-card-value').textContent = formatCurrency(totalAmount);
+                postponedCard.querySelectorAll('.sim-card-row')[1].querySelector('.sim-card-value').textContent = skontoLost > 0 ? `+${formatCurrency(skontoLost)}` : '0€';
+                postponedCard.querySelectorAll('.sim-card-row')[2].querySelector('.sim-card-value').textContent = verzugszinsen > 0 ? `+${formatCurrency(verzugszinsen)}` : '0€';
+                postponedCard.querySelector('.sim-card-total span:last-child').textContent = formatCurrency(totalAmount + skontoLost + verzugszinsen + mahngebuehren);
+            }
+            
+            const mehrkosten = (totalAmount + skontoLost + verzugszinsen + mahngebuehren) - (totalAmount - skontoToday);
+            const prozentual = totalAmount > 0 ? (mehrkosten / totalAmount) * 100 : 0;
+            
+            // Update impact items
+            const impactItems = document.querySelectorAll('.sim-impact-item');
+            if (impactItems.length >= 3) {
+                impactItems[0].querySelector('.sim-impact-value').textContent = mehrkosten > 0 ? `+${formatCurrency(mehrkosten)}` : '0€';
+                impactItems[1].querySelector('.sim-impact-value').textContent = prozentual > 0 ? `+${prozentual.toFixed(2)}%` : '0%';
+                impactItems[2].querySelector('.sim-impact-value').textContent = `+${formatCurrency(totalAmount)}`;
+            }
+            
+            generateRecommendation(daysShift, mehrkosten, skontoLost);
+        }
+
+        function generateRecommendation(daysShift, mehrkosten, skontoLost) {
+            const text = document.getElementById('recommendationText');
+            const alt = document.getElementById('recommendationAlternative');
+            
+            if (daysShift === 0) {
+                text.innerHTML = 'Bewegen Sie den Slider, um eine Analyse zu erhalten.';
+                alt.innerHTML = '';
+            } else if (skontoLost > 200) {
+                text.innerHTML = `<strong>Hoher Skontoverlust:</strong> ${formatCurrency(skontoLost)} würden verloren gehen.`;
+                alt.innerHTML = `Empfehlung: Zahlen Sie die Rechnungen mit Skonto heute.`;
+            } else if (mehrkosten > 500) {
+                text.innerHTML = `<strong>Nicht empfohlen:</strong> Mehrkosten von ${formatCurrency(mehrkosten)} sind hoch.`;
+                alt.innerHTML = '';
+            } else if (mehrkosten > 0) {
+                text.innerHTML = `<strong>Akzeptabel:</strong> Verschiebung um ${daysShift} Tage kostet ${formatCurrency(mehrkosten)} zusätzlich.`;
+                alt.innerHTML = 'Die Liquidität wird geschont, die Kosten bleiben überschaubar.';
+            } else {
+                text.innerHTML = `<strong>Optimal:</strong> Keine zusätzlichen Kosten bei ${daysShift} Tagen Verschiebung.`;
+                alt.innerHTML = '';
+            }
+        }
+
+        function applySimulatorRecommendation() {
+            alert('✅ Empfehlung wird angewendet...');
+            closeSimulator();
+        }
+
+        function adjustPostponeDays(delta) {
+            const input = document.getElementById('postponeDays');
+            const newValue = Math.max(1, Math.min(90, (parseInt(input.value) || 30) + delta));
+            input.value = newValue;
+            calculatePostponeImpact();
+        }
+
+        function calculateVerzugszinsen(amount, days) {
+            return amount * 0.0912 / 365 * days;
+        }
+
+        function formatDate(date) {
+            return date.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' });
+        }
+
+        function formatCurrency(amount) {
+            return amount.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '€';
+        }
+    </script>
+</body>
+</html>

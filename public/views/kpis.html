@@ -1,0 +1,1601 @@
+<style>
+    /* Modern Minimal KPI Dashboard - Kontiq Brand Colors Only */
+    
+    .kpi-container {
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .page-intro {
+        background: white;
+        padding: 32px;
+        border-radius: 12px;
+        margin-bottom: 32px;
+        border-left: 3px solid var(--teal);
+        box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+        border: 1px solid var(--light-gray);
+        border-left: 3px solid var(--teal);
+    }
+
+    .intro-title {
+        font-size: 28px;
+        font-weight: 700;
+        color: var(--navy);
+        margin-bottom: 12px;
+        letter-spacing: -0.5px;
+    }
+
+    .intro-text {
+        color: var(--gray);
+        line-height: 1.7;
+        font-size: 14px;
+    }
+
+    .kpi-section {
+        margin-bottom: 40px;
+    }
+
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid var(--light-gray);
+    }
+
+    .section-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--navy);
+        letter-spacing: -0.3px;
+    }
+
+    .btn {
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        border: none;
+        font-family: inherit;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .btn-primary {
+        background: var(--teal);
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background: #059669;
+        transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+        background: white;
+        color: var(--navy);
+        border: 1.5px solid var(--light-gray);
+    }
+
+    .btn-secondary:hover {
+        border-color: var(--navy);
+    }
+
+    .btn-icon {
+        width: 18px;
+        height: 18px;
+        stroke: currentColor;
+        fill: none;
+        stroke-width: 2.5;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+    .kpi-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 20px;
+    }
+
+    .kpi-card {
+        background: white;
+        border-radius: 12px;
+        padding: 0;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+        transition: all 0.2s;
+        overflow: hidden;
+        border: 1px solid var(--light-gray);
+    }
+
+    .kpi-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    .kpi-header {
+        background: #F9FAFB;
+        padding: 16px 20px;
+        border-bottom: 1px solid var(--light-gray);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .kpi-title-wrapper {
+        flex: 1;
+    }
+
+    .kpi-title {
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--navy);
+        margin-bottom: 3px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .kpi-subtitle {
+        font-size: 11px;
+        color: var(--gray);
+        font-weight: 500;
+    }
+
+    .kpi-actions {
+        display: flex;
+        gap: 6px;
+    }
+
+    .kpi-info-btn {
+        background: white;
+        border: 1px solid var(--light-gray);
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        color: var(--gray);
+        font-weight: 700;
+        font-size: 13px;
+        transition: all 0.2s;
+    }
+
+    .kpi-info-btn:hover {
+        background: var(--teal);
+        color: white;
+        border-color: var(--teal);
+        transform: scale(1.1);
+    }
+
+    .kpi-body {
+        padding: 20px;
+    }
+
+    .kpi-value-wrapper {
+        display: flex;
+        align-items: baseline;
+        gap: 10px;
+        margin-bottom: 12px;
+    }
+
+    .kpi-value {
+        font-size: 36px;
+        font-weight: 800;
+        color: var(--navy);
+        line-height: 1;
+        font-family: 'Roboto Mono', monospace;
+        letter-spacing: -1px;
+    }
+
+    .kpi-unit {
+        font-size: 16px;
+        color: var(--gray);
+        font-weight: 600;
+    }
+
+    .kpi-trend {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 5px 10px;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 600;
+        background: #F3F4F6;
+        color: var(--navy);
+    }
+
+    .trend-up {
+        background: rgba(14, 177, 122, 0.1);
+        color: var(--teal);
+    }
+
+    .trend-down {
+        background: rgba(10, 37, 64, 0.1);
+        color: var(--navy);
+    }
+
+    .trend-neutral {
+        background: #F3F4F6;
+        color: var(--gray);
+    }
+
+    .kpi-progress {
+        margin-top: 16px;
+    }
+
+    .progress-label {
+        display: flex;
+        justify-content: space-between;
+        font-size: 11px;
+        margin-bottom: 8px;
+    }
+
+    .progress-label-left {
+        color: var(--gray);
+        font-weight: 500;
+    }
+
+    .progress-label-right {
+        color: var(--navy);
+        font-weight: 700;
+    }
+
+    .progress-bar-container {
+        width: 100%;
+        height: 6px;
+        background: #F3F4F6;
+        border-radius: 3px;
+        overflow: hidden;
+    }
+
+    .progress-bar {
+        height: 100%;
+        border-radius: 3px;
+        transition: width 0.6s ease;
+    }
+
+    .progress-good {
+        background: var(--teal);
+    }
+
+    .progress-warning {
+        background: var(--navy);
+    }
+
+    .progress-danger {
+        background: var(--navy);
+    }
+
+    /* Modal Styles */
+    .modal-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.5);
+        z-index: 1000;
+        backdrop-filter: blur(4px);
+    }
+
+    .modal-overlay.active {
+        display: block;
+    }
+
+    .kpi-modal {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: white;
+        border-radius: 16px;
+        width: 90%;
+        max-width: 700px;
+        max-height: 90vh;
+        overflow-y: auto;
+        z-index: 1001;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+
+    .kpi-modal.active {
+        display: block;
+    }
+
+    .modal-header {
+        padding: 24px;
+        border-bottom: 1px solid var(--light-gray);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: sticky;
+        top: 0;
+        background: white;
+        z-index: 10;
+    }
+
+    .modal-title {
+        font-size: 20px;
+        font-weight: 700;
+        color: var(--navy);
+    }
+
+    .close-modal {
+        background: none;
+        border: none;
+        font-size: 28px;
+        cursor: pointer;
+        color: var(--gray);
+        padding: 0;
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+        transition: all 0.2s;
+    }
+
+    .close-modal:hover {
+        background: var(--light-bg);
+        color: var(--navy);
+    }
+
+    .modal-body {
+        padding: 24px;
+    }
+
+    .modal-footer {
+        padding: 20px 24px;
+        border-top: 1px solid var(--light-gray);
+        display: flex;
+        gap: 12px;
+        position: sticky;
+        bottom: 0;
+        background: white;
+    }
+
+    .explanation-section {
+        margin-bottom: 24px;
+    }
+
+    .explanation-label {
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--gray);
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        margin-bottom: 10px;
+    }
+
+    .explanation-section input[type="number"] {
+        width: 100%;
+        padding: 12px 14px;
+        border: 1.5px solid var(--light-gray);
+        border-radius: 8px;
+        font-size: 16px;
+        font-family: inherit;
+        background: white;
+        color: var(--navy);
+        transition: all 0.2s;
+        box-sizing: border-box;
+    }
+
+    .explanation-section input[type="number"]:focus {
+        outline: none;
+        border-color: var(--teal);
+        box-shadow: 0 0 0 3px rgba(14, 177, 122, 0.1);
+    }
+
+    .explanation-section input[type="number"]::placeholder {
+        color: #9CA3AF;
+    }
+
+    .explanation-content {
+        font-size: 14px;
+        line-height: 1.7;
+        color: var(--navy);
+    }
+
+    .formula-box {
+        background: #F9FAFB;
+        padding: 16px;
+        border-radius: 10px;
+        font-family: 'Roboto Mono', monospace;
+        font-size: 14px;
+        color: var(--navy);
+        border-left: 3px solid var(--teal);
+        margin: 12px 0;
+        border: 1px solid var(--light-gray);
+        border-left: 3px solid var(--teal);
+    }
+
+    .example-box {
+        background: rgba(14, 177, 122, 0.05);
+        padding: 16px;
+        border-radius: 10px;
+        border-left: 3px solid var(--teal);
+        border: 1px solid rgba(14, 177, 122, 0.2);
+        border-left: 3px solid var(--teal);
+    }
+
+    .example-title {
+        font-weight: 700;
+        color: var(--navy);
+        margin-bottom: 8px;
+        font-size: 13px;
+    }
+
+    /* Calculation Options */
+    .calculation-options {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 12px;
+        margin-top: 16px;
+    }
+
+    .calc-option {
+        padding: 16px 12px;
+        border: 1.5px solid var(--light-gray);
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-align: center;
+        background: white;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .calc-option:hover {
+        border-color: var(--teal);
+        background: #F9FAFB;
+    }
+
+    .calc-option.selected {
+        border-color: var(--teal);
+        background: rgba(14, 177, 122, 0.05);
+        box-shadow: 0 0 0 3px rgba(14, 177, 122, 0.1);
+    }
+
+    .calc-option-icon {
+        margin-bottom: 4px;
+    }
+
+    .calc-option-title {
+        font-weight: 700;
+        color: var(--navy);
+        font-size: 13px;
+    }
+
+    .calc-option-desc {
+        font-size: 11px;
+        color: var(--gray);
+    }
+
+    /* Formula Builder */
+    .formula-builder {
+        background: #F9FAFB;
+        padding: 20px;
+        border-radius: 10px;
+        margin-top: 16px;
+        border: 1px solid var(--light-gray);
+    }
+
+    .formula-preview {
+        background: white;
+        padding: 16px;
+        border-radius: 8px;
+        border-left: 3px solid var(--teal);
+        font-family: 'Roboto Mono', monospace;
+        font-size: 13px;
+        color: var(--navy);
+        margin-top: 12px;
+        border: 1px solid var(--light-gray);
+        border-left: 3px solid var(--teal);
+    }
+
+    .data-selector {
+        display: grid;
+        gap: 12px;
+        margin-top: 12px;
+    }
+
+    .data-selector label {
+        display: block;
+        font-size: 11px;
+        color: var(--gray);
+        margin-bottom: 6px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .data-selector select,
+    input[type="text"],
+    input[type="number"],
+    textarea {
+        width: 100%;
+        padding: 12px;
+        border: 1.5px solid var(--light-gray);
+        border-radius: 8px;
+        font-size: 14px;
+        background: white;
+        font-family: inherit;
+        transition: all 0.2s;
+    }
+
+    .data-selector select:focus,
+    input[type="text"]:focus,
+    input[type="number"]:focus,
+    textarea:focus {
+        outline: none;
+        border-color: var(--teal);
+        box-shadow: 0 0 0 3px rgba(14, 177, 122, 0.1);
+    }
+
+    textarea {
+        resize: vertical;
+        min-height: 80px;
+    }
+
+    /* Modern Select/Dropdown */
+    select {
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        background: white url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="%236B7280"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>') no-repeat right 12px center;
+        background-size: 20px;
+        padding-right: 40px;
+    }
+
+    /* Empty State */
+    .empty-state {
+        grid-column: 1/-1;
+        text-align: center;
+        padding: 64px 32px;
+        background: #F9FAFB;
+        border-radius: 12px;
+        border: 2px dashed var(--light-gray);
+    }
+
+    .empty-state-icon {
+        width: 64px;
+        height: 64px;
+        margin: 0 auto 24px;
+        stroke: var(--teal);
+        fill: none;
+        stroke-width: 1.5;
+    }
+
+    .empty-state-title {
+        color: var(--navy);
+        font-size: 20px;
+        font-weight: 700;
+        margin-bottom: 12px;
+    }
+
+    .empty-state-text {
+        color: var(--gray);
+        font-size: 14px;
+        max-width: 500px;
+        margin: 0 auto;
+        line-height: 1.6;
+    }
+
+    /* Info Box */
+    .info-box {
+        background: rgba(14, 177, 122, 0.05);
+        border: 1px solid rgba(14, 177, 122, 0.2);
+        border-left: 3px solid var(--teal);
+        border-radius: 10px;
+        padding: 16px;
+        margin-bottom: 20px;
+        display: flex;
+        gap: 12px;
+        align-items: start;
+    }
+
+    .info-box-icon {
+        font-size: 20px;
+        flex-shrink: 0;
+    }
+
+    .info-box-content {
+        flex: 1;
+    }
+
+    .info-box-title {
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--navy);
+        margin-bottom: 4px;
+    }
+
+    .info-box-text {
+        font-size: 12px;
+        color: var(--gray);
+        line-height: 1.5;
+    }
+
+    @media (max-width: 768px) {
+        .kpi-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .calculation-options {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .section-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 12px;
+        }
+    }
+</style>
+
+<div class="kpi-container">
+    <!-- Intro -->
+    <div class="page-intro">
+        <h1 class="intro-title">📊 Kennzahlen-Dashboard</h1>
+        <p class="intro-text">
+            Behalten Sie die wichtigsten Finanzkennzahlen Ihres Unternehmens im Blick. Alle KPIs werden automatisch aus Ihren Daten berechnet. 
+            Klicken Sie auf das <strong>Info-Symbol (i)</strong> für Erklärungen oder das <strong>Zahnrad (⚙)</strong> um Schwellenwerte anzupassen.
+        </p>
+    </div>
+
+    <!-- Liquidität & Cash Flow -->
+    <div class="kpi-section">
+        <div class="section-header">
+            <h2 class="section-title">Liquidität & Cash Flow</h2>
+        </div>
+
+        <div class="kpi-grid">
+            <!-- Burn Rate -->
+            <div class="kpi-card">
+                <div class="kpi-header">
+                    <div class="kpi-title-wrapper">
+                        <div class="kpi-title">Burn Rate</div>
+                        <div class="kpi-subtitle">Monatlicher Geldabfluss</div>
+                    </div>
+                    <div class="kpi-actions">
+                        <button class="kpi-info-btn" onclick="showExplanation('burnRate')" title="Erklärung anzeigen">i</button>
+                        <button class="kpi-info-btn" onclick="openThresholdModal('burnRate', 'Burn Rate')" title="Schwellenwerte anpassen">⚙</button>
+                    </div>
+                </div>
+                <div class="kpi-body">
+                    <div class="kpi-value-wrapper">
+                        <span class="kpi-value" id="burnRateValue">79.300</span>
+                        <span class="kpi-unit">€/Mo</span>
+                    </div>
+                    <span class="kpi-trend trend-down" id="burnRateTrend">↑ +11% vs Vormonat</span>
+                    <div class="kpi-progress">
+                        <div class="progress-label">
+                            <span class="progress-label-left">Zielwert: 50.000€</span>
+                            <span class="progress-label-right" id="burnRateProgress">79.300€</span>
+                        </div>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar progress-warning" id="burnRateBar" style="width: 79%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cash Runway -->
+            <div class="kpi-card">
+                <div class="kpi-header">
+                    <div class="kpi-title-wrapper">
+                        <div class="kpi-title">Cash Runway</div>
+                        <div class="kpi-subtitle">Finanzielle Reichweite</div>
+                    </div>
+                    <div class="kpi-actions">
+                        <button class="kpi-info-btn" onclick="showExplanation('runway')" title="Erklärung anzeigen">i</button>
+                        <button class="kpi-info-btn" onclick="openThresholdModal('runway', 'Cash Runway')" title="Schwellenwerte anpassen">⚙</button>
+                    </div>
+                </div>
+                <div class="kpi-body">
+                    <div class="kpi-value-wrapper">
+                        <span class="kpi-value" id="runwayValue">5.7</span>
+                        <span class="kpi-unit">Monate</span>
+                    </div>
+                    <span class="kpi-trend trend-neutral" id="runwayTrend">→ Stabil</span>
+                    <div class="kpi-progress">
+                        <div class="progress-label">
+                            <span class="progress-label-left">Minimum: 6 Monate</span>
+                            <span class="progress-label-right" id="runwayProgress">5.7 Mo</span>
+                        </div>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar progress-warning" id="runwayBar" style="width: 48%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cash Flow -->
+            <div class="kpi-card">
+                <div class="kpi-header">
+                    <div class="kpi-title-wrapper">
+                        <div class="kpi-title">Cash Flow</div>
+                        <div class="kpi-subtitle">Monatlicher Nettofluss</div>
+                    </div>
+                    <div class="kpi-actions">
+                        <button class="kpi-info-btn" onclick="showExplanation('cashFlow')" title="Erklärung anzeigen">i</button>
+                        <button class="kpi-info-btn" onclick="openThresholdModal('cashFlow', 'Cash Flow')" title="Schwellenwerte anpassen">⚙</button>
+                    </div>
+                </div>
+                <div class="kpi-body">
+                    <div class="kpi-value-wrapper">
+                        <span class="kpi-value" id="cashFlowValue">+15.700</span>
+                        <span class="kpi-unit">€</span>
+                    </div>
+                    <span class="kpi-trend trend-up" id="cashFlowTrend">✓ Positiv</span>
+                    <div class="kpi-progress">
+                        <div class="progress-label">
+                            <span class="progress-label-left">Ziel: Positiv (> 0€)</span>
+                            <span class="progress-label-right" id="cashFlowProgress">Gesund</span>
+                        </div>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar progress-good" id="cashFlowBar" style="width: 85%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Ratio -->
+            <div class="kpi-card">
+                <div class="kpi-header">
+                    <div class="kpi-title-wrapper">
+                        <div class="kpi-title">Quick Ratio</div>
+                        <div class="kpi-subtitle">Liquiditätskennzahl</div>
+                    </div>
+                    <div class="kpi-actions">
+                        <button class="kpi-info-btn" onclick="showExplanation('quickRatio')" title="Erklärung anzeigen">i</button>
+                        <button class="kpi-info-btn" onclick="openThresholdModal('quickRatio', 'Quick Ratio')" title="Schwellenwerte anpassen">⚙</button>
+                    </div>
+                </div>
+                <div class="kpi-body">
+                    <div class="kpi-value-wrapper">
+                        <span class="kpi-value" id="quickRatioValue">3.75</span>
+                        <span class="kpi-unit"></span>
+                    </div>
+                    <span class="kpi-trend trend-up" id="quickRatioTrend">✓ Sehr gut</span>
+                    <div class="kpi-progress">
+                        <div class="progress-label">
+                            <span class="progress-label-left">Zielwert: > 1.0</span>
+                            <span class="progress-label-right" id="quickRatioProgress">Ausgezeichnet</span>
+                        </div>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar progress-good" id="quickRatioBar" style="width: 95%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Kosten & Effizienz -->
+    <div class="kpi-section">
+        <div class="section-header">
+            <h2 class="section-title">Kosten & Effizienz</h2>
+        </div>
+
+        <div class="kpi-grid">
+            <!-- Kostenwachstum -->
+            <div class="kpi-card">
+                <div class="kpi-header">
+                    <div class="kpi-title-wrapper">
+                        <div class="kpi-title">Kostenwachstum</div>
+                        <div class="kpi-subtitle">Veränderung zum Vormonat</div>
+                    </div>
+                    <div class="kpi-actions">
+                        <button class="kpi-info-btn" onclick="showExplanation('costGrowth')" title="Erklärung anzeigen">i</button>
+                        <button class="kpi-info-btn" onclick="openThresholdModal('costGrowth', 'Kostenwachstum')" title="Schwellenwerte anpassen">⚙</button>
+                    </div>
+                </div>
+                <div class="kpi-body">
+                    <div class="kpi-value-wrapper">
+                        <span class="kpi-value" id="costGrowthValue">+11.1</span>
+                        <span class="kpi-unit">%</span>
+                    </div>
+                    <span class="kpi-trend trend-down" id="costGrowthTrend">⚠ Erhöht</span>
+                    <div class="kpi-progress">
+                        <div class="progress-label">
+                            <span class="progress-label-left">Ziel: < 5%</span>
+                            <span class="progress-label-right" id="costGrowthProgress">Beobachten</span>
+                        </div>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar progress-warning" id="costGrowthBar" style="width: 44%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Personalkostenquote -->
+            <div class="kpi-card">
+                <div class="kpi-header">
+                    <div class="kpi-title-wrapper">
+                        <div class="kpi-title">Personalkostenquote</div>
+                        <div class="kpi-subtitle">Personal / Gesamtkosten</div>
+                    </div>
+                    <div class="kpi-actions">
+                        <button class="kpi-info-btn" onclick="showExplanation('personalCostRatio')" title="Erklärung anzeigen">i</button>
+                        <button class="kpi-info-btn" onclick="openThresholdModal('personalCostRatio', 'Personalkostenquote')" title="Schwellenwerte anpassen">⚙</button>
+                    </div>
+                </div>
+                <div class="kpi-body">
+                    <div class="kpi-value-wrapper">
+                        <span class="kpi-value" id="personalCostValue">61.6</span>
+                        <span class="kpi-unit">%</span>
+                    </div>
+                    <span class="kpi-trend trend-neutral" id="personalCostTrend">→ Normal</span>
+                    <div class="kpi-progress">
+                        <div class="progress-label">
+                            <span class="progress-label-left">Richtwert: 40-60%</span>
+                            <span class="progress-label-right" id="personalCostProgress">Im Rahmen</span>
+                        </div>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar progress-good" id="personalCostBar" style="width: 62%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Durchschnittliches Zahlungsziel -->
+            <div class="kpi-card">
+                <div class="kpi-header">
+                    <div class="kpi-title-wrapper">
+                        <div class="kpi-title">Ø Zahlungsziel</div>
+                        <div class="kpi-subtitle">Durchschnitt aller Rechnungen</div>
+                    </div>
+                    <div class="kpi-actions">
+                        <button class="kpi-info-btn" onclick="showExplanation('avgPaymentTerm')" title="Erklärung anzeigen">i</button>
+                        <button class="kpi-info-btn" onclick="openThresholdModal('avgPaymentTerm', 'Ø Zahlungsziel')" title="Schwellenwerte anpassen">⚙</button>
+                    </div>
+                </div>
+                <div class="kpi-body">
+                    <div class="kpi-value-wrapper">
+                        <span class="kpi-value" id="avgPaymentTermValue">19</span>
+                        <span class="kpi-unit">Tage</span>
+                    </div>
+                    <span class="kpi-trend trend-neutral" id="avgPaymentTermTrend">→ Kurz</span>
+                    <div class="kpi-progress">
+                        <div class="progress-label">
+                            <span class="progress-label-left">Optimal: 30 Tage</span>
+                            <span class="progress-label-right" id="avgPaymentTermProgress">19 Tage</span>
+                        </div>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar progress-good" id="avgPaymentTermBar" style="width: 32%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Überfällige Quote -->
+            <div class="kpi-card">
+                <div class="kpi-header">
+                    <div class="kpi-title-wrapper">
+                        <div class="kpi-title">Überfällige Quote</div>
+                        <div class="kpi-subtitle">Verspätete Zahlungen</div>
+                    </div>
+                    <div class="kpi-actions">
+                        <button class="kpi-info-btn" onclick="showExplanation('overdueRatio')" title="Erklärung anzeigen">i</button>
+                        <button class="kpi-info-btn" onclick="openThresholdModal('overdueRatio', 'Überfällige Quote')" title="Schwellenwerte anpassen">⚙</button>
+                    </div>
+                </div>
+                <div class="kpi-body">
+                    <div class="kpi-value-wrapper">
+                        <span class="kpi-value" id="overdueRatioValue">15.6</span>
+                        <span class="kpi-unit">%</span>
+                    </div>
+                    <span class="kpi-trend trend-down" id="overdueRatioTrend">⚠ Zu hoch</span>
+                    <div class="kpi-progress">
+                        <div class="progress-label">
+                            <span class="progress-label-left">Ziel: < 10%</span>
+                            <span class="progress-label-right" id="overdueRatioProgress">Verbessern</span>
+                        </div>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar progress-danger" id="overdueRatioBar" style="width: 62%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Eigene KPIs -->
+    <div class="kpi-section">
+        <div class="section-header">
+            <h2 class="section-title">Eigene KPIs</h2>
+            <button class="btn btn-primary" onclick="openAddKpiModal()">
+                <svg class="btn-icon" viewBox="0 0 24 24">
+                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+                Eigenen KPI erstellen
+            </button>
+        </div>
+
+        <div class="info-box">
+            <div class="info-box-icon">💡</div>
+            <div class="info-box-content">
+                <div class="info-box-title">Individuelle Kennzahlen definieren</div>
+                <div class="info-box-text">
+                    Erstellen Sie KPIs, die spezifisch für Ihr Geschäftsmodell sind. Wählen Sie zwischen manueller Eingabe oder automatischer Berechnung aus Ihren Daten.
+                </div>
+            </div>
+        </div>
+
+        <div class="kpi-grid" id="customKpisGrid">
+            <!-- Will be populated by JavaScript -->
+        </div>
+    </div>
+</div>
+
+<!-- Explanation Modal -->
+<div class="modal-overlay" id="explanationOverlay" onclick="closeExplanation()"></div>
+<div class="kpi-modal" id="explanationModal">
+    <div class="modal-header">
+        <h3 class="modal-title" id="explanationTitle">KPI Erklärung</h3>
+        <button class="close-modal" onclick="closeExplanation()">×</button>
+    </div>
+    <div class="modal-body" id="explanationContent"></div>
+</div>
+
+<!-- Add Custom KPI Modal -->
+<div class="modal-overlay" id="addKpiOverlay" onclick="closeAddKpiModal()"></div>
+<div class="kpi-modal" id="addKpiModal">
+    <div class="modal-header">
+        <h3 class="modal-title">Eigenen KPI erstellen</h3>
+        <button class="close-modal" onclick="closeAddKpiModal()">×</button>
+    </div>
+    <form id="customKpiForm" onsubmit="saveCustomKpi(event)">
+        <div class="modal-body">
+            <div class="explanation-section">
+                <div class="explanation-label">Berechnungstyp wählen</div>
+                <div class="calculation-options">
+                    <div class="calc-option selected" onclick="selectCalcType('manual')" data-type="manual">
+                        <svg class="calc-option-icon" viewBox="0 0 24 24" style="width: 28px; height: 28px; stroke: var(--navy); fill: none; stroke-width: 2;">
+                            <path d="M12 20h9"></path>
+                            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+                        </svg>
+                        <div class="calc-option-title">Manuell</div>
+                        <div class="calc-option-desc">Selbst eingeben</div>
+                    </div>
+                    <div class="calc-option" onclick="selectCalcType('costs')" data-type="costs">
+                        <svg class="calc-option-icon" viewBox="0 0 24 24" style="width: 28px; height: 28px; stroke: var(--navy); fill: none; stroke-width: 2;">
+                            <line x1="12" y1="1" x2="12" y2="23"></line>
+                            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                        </svg>
+                        <div class="calc-option-title">Kosten</div>
+                        <div class="calc-option-desc">Aus Kostendaten</div>
+                    </div>
+                    <div class="calc-option" onclick="selectCalcType('bank')" data-type="bank">
+                        <svg class="calc-option-icon" viewBox="0 0 24 24" style="width: 28px; height: 28px; stroke: var(--navy); fill: none; stroke-width: 2;">
+                            <rect x="2" y="4" width="20" height="16" rx="2"></rect>
+                            <path d="M7 15h0M2 9.5h20"></path>
+                        </svg>
+                        <div class="calc-option-title">Bankdaten</div>
+                        <div class="calc-option-desc">Von Konten</div>
+                    </div>
+                    <div class="calc-option" onclick="selectCalcType('formula')" data-type="formula">
+                        <svg class="calc-option-icon" viewBox="0 0 24 24" style="width: 28px; height: 28px; stroke: var(--navy); fill: none; stroke-width: 2;">
+                            <rect x="3" y="3" width="18" height="18" rx="2"></rect>
+                            <path d="M9 9h.01M15 9h.01M9 15h.01M15 15h.01"></path>
+                        </svg>
+                        <div class="calc-option-title">Formel</div>
+                        <div class="calc-option-desc">Kombiniert</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="explanation-section">
+                <div class="explanation-label">KPI Name</div>
+                <input type="text" id="customKpiName" placeholder="z.B. Umsatz pro Mitarbeiter" required>
+            </div>
+
+            <div class="explanation-section">
+                <div class="explanation-label">Beschreibung (Optional)</div>
+                <textarea id="customKpiDescription" placeholder="Was misst dieser KPI?"></textarea>
+            </div>
+
+            <!-- Dynamic calculation builder -->
+            <div id="calculationBuilder" style="display: none;"></div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                <div class="explanation-section">
+                    <div class="explanation-label">Aktueller Wert</div>
+                    <input type="number" id="customKpiValue" step="0.01" placeholder="0" required>
+                </div>
+
+                <div class="explanation-section">
+                    <div class="explanation-label">Einheit</div>
+                    <input type="text" id="customKpiUnit" placeholder="€, %, Tage...">
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px;">
+                <div class="explanation-section">
+                    <div class="explanation-label">Zielwert (Gut) 🟢</div>
+                    <input type="number" id="customKpiTarget" step="0.01" placeholder="100">
+                </div>
+
+                <div class="explanation-section">
+                    <div class="explanation-label">Warnung bei 🟡</div>
+                    <input type="number" id="customKpiWarning" step="0.01" placeholder="75">
+                </div>
+
+                <div class="explanation-section">
+                    <div class="explanation-label">Kritisch bei 🔴</div>
+                    <input type="number" id="customKpiCritical" step="0.01" placeholder="50">
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" onclick="closeAddKpiModal()" style="flex: 1;">Abbrechen</button>
+            <button type="submit" class="btn btn-primary" style="flex: 1;">KPI erstellen</button>
+        </div>
+    </form>
+</div>
+
+<!-- Edit Threshold Modal -->
+<div class="modal-overlay" id="thresholdOverlay" onclick="closeThresholdModal()"></div>
+<div class="kpi-modal" id="thresholdModal">
+    <div class="modal-header">
+        <h3 class="modal-title" id="thresholdTitle">Schwellenwerte anpassen</h3>
+        <button class="close-modal" onclick="closeThresholdModal()">×</button>
+    </div>
+    <form id="thresholdForm" onsubmit="saveThreshold(event)">
+        <div class="modal-body">
+            <div class="info-box">
+                <div class="info-box-icon">💡</div>
+                <div class="info-box-content">
+                    <div class="info-box-text">
+                        Passen Sie die Schwellenwerte an Ihre Unternehmensziele an. Diese definieren, wann ein KPI als gut, ausreichend oder kritisch gilt.
+                    </div>
+                </div>
+            </div>
+
+            <div class="explanation-section">
+                <div class="explanation-label">Zielwert (Gut) 🟢</div>
+                <input type="number" id="thresholdTarget" step="0.01" placeholder="z.B. 50000" required>
+                <small style="color: var(--gray); font-size: 11px; display: block; margin-top: 4px;">
+                    Wert bei dem der KPI als optimal gilt
+                </small>
+            </div>
+
+            <div class="explanation-section">
+                <div class="explanation-label">Warnwert 🟡</div>
+                <input type="number" id="thresholdWarning" step="0.01" placeholder="z.B. 75000" required>
+                <small style="color: var(--gray); font-size: 11px; display: block; margin-top: 4px;">
+                    Wert bei dem eine Warnung angezeigt wird
+                </small>
+            </div>
+
+            <div class="explanation-section">
+                <div class="explanation-label">Kritischer Wert 🔴</div>
+                <input type="number" id="thresholdCritical" step="0.01" placeholder="z.B. 100000" required>
+                <small style="color: var(--gray); font-size: 11px; display: block; margin-top: 4px;">
+                    Wert bei dem sofortiges Handeln erforderlich ist
+                </small>
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" onclick="closeThresholdModal()" style="flex: 1;">Abbrechen</button>
+            <button type="submit" class="btn btn-primary" style="flex: 1;">Speichern</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    let customKpis = [];
+    let currentThresholdKpi = null;
+    let kpiThresholds = {};
+    let selectedCalcType = 'manual';
+    let currentFormula = null;
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', function() {
+        loadData();
+        renderCustomKpis();
+    });
+
+    function loadData() {
+        const stored = localStorage.getItem('kontiq_custom_kpis');
+        customKpis = stored ? JSON.parse(stored) : [];
+        
+        const thresholds = localStorage.getItem('kontiq_kpi_thresholds');
+        kpiThresholds = thresholds ? JSON.parse(thresholds) : getDefaultThresholds();
+    }
+
+    function getDefaultThresholds() {
+        return {
+            burnRate: { target: 50000, warning: 75000, critical: 100000 },
+            runway: { target: 12, warning: 6, critical: 3 },
+            cashFlow: { target: 0, warning: -20000, critical: -50000 },
+            quickRatio: { target: 1.5, warning: 1.0, critical: 0.8 },
+            costGrowth: { target: 5, warning: 15, critical: 25 },
+            personalCostRatio: { target: 60, warning: 70, critical: 80 },
+            avgPaymentTerm: { target: 30, warning: 45, critical: 60 },
+            overdueRatio: { target: 10, warning: 20, critical: 30 }
+        };
+    }
+
+    const kpiExplanations = {
+        burnRate: {
+            title: 'Burn Rate',
+            description: 'Die Burn Rate zeigt, wie viel Geld Ihr Unternehmen pro Monat ausgibt. Sie ist besonders wichtig für Startups und wachsende Unternehmen, um die finanzielle Reichweite zu planen.',
+            formula: 'Burn Rate = Gesamtkosten pro Monat',
+            calculation: 'Summe aller monatlichen Ausgaben (Personal, Miete, IT, Waren, Marketing, etc.)',
+            interpretation: 'Eine niedrige Burn Rate bedeutet, dass Sie länger mit Ihrem verfügbaren Kapital auskommen. <strong>Ziel ist es, die Burn Rate zu kontrollieren</strong> und idealerweise zu senken, ohne Wachstum zu gefährden.',
+            example: '<strong>Beispiel:</strong> 79.300€ monatliche Gesamtkosten = 79.300€ Burn Rate<br><br>Bei 450.000€ Liquidität bedeutet das: Sie können noch 5,7 Monate operieren.'
+        },
+        runway: {
+            title: 'Cash Runway',
+            description: 'Die Cash Runway zeigt, wie viele Monate Ihr Unternehmen mit der aktuellen Liquidität und Burn Rate noch operieren kann, bevor zusätzliches Kapital benötigt wird.',
+            formula: 'Runway = Aktuelle Liquidität ÷ Burn Rate',
+            calculation: 'Verfügbares Bargeld geteilt durch monatliche Ausgaben',
+            interpretation: 'Ein Runway von <strong>mindestens 6-12 Monaten</strong> gilt als gesund und gibt Planungssicherheit. Unter 3 Monate ist kritisch und erfordert sofortige Maßnahmen (Kapitalbeschaffung oder Kostensenkung).',
+            example: '<strong>Beispiel:</strong> 450.000€ Liquidität ÷ 79.300€ Burn Rate = <strong>5,7 Monate Runway</strong><br><br>⚠️ Unter dem empfohlenen Minimum von 6 Monaten!'
+        },
+        cashFlow: {
+            title: 'Cash Flow',
+            description: 'Der Cash Flow zeigt den Nettogeldzufluss oder -abfluss pro Monat. Er ist einer der wichtigsten Indikatoren für die finanzielle Gesundheit Ihres Unternehmens.',
+            formula: 'Cash Flow = Einnahmen - Ausgaben',
+            calculation: 'Monatliche Einnahmen minus monatliche Ausgaben',
+            interpretation: '<strong>Positiver Cash Flow</strong> bedeutet, dass mehr Geld reinkommt als rausgeht - Ihr Unternehmen wächst organisch. <strong>Negativer Cash Flow</strong> muss durch Liquiditätsreserven oder Fremdkapital gedeckt werden.',
+            example: '<strong>Beispiel:</strong> 95.000€ Einnahmen - 79.300€ Ausgaben = <strong>+15.700€ Cash Flow</strong><br><br>✓ Positiv! Ihr Unternehmen generiert mehr Geld als es ausgibt.'
+        },
+        quickRatio: {
+            title: 'Quick Ratio (Liquiditätsgrad II)',
+            description: 'Die Quick Ratio misst, ob Sie kurzfristige Verbindlichkeiten (Schulden) mit liquiden Mitteln (Bargeld) sofort bezahlen können - ein wichtiger Indikator für finanzielle Stabilität.',
+            formula: 'Quick Ratio = Liquide Mittel ÷ Kurzfristige Verbindlichkeiten',
+            calculation: 'Verfügbare Liquidität geteilt durch Schulden, die innerhalb eines Jahres fällig werden',
+            interpretation: '<strong>Wert > 1.0</strong> ist gut und bedeutet, Sie können alle kurzfristigen Schulden sofort begleichen. <strong>Wert < 1.0</strong> bedeutet potenzielle Liquiditätsprobleme.',
+            example: '<strong>Beispiel:</strong> 450.000€ Liquidität ÷ 120.000€ Verbindlichkeiten = <strong>3.75 Quick Ratio</strong><br><br>✓ Ausgezeichnet! Weit über dem kritischen Wert von 1.0'
+        },
+        costGrowth: {
+            title: 'Kostenwachstum',
+            description: 'Zeigt die prozentuale Veränderung der Kosten im Vergleich zum Vormonat. Hilft zu erkennen, ob Kosten außer Kontrolle geraten.',
+            formula: 'Kostenwachstum = ((Kosten aktuell - Kosten Vormonat) ÷ Kosten Vormonat) × 100',
+            calculation: 'Differenz zum Vormonat in Prozent',
+            interpretation: '<strong>Werte unter 5%</strong> sind normal und erwartbar. <strong>Werte über 15%</strong> erfordern detaillierte Analyse und möglicherweise Gegenmaßnahmen. Negatives Wachstum bedeutet erfolgreiche Kostensenkung.',
+            example: '<strong>Beispiel:</strong> (79.300€ - 71.400€) ÷ 71.400€ × 100 = <strong>+11,1% Kostenwachstum</strong><br><br>⚠️ Über dem Zielwert von 5% - Kostenursachen analysieren!'
+        },
+        personalCostRatio: {
+            title: 'Personalkostenquote',
+            description: 'Zeigt, welchen Anteil Personalkosten (Gehälter, Sozialabgaben) an Ihren Gesamtkosten haben. Ein wichtiger Indikator für die Kostenstruktur.',
+            formula: 'Personalkostenquote = (Personalkosten ÷ Gesamtkosten) × 100',
+            calculation: 'Personalkosten in Prozent der Gesamtkosten',
+            interpretation: '<strong>40-60%</strong> gilt als gesunder Richtwert. Höhere Werte können auf Überbesetzung hindeuten, niedrigere auf Automatisierungspotenzial oder externes Outsourcing.',
+            example: '<strong>Beispiel:</strong> 48.900€ Personal ÷ 79.300€ Gesamt × 100 = <strong>61,6%</strong><br><br>→ Leicht über Richtwert, aber im akzeptablen Bereich'
+        },
+        avgPaymentTerm: {
+            title: 'Durchschnittliches Zahlungsziel',
+            description: 'Zeigt, wie viele Tage Sie durchschnittlich Zeit haben, Rechnungen zu bezahlen. Beeinflusst direkt Ihre Liquiditätsplanung.',
+            formula: 'Ø Zahlungsziel = Summe aller Zahlungsziele ÷ Anzahl Rechnungen',
+            calculation: 'Durchschnitt der Zahlungsziele aus allen Verträgen und Rechnungen',
+            interpretation: '<strong>30 Tage</strong> ist Standard im B2B-Bereich. <strong>Längere Zahlungsziele</strong> verbessern Ihre Liquidität und geben Ihnen mehr Flexibilität. <strong>Kürzere</strong> erfordern schnellere Zahlung und binden Liquidität.',
+            example: '<strong>Beispiel:</strong> (14+30+30+7+5+30) Tage ÷ 6 Rechnungen = <strong>19,3 Tage</strong><br><br>→ Kürzer als Standard - verhandeln Sie längere Zahlungsziele!'
+        },
+        overdueRatio: {
+            title: 'Überfällige Quote',
+            description: 'Zeigt, welcher Prozentsatz Ihrer Zahlungen verspätet erfolgt. Ein Indikator für Cash Management und Zahlungsdisziplin.',
+            formula: 'Überfällige Quote = (Überfällige Zahlungen ÷ Gesamt Zahlungen) × 100',
+            calculation: 'Anzahl verspäteter Zahlungen in Prozent aller Zahlungen',
+            interpretation: '<strong>Unter 10%</strong> ist akzeptabel. Höhere Werte deuten auf <strong>Zahlungsprobleme</strong>, schlechtes Cash Management oder zu aggressive Zahlungskonditionen hin.',
+            example: '<strong>Beispiel:</strong> 7 überfällige ÷ 45 gesamt × 100 = <strong>15,6% überfällig</strong><br><br>⚠️ Über dem Zielwert - Liquidität verbessern oder Zahlungsziele verlängern!'
+        }
+    };
+
+    function showExplanation(kpiId) {
+        const explanation = kpiExplanations[kpiId];
+        if (!explanation) return;
+
+        document.getElementById('explanationTitle').textContent = explanation.title;
+        
+        const content = `
+            <div class="explanation-section">
+                <div class="explanation-label">Was bedeutet dieser KPI?</div>
+                <div class="explanation-content">${explanation.description}</div>
+            </div>
+
+            <div class="explanation-section">
+                <div class="explanation-label">Formel</div>
+                <div class="formula-box">${explanation.formula}</div>
+            </div>
+
+            <div class="explanation-section">
+                <div class="explanation-label">Berechnung</div>
+                <div class="explanation-content">${explanation.calculation}</div>
+            </div>
+
+            <div class="explanation-section">
+                <div class="explanation-label">Wie interpretieren?</div>
+                <div class="explanation-content">${explanation.interpretation}</div>
+            </div>
+
+            <div class="explanation-section">
+                <div class="explanation-label">Praktisches Beispiel</div>
+                <div class="example-box">
+                    <div class="example-title">Berechnung mit echten Zahlen</div>
+                    <div class="explanation-content">${explanation.example}</div>
+                </div>
+            </div>
+        `;
+
+        document.getElementById('explanationContent').innerHTML = content;
+        document.getElementById('explanationOverlay').classList.add('active');
+        document.getElementById('explanationModal').classList.add('active');
+    }
+
+    function closeExplanation() {
+        document.getElementById('explanationOverlay').classList.remove('active');
+        document.getElementById('explanationModal').classList.remove('active');
+    }
+
+    // Custom KPI functions
+    function openAddKpiModal() {
+        document.getElementById('addKpiOverlay').classList.add('active');
+        document.getElementById('addKpiModal').classList.add('active');
+        selectedCalcType = 'manual';
+        updateCalcSelection();
+    }
+
+    function closeAddKpiModal() {
+        document.getElementById('addKpiOverlay').classList.remove('active');
+        document.getElementById('addKpiModal').classList.remove('active');
+        document.getElementById('customKpiForm').reset();
+        document.getElementById('calculationBuilder').style.display = 'none';
+        selectedCalcType = 'manual';
+        currentFormula = null;
+        updateCalcSelection();
+    }
+
+    function selectCalcType(type) {
+        selectedCalcType = type;
+        updateCalcSelection();
+        buildCalculator();
+    }
+
+    function updateCalcSelection() {
+        document.querySelectorAll('.calc-option').forEach(opt => {
+            opt.classList.remove('selected');
+            if (opt.getAttribute('data-type') === selectedCalcType) {
+                opt.classList.add('selected');
+            }
+        });
+    }
+
+    function buildCalculator() {
+        const builder = document.getElementById('calculationBuilder');
+        
+        if (selectedCalcType === 'manual') {
+            builder.style.display = 'none';
+            document.getElementById('customKpiValue').disabled = false;
+            return;
+        }
+
+        document.getElementById('customKpiValue').disabled = true;
+        builder.style.display = 'block';
+
+        let builderHTML = '<div class="formula-builder">';
+        builderHTML += '<div class="explanation-label">Datenquelle konfigurieren</div>';
+        builderHTML += '<div class="data-selector">';
+
+        if (selectedCalcType === 'costs') {
+            builderHTML += `
+                <div>
+                    <label>Kostenkategorie</label>
+                    <select id="costsCategory" onchange="updateFormulaPreview()">
+                        <option value="all">Alle Kosten (Gesamt)</option>
+                        <option value="personal">Personalkosten</option>
+                        <option value="rent">Miete & Nebenkosten</option>
+                        <option value="marketing">Marketing</option>
+                        <option value="software">Software & Lizenzen</option>
+                    </select>
+                </div>
+                <div>
+                    <label>Zeitraum</label>
+                    <select id="costsPeriod" onchange="updateFormulaPreview()">
+                        <option value="month">Aktueller Monat</option>
+                        <option value="quarter">Aktuelles Quartal</option>
+                        <option value="year">Aktuelles Jahr</option>
+                        <option value="average">Ø letzte 3 Monate</option>
+                    </select>
+                </div>
+            `;
+        } else if (selectedCalcType === 'bank') {
+            builderHTML += `
+                <div>
+                    <label>Bankkonto</label>
+                    <select id="bankAccount" onchange="updateFormulaPreview()">
+                        <option value="all">Alle Konten (Gesamt)</option>
+                        <option value="main">Hauptkonto</option>
+                        <option value="reserve">Rücklagenkonto</option>
+                    </select>
+                </div>
+                <div>
+                    <label>Messwert</label>
+                    <select id="bankMetric" onchange="updateFormulaPreview()">
+                        <option value="balance">Aktueller Kontostand</option>
+                        <option value="inflow">Geldeingänge (Monat)</option>
+                        <option value="outflow">Geldausgänge (Monat)</option>
+                        <option value="net">Netto Cash Flow</option>
+                    </select>
+                </div>
+            `;
+        } else if (selectedCalcType === 'formula') {
+            builderHTML += `
+                <div>
+                    <label>Formel-Vorlage</label>
+                    <select id="formulaTemplate" onchange="updateFormulaPreview()">
+                        <option value="ratio">Verhältnis (A ÷ B)</option>
+                        <option value="diff">Differenz (A - B)</option>
+                        <option value="margin">Marge ((A - B) ÷ A × 100)</option>
+                        <option value="growth">Wachstum ((Neu - Alt) ÷ Alt × 100)</option>
+                    </select>
+                </div>
+                <div>
+                    <label>Datenquelle A</label>
+                    <select id="formulaSourceA" onchange="updateFormulaPreview()">
+                        <option value="costs">Gesamtkosten</option>
+                        <option value="bank">Bankguthaben</option>
+                        <option value="revenue">Umsatz</option>
+                    </select>
+                </div>
+                <div>
+                    <label>Datenquelle B</label>
+                    <select id="formulaSourceB" onchange="updateFormulaPreview()">
+                        <option value="costs">Gesamtkosten</option>
+                        <option value="bank">Bankguthaben</option>
+                        <option value="revenue">Umsatz</option>
+                    </select>
+                </div>
+            `;
+        }
+
+        builderHTML += '</div>';
+        builderHTML += '<div class="formula-preview" id="formulaPreview">Wird berechnet...</div>';
+        builderHTML += '</div>';
+
+        builder.innerHTML = builderHTML;
+        updateFormulaPreview();
+    }
+
+    function updateFormulaPreview() {
+        const preview = document.getElementById('formulaPreview');
+        if (!preview) return;
+
+        let formula = '';
+        
+        if (selectedCalcType === 'costs') {
+            const category = document.getElementById('costsCategory')?.value || 'all';
+            const period = document.getElementById('costsPeriod')?.value || 'month';
+            const catText = category === 'all' ? 'Alle Kosten' : document.getElementById('costsCategory').options[document.getElementById('costsCategory').selectedIndex].text;
+            const periodText = document.getElementById('costsPeriod').options[document.getElementById('costsPeriod').selectedIndex].text;
+            formula = `${catText} • ${periodText}`;
+        } else if (selectedCalcType === 'bank') {
+            const account = document.getElementById('bankAccount')?.value || 'all';
+            const metric = document.getElementById('bankMetric')?.value || 'balance';
+            const accText = account === 'all' ? 'Alle Konten' : document.getElementById('bankAccount').options[document.getElementById('bankAccount').selectedIndex].text;
+            const metricText = document.getElementById('bankMetric').options[document.getElementById('bankMetric').selectedIndex].text;
+            formula = `${accText} → ${metricText}`;
+        } else if (selectedCalcType === 'formula') {
+            const template = document.getElementById('formulaTemplate')?.value || 'ratio';
+            const sourceA = document.getElementById('formulaSourceA')?.options[document.getElementById('formulaSourceA')?.selectedIndex]?.text || 'A';
+            const sourceB = document.getElementById('formulaSourceB')?.options[document.getElementById('formulaSourceB')?.selectedIndex]?.text || 'B';
+            
+            if (template === 'ratio') formula = `${sourceA} ÷ ${sourceB}`;
+            else if (template === 'diff') formula = `${sourceA} - ${sourceB}`;
+            else if (template === 'margin') formula = `(${sourceA} - ${sourceB}) ÷ ${sourceA} × 100`;
+            else if (template === 'growth') formula = `(${sourceA}(neu) - ${sourceB}(alt)) ÷ ${sourceB} × 100`;
+        }
+
+        preview.textContent = formula;
+        currentFormula = { type: selectedCalcType, config: getFormulaConfig() };
+        
+        // Auto-calculate value
+        const calculatedValue = calculateKpiValue();
+        if (calculatedValue !== null) {
+            document.getElementById('customKpiValue').value = calculatedValue;
+        }
+    }
+
+    function getFormulaConfig() {
+        const config = {};
+        
+        if (selectedCalcType === 'costs') {
+            config.category = document.getElementById('costsCategory')?.value;
+            config.period = document.getElementById('costsPeriod')?.value;
+        } else if (selectedCalcType === 'bank') {
+            config.account = document.getElementById('bankAccount')?.value;
+            config.metric = document.getElementById('bankMetric')?.value;
+        } else if (selectedCalcType === 'formula') {
+            config.template = document.getElementById('formulaTemplate')?.value;
+            config.sourceA = document.getElementById('formulaSourceA')?.value;
+            config.sourceB = document.getElementById('formulaSourceB')?.value;
+        }
+        
+        return config;
+    }
+
+    function calculateKpiValue() {
+        if (selectedCalcType === 'costs') {
+            return 79300;
+        } else if (selectedCalcType === 'bank') {
+            return 450000;
+        } else if (selectedCalcType === 'formula') {
+            return 125;
+        }
+        return null;
+    }
+
+    function saveCustomKpi(event) {
+        event.preventDefault();
+        
+        const kpi = {
+            id: Date.now().toString(),
+            name: document.getElementById('customKpiName').value,
+            description: document.getElementById('customKpiDescription').value,
+            value: parseFloat(document.getElementById('customKpiValue').value),
+            unit: document.getElementById('customKpiUnit').value,
+            target: parseFloat(document.getElementById('customKpiTarget').value) || 0,
+            warning: parseFloat(document.getElementById('customKpiWarning').value) || 0,
+            critical: parseFloat(document.getElementById('customKpiCritical').value) || 0,
+            calcType: selectedCalcType,
+            formula: currentFormula,
+            createdAt: new Date().toISOString()
+        };
+
+        customKpis.push(kpi);
+        localStorage.setItem('kontiq_custom_kpis', JSON.stringify(customKpis));
+        
+        closeAddKpiModal();
+        renderCustomKpis();
+    }
+
+    function renderCustomKpis() {
+        const grid = document.getElementById('customKpisGrid');
+        
+        if (customKpis.length === 0) {
+            grid.innerHTML = `
+                <div class="empty-state">
+                    <svg class="empty-state-icon" viewBox="0 0 24 24">
+                        <line x1="12" y1="20" x2="12" y2="10"></line>
+                        <line x1="18" y1="20" x2="18" y2="4"></line>
+                        <line x1="6" y1="20" x2="6" y2="16"></line>
+                    </svg>
+                    <div class="empty-state-title">Noch keine eigenen KPIs erstellt</div>
+                    <div class="empty-state-text">
+                        Klicken Sie auf "Eigenen KPI erstellen" um individuelle Kennzahlen zu definieren, die für Ihr Geschäftsmodell wichtig sind.
+                    </div>
+                </div>
+            `;
+            return;
+        }
+
+        grid.innerHTML = customKpis.map(kpi => {
+            let status = 'good';
+            let barWidth = 50;
+            
+            if (kpi.target > 0) {
+                const percentage = (kpi.value / kpi.target) * 100;
+                barWidth = Math.min(100, percentage);
+                
+                if (kpi.value >= kpi.target) {
+                    status = 'good';
+                } else if (kpi.value >= kpi.warning) {
+                    status = 'warning';
+                } else {
+                    status = 'danger';
+                }
+            }
+
+            return `
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <div class="kpi-title-wrapper">
+                            <div class="kpi-title">${kpi.name}</div>
+                            <div class="kpi-subtitle">${kpi.description || 'Benutzerdefiniert'}</div>
+                        </div>
+                        <div class="kpi-actions">
+                            <button class="kpi-info-btn" onclick="editCustomKpi('${kpi.id}')" title="Bearbeiten">✏️</button>
+                            <button class="kpi-info-btn" onclick="deleteCustomKpi('${kpi.id}')" title="Löschen" style="color: var(--navy);">🗑️</button>
+                        </div>
+                    </div>
+                    <div class="kpi-body">
+                        <div class="kpi-value-wrapper">
+                            <span class="kpi-value">${kpi.value.toLocaleString('de-DE')}</span>
+                            <span class="kpi-unit">${kpi.unit}</span>
+                        </div>
+                        <span class="kpi-trend trend-${status === 'good' ? 'up' : status === 'warning' ? 'neutral' : 'down'}">
+                            ${status === 'good' ? '✓ Ziel erreicht' : status === 'warning' ? '⚠ Beobachten' : '✗ Unter Ziel'}
+                        </span>
+                        <div class="kpi-progress">
+                            <div class="progress-label">
+                                <span class="progress-label-left">Ziel: ${kpi.target}${kpi.unit}</span>
+                                <span class="progress-label-right">${kpi.value.toFixed(1)}${kpi.unit}</span>
+                            </div>
+                            <div class="progress-bar-container">
+                                <div class="progress-bar progress-${status}" style="width: ${barWidth}%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    function editCustomKpi(id) {
+        const kpi = customKpis.find(k => k.id === id);
+        if (!kpi) return;
+
+        document.getElementById('customKpiName').value = kpi.name;
+        document.getElementById('customKpiDescription').value = kpi.description;
+        document.getElementById('customKpiValue').value = kpi.value;
+        document.getElementById('customKpiUnit').value = kpi.unit;
+        document.getElementById('customKpiTarget').value = kpi.target;
+        document.getElementById('customKpiWarning').value = kpi.warning;
+        document.getElementById('customKpiCritical').value = kpi.critical;
+        
+        customKpis = customKpis.filter(k => k.id !== id);
+        localStorage.setItem('kontiq_custom_kpis', JSON.stringify(customKpis));
+        
+        openAddKpiModal();
+    }
+
+    function deleteCustomKpi(id) {
+        const kpi = customKpis.find(k => k.id === id);
+        if (!kpi) return;
+
+        if (confirm(`KPI "${kpi.name}" wirklich löschen?`)) {
+            customKpis = customKpis.filter(k => k.id !== id);
+            localStorage.setItem('kontiq_custom_kpis', JSON.stringify(customKpis));
+            renderCustomKpis();
+        }
+    }
+
+    // Threshold functions
+    function openThresholdModal(kpiId, kpiName) {
+        currentThresholdKpi = kpiId;
+        const thresholds = kpiThresholds[kpiId] || getDefaultThresholds()[kpiId];
+        
+        document.getElementById('thresholdTitle').textContent = kpiName + ' - Schwellenwerte';
+        document.getElementById('thresholdTarget').value = thresholds.target;
+        document.getElementById('thresholdWarning').value = thresholds.warning;
+        document.getElementById('thresholdCritical').value = thresholds.critical;
+        
+        document.getElementById('thresholdOverlay').classList.add('active');
+        document.getElementById('thresholdModal').classList.add('active');
+    }
+
+    function closeThresholdModal() {
+        document.getElementById('thresholdOverlay').classList.remove('active');
+        document.getElementById('thresholdModal').classList.remove('active');
+        currentThresholdKpi = null;
+    }
+
+    function saveThreshold(event) {
+        event.preventDefault();
+        
+        if (!currentThresholdKpi) return;
+        
+        kpiThresholds[currentThresholdKpi] = {
+            target: parseFloat(document.getElementById('thresholdTarget').value),
+            warning: parseFloat(document.getElementById('thresholdWarning').value),
+            critical: parseFloat(document.getElementById('thresholdCritical').value)
+        };
+        
+        localStorage.setItem('kontiq_kpi_thresholds', JSON.stringify(kpiThresholds));
+        closeThresholdModal();
+        alert('✓ Schwellenwerte gespeichert!\n\nDie neuen Werte werden bei der nächsten Berechnung berücksichtigt.');
+    }
+</script>

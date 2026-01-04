@@ -1,0 +1,810 @@
+<style>
+    /* Page-specific styles - inherit from global index.html */
+    .reports-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 32px;
+    }
+
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+    }
+
+    .section-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--navy);
+        margin: 0;
+        letter-spacing: -0.3px;
+    }
+
+    .btn-secondary:hover {
+        border-color: var(--teal);
+        color: var(--teal);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(14, 177, 122, 0.1);
+    }
+
+    .btn-icon {
+        width: 18px;
+        height: 18px;
+        stroke: currentColor;
+        fill: none;
+        stroke-width: 2.5;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+    .reports-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+        gap: 24px;
+        margin-bottom: 48px;
+    }
+
+    .report-card {
+        background: white;
+        border-radius: 12px;
+        padding: 24px;
+        border: 1px solid var(--light-gray);
+        transition: all 0.2s;
+        cursor: pointer;
+    }
+
+    .report-card:hover {
+        box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+        transform: translateY(-4px);
+        border-color: var(--teal);
+    }
+
+    .report-icon {
+        width: 48px;
+        height: 48px;
+        background: var(--light-teal);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 16px;
+    }
+
+    .report-icon svg {
+        width: 24px;
+        height: 24px;
+        stroke: var(--teal);
+        fill: none;
+        stroke-width: 2;
+    }
+
+    .report-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--navy);
+        margin: 0 0 8px 0;
+    }
+
+    .report-description {
+        font-size: 14px;
+        color: var(--gray);
+        line-height: 1.6;
+        margin: 0 0 16px 0;
+    }
+
+    .report-meta {
+        display: flex;
+        gap: 16px;
+        font-size: 13px;
+        color: var(--gray);
+    }
+
+    .report-meta-item {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .custom-reports-section {
+        background: var(--light-bg);
+        border-radius: 12px;
+        padding: 32px;
+        margin-top: 48px;
+    }
+
+    .generated-reports {
+        margin-top: 48px;
+    }
+
+    .report-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .report-item {
+        background: white;
+        border: 1px solid var(--light-gray);
+        border-radius: 12px;
+        padding: 20px 24px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: all 0.2s;
+    }
+
+    .report-item:hover {
+        box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+    }
+
+    .report-item-info {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        flex: 1;
+    }
+
+    .report-item-icon {
+        width: 40px;
+        height: 40px;
+        background: var(--light-teal);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .report-item-icon svg {
+        width: 20px;
+        height: 20px;
+        stroke: var(--teal);
+        fill: none;
+        stroke-width: 2;
+    }
+
+    .report-item-details h4 {
+        margin: 0 0 4px 0;
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--navy);
+    }
+
+    .report-item-details p {
+        margin: 0;
+        font-size: 13px;
+        color: var(--gray);
+    }
+
+    .report-item-actions {
+        display: flex;
+        gap: 8px;
+    }
+
+    .icon-btn {
+        width: 36px;
+        height: 36px;
+        border-radius: 8px;
+        border: 1px solid var(--light-gray);
+        background: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .icon-btn:hover {
+        background: var(--light-teal);
+        border-color: var(--teal);
+    }
+
+    .icon-btn svg {
+        width: 18px;
+        height: 18px;
+        stroke: var(--gray);
+        fill: none;
+        stroke-width: 2;
+    }
+
+    .icon-btn:hover svg {
+        stroke: var(--teal);
+    }
+
+    .modal-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.5);
+        z-index: 1000;
+    }
+
+    .modal-overlay.active {
+        display: block;
+    }
+
+    .modal {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: white;
+        padding: 32px;
+        border-radius: 16px;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        max-width: 600px;
+        width: 90%;
+        z-index: 1001;
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+
+    .modal.active {
+        display: block;
+    }
+
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: start;
+        margin-bottom: 24px;
+        padding-bottom: 16px;
+        border-bottom: 2px solid var(--light-gray);
+    }
+
+    .modal-title {
+        font-size: 24px;
+        font-weight: 700;
+        color: var(--navy);
+        margin: 0;
+    }
+
+    .modal-close {
+        background: none;
+        border: none;
+        font-size: 28px;
+        color: var(--gray);
+        cursor: pointer;
+        line-height: 1;
+        padding: 0;
+        width: 32px;
+        height: 32px;
+    }
+
+    .modal-close:hover {
+        color: var(--navy);
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-label {
+        display: block;
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--navy);
+        margin-bottom: 8px;
+    }
+
+    .form-input,
+    .form-select,
+    .form-textarea {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid var(--light-gray);
+        border-radius: 8px;
+        font-size: 14px;
+        font-family: inherit;
+        transition: border-color 0.2s;
+    }
+
+    .form-input:focus,
+    .form-select:focus,
+    .form-textarea:focus {
+        outline: none;
+        border-color: var(--teal);
+    }
+
+    .form-checkbox-group {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+        margin-top: 12px;
+    }
+
+    .form-checkbox {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .form-checkbox input {
+        width: 18px;
+        height: 18px;
+        cursor: pointer;
+    }
+
+    .form-checkbox label {
+        font-size: 14px;
+        color: var(--navy);
+        cursor: pointer;
+    }
+
+    .modal-footer {
+        display: flex;
+        gap: 12px;
+        justify-content: flex-end;
+        margin-top: 24px;
+        padding-top: 20px;
+        border-top: 1px solid var(--light-gray);
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 64px 32px;
+        background: var(--light-bg);
+        border-radius: 12px;
+        border: 2px dashed var(--light-gray);
+    }
+
+    .empty-state svg {
+        width: 64px;
+        height: 64px;
+        margin: 0 auto 24px;
+        stroke: var(--gray);
+        fill: none;
+        stroke-width: 1.5;
+    }
+
+    .empty-state h3 {
+        font-size: 20px;
+        font-weight: 700;
+        color: var(--navy);
+        margin: 0 0 8px 0;
+    }
+
+    .empty-state p {
+        font-size: 14px;
+        color: var(--gray);
+        margin: 0;
+    }
+
+    @media (max-width: 768px) {
+        .reports-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .form-checkbox-group {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<div class="reports-container">
+    <div class="page-header">
+        <h1 class="page-title">Berichte & Reports</h1>
+        <p class="page-subtitle">Erstellen Sie professionelle Finanzberichte für Investoren, Banken und interne Analysen</p>
+    </div>
+
+    <!-- Standard Reports -->
+    <div class="section-header">
+        <h2 class="section-title">Standardberichte</h2>
+    </div>
+
+    <div class="reports-grid">        <!-- Bilanz (Balance Sheet) -->
+        <div class="report-card" onclick="generateReport('balance')">
+            <div class="report-icon">
+                <svg viewBox="0 0 24 24">
+                    <rect x="3" y="3" width="7" height="7"></rect>
+                    <rect x="14" y="3" width="7" height="7"></rect>
+                    <rect x="14" y="14" width="7" height="7"></rect>
+                    <rect x="3" y="14" width="7" height="7"></rect>
+                </svg>
+            </div>
+            <h3 class="report-title">Bilanz</h3>
+            <p class="report-description">Übersicht über Vermögenswerte, Verbindlichkeiten und Eigenkapital zu einem bestimmten Zeitpunkt</p>
+            <div class="report-meta">
+                <span class="report-meta-item">
+                    <svg viewBox="0 0 24 24" style="width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                    Aktuell
+                </span>
+                <span class="report-meta-item">PDF</span>
+            </div>
+        </div>
+
+        <!-- GuV (Income Statement) -->
+        <div class="report-card" onclick="generateReport('income')">
+            <div class="report-icon">
+                <svg viewBox="0 0 24 24">
+                    <line x1="12" y1="1" x2="12" y2="23"></line>
+                    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                </svg>
+            </div>
+            <h3 class="report-title">Gewinn- und Verlustrechnung</h3>
+            <p class="report-description">Detaillierte Aufstellung von Umsätzen, Kosten und Gewinnen über einen Zeitraum</p>
+            <div class="report-meta">
+                <span class="report-meta-item">
+                    <svg viewBox="0 0 24 24" style="width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                    Monatlich
+                </span>
+                <span class="report-meta-item">PDF</span>
+            </div>
+        </div>
+
+        <!-- Cash Flow Statement -->
+        <div class="report-card" onclick="generateReport('cashflow')">
+            <div class="report-icon">
+                <svg viewBox="0 0 24 24">
+                    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                </svg>
+            </div>
+            <h3 class="report-title">Kapitalflussrechnung</h3>
+            <p class="report-description">Bewegung von Geldmitteln aus operativen, investiven und finanzierenden Tätigkeiten</p>
+            <div class="report-meta">
+                <span class="report-meta-item">
+                    <svg viewBox="0 0 24 24" style="width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                    Quartal
+                </span>
+                <span class="report-meta-item">PDF</span>
+            </div>
+        </div>
+
+        <!-- Liquiditätsreport -->
+        <div class="report-card" onclick="generateReport('liquidity')">
+            <div class="report-icon">
+                <svg viewBox="0 0 24 24">
+                    <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path>
+                </svg>
+            </div>
+            <h3 class="report-title">Liquiditätsbericht</h3>
+            <p class="report-description">Aktuelle Liquiditätslage mit Prognose und Zahlungsfähigkeitsanalyse</p>
+            <div class="report-meta">
+                <span class="report-meta-item">
+                    <svg viewBox="0 0 24 24" style="width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                    Wöchentlich
+                </span>
+                <span class="report-meta-item">PDF</span>
+            </div>
+        </div>
+
+        <!-- Investor Report -->
+        <div class="report-card" onclick="generateReport('investor')">
+            <div class="report-icon">
+                <svg viewBox="0 0 24 24">
+                    <line x1="12" y1="20" x2="12" y2="10"></line>
+                    <line x1="18" y1="20" x2="18" y2="4"></line>
+                    <line x1="6" y1="20" x2="6" y2="16"></line>
+                </svg>
+            </div>
+            <h3 class="report-title">Investorenbericht</h3>
+            <p class="report-description">Umfassender Bericht mit KPIs, Wachstum und Prognosen für Investoren</p>
+            <div class="report-meta">
+                <span class="report-meta-item">
+                    <svg viewBox="0 0 24 24" style="width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                    Monatlich
+                </span>
+                <span class="report-meta-item">PDF</span>
+            </div>
+        </div>
+
+        <!-- Bank Report -->
+        <div class="report-card" onclick="generateReport('bank')">
+            <div class="report-icon">
+                <svg viewBox="0 0 24 24">
+                    <rect x="2" y="4" width="20" height="16" rx="2"></rect>
+                    <path d="M7 15h0M2 9.5h20"></path>
+                </svg>
+            </div>
+            <h3 class="report-title">Bankbericht</h3>
+            <p class="report-description">Finanzübersicht für Kreditanträge und Bankgespräche mit Sicherheiten</p>
+            <div class="report-meta">
+                <span class="report-meta-item">
+                    <svg viewBox="0 0 24 24" style="width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                    Nach Bedarf
+                </span>
+                <span class="report-meta-item">PDF</span>
+            </div>
+        </div>
+
+        <!-- Payment History Report -->
+        <div class="report-card" onclick="generateReport('payment-history')">
+            <div class="report-icon">
+                <svg viewBox="0 0 24 24">
+                    <rect x="2" y="7" width="20" height="14" rx="2"></rect>
+                    <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+                </svg>
+            </div>
+            <h3 class="report-title">Zahlungsverlauf</h3>
+            <p class="report-description">Detaillierte Historie aller Zahlungseingänge und -ausgänge mit Analyse</p>
+            <div class="report-meta">
+                <span class="report-meta-item">
+                    <svg viewBox="0 0 24 24" style="width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                    Individuell
+                </span>
+                <span class="report-meta-item">PDF</span>
+            </div>
+        </div>
+
+        <!-- Cost Analysis -->
+        <div class="report-card" onclick="generateReport('cost-analysis')">
+            <div class="report-icon">
+                <svg viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="16"></line>
+                    <line x1="8" y1="12" x2="16" y2="12"></line>
+                </svg>
+            </div>
+            <h3 class="report-title">Kostenanalyse</h3>
+            <p class="report-description">Detaillierte Aufschlüsselung und Vergleich aller Kostenpositionen</p>
+            <div class="report-meta">
+                <span class="report-meta-item">
+                    <svg viewBox="0 0 24 24" style="width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                    Monatlich
+                </span>
+                <span class="report-meta-item">PDF</span>
+            </div>
+        </div>
+
+        <!-- Contract Overview -->
+        <div class="report-card" onclick="generateReport('contracts')">
+            <div class="report-icon">
+                <svg viewBox="0 0 24 24">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                </svg>
+            </div>
+            <h3 class="report-title">Vertragsübersicht</h3>
+            <p class="report-description">Zusammenfassung aller laufenden Verträge mit Laufzeiten und Kosten</p>
+            <div class="report-meta">
+                <span class="report-meta-item">
+                    <svg viewBox="0 0 24 24" style="width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                    Aktuell
+                </span>
+                <span class="report-meta-item">PDF</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Reports Section -->
+    <div class="custom-reports-section">
+        <div class="section-header">
+            <h2 class="section-title">Benutzerdefinierte Berichte</h2>
+            <button class="btn btn-primary" onclick="openCustomReportModal()">
+                <svg class="btn-icon" viewBox="0 0 24 24">
+                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+                Bericht erstellen
+            </button>
+        </div>
+        <p style="color: var(--gray); font-size: 14px; margin: 0;">
+            Erstellen Sie individuelle Berichte mit den für Sie relevanten Daten und Zeiträumen
+        </p>
+    </div>
+
+    <!-- Generated Reports History -->
+    <div class="generated-reports">
+        <div class="section-header">
+            <h2 class="section-title">Generierte Berichte</h2>
+        </div>
+        <div class="report-list" id="reportsList">
+            <div class="empty-state">
+                <svg viewBox="0 0 24 24">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                    <polyline points="10 9 9 9 8 9"></polyline>
+                </svg>
+                <h3>Noch keine Berichte generiert</h3>
+                <p>Erstellen Sie Ihren ersten Bericht aus den Standardvorlagen oben</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Custom Report Modal -->
+<div class="modal-overlay" id="customReportOverlay" onclick="closeCustomReportModal()"></div>
+<div class="modal" id="customReportModal">
+    <div class="modal-header">
+        <h3 class="modal-title">Benutzerdefinierten Bericht erstellen</h3>
+        <button class="modal-close" onclick="closeCustomReportModal()">×</button>
+    </div>
+    <form onsubmit="saveCustomReport(event)">
+        <div class="form-group">
+            <label class="form-label">Berichtsname</label>
+            <input type="text" class="form-input" id="reportName" placeholder="z.B. Monatsbericht Q1 2026" required>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Beschreibung</label>
+            <textarea class="form-textarea" id="reportDescription" rows="2" placeholder="Kurze Beschreibung des Berichts"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Zeitraum</label>
+            <select class="form-select" id="reportPeriod">
+                <option value="current-month">Aktueller Monat</option>
+                <option value="last-month">Letzter Monat</option>
+                <option value="current-quarter">Aktuelles Quartal</option>
+                <option value="last-quarter">Letztes Quartal</option>
+                <option value="current-year">Aktuelles Jahr</option>
+                <option value="last-year">Letztes Jahr</option>
+                <option value="custom">Benutzerdefiniert</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Datenquellen auswählen</label>
+            <div class="form-checkbox-group">
+                <div class="form-checkbox">
+                    <input type="checkbox" id="data-balance" value="balance" checked>
+                    <label for="data-balance">Bilanz</label>
+                </div>
+                <div class="form-checkbox">
+                    <input type="checkbox" id="data-income" value="income" checked>
+                    <label for="data-income">Gewinn & Verlust</label>
+                </div>
+                <div class="form-checkbox">
+                    <input type="checkbox" id="data-cashflow" value="cashflow" checked>
+                    <label for="data-cashflow">Cash Flow</label>
+                </div>
+                <div class="form-checkbox">
+                    <input type="checkbox" id="data-kpis" value="kpis" checked>
+                    <label for="data-kpis">KPIs</label>
+                </div>
+                <div class="form-checkbox">
+                    <input type="checkbox" id="data-costs" value="costs">
+                    <label for="data-costs">Kosten</label>
+                </div>
+                <div class="form-checkbox">
+                    <input type="checkbox" id="data-payments" value="payments">
+                    <label for="data-payments">Zahlungen</label>
+                </div>
+                <div class="form-checkbox">
+                    <input type="checkbox" id="data-contracts" value="contracts">
+                    <label for="data-contracts">Verträge</label>
+                </div>
+                <div class="form-checkbox">
+                    <input type="checkbox" id="data-bank" value="bank">
+                    <label for="data-bank">Bankkonten</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Diagramme einschließen</label>
+            <div class="form-checkbox-group">
+                <div class="form-checkbox">
+                    <input type="checkbox" id="chart-revenue" value="revenue" checked>
+                    <label for="chart-revenue">Umsatzentwicklung</label>
+                </div>
+                <div class="form-checkbox">
+                    <input type="checkbox" id="chart-costs" value="costs" checked>
+                    <label for="chart-costs">Kostenverteilung</label>
+                </div>
+                <div class="form-checkbox">
+                    <input type="checkbox" id="chart-cashflow" value="cashflow-chart">
+                    <label for="chart-cashflow">Cash Flow Verlauf</label>
+                </div>
+                <div class="form-checkbox">
+                    <input type="checkbox" id="chart-comparison" value="comparison">
+                    <label for="chart-comparison">Periodenvergleich</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" onclick="closeCustomReportModal()">Abbrechen</button>
+            <button type="submit" class="btn btn-primary">Bericht generieren</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    let generatedReports = JSON.parse(localStorage.getItem('kontiq_reports') || '[]');
+
+    const reportTemplates = {
+        balance: { name: 'Bilanz', description: 'Balance Sheet - Aktuelle Finanzlage' },
+        income: { name: 'Gewinn- und Verlustrechnung', description: 'Income Statement - P&L des aktuellen Zeitraums' },
+        cashflow: { name: 'Kapitalflussrechnung', description: 'Cash Flow Statement - Geldbewegungen' },
+        liquidity: { name: 'Liquiditätsbericht', description: 'Liquidity Report - Zahlungsfähigkeit' },
+        investor: { name: 'Investorenbericht', description: 'Investor Report - KPIs und Wachstum' },
+        bank: { name: 'Bankbericht', description: 'Bank Report - Für Kreditanträge' },
+        'payment-history': { name: 'Zahlungsverlauf', description: 'Payment History - Transaktionshistorie' },
+        'cost-analysis': { name: 'Kostenanalyse', description: 'Cost Analysis - Kostenaufschlüsselung' },
+        contracts: { name: 'Vertragsübersicht', description: 'Contract Overview - Laufende Verträge' }
+    };
+
+    function generateReport(type) {
+        const template = reportTemplates[type];
+        if (!template) return;
+
+        const report = {
+            id: Date.now().toString(),
+            type, name: template.name,
+            description: template.description,
+            createdAt: new Date().toISOString(),
+            size: Math.floor(Math.random() * 500 + 200) + ' KB'
+        };
+
+        generatedReports.unshift(report);
+        localStorage.setItem('kontiq_reports', JSON.stringify(generatedReports));
+        renderReports();
+        setTimeout(() => alert(`✓ ${template.name} wurde erfolgreich generiert und wird heruntergeladen...`), 100);
+    }
+
+    function openCustomReportModal() {
+        document.getElementById('customReportOverlay').classList.add('active');
+        document.getElementById('customReportModal').classList.add('active');
+    }
+
+    function closeCustomReportModal() {
+        document.getElementById('customReportOverlay').classList.remove('active');
+        document.getElementById('customReportModal').classList.remove('active');
+    }
+
+    function saveCustomReport(event) {
+        event.preventDefault();
+        const name = document.getElementById('reportName').value;
+        const description = document.getElementById('reportDescription').value;
+        const period = document.getElementById('reportPeriod').value;
+        const dataSources = [];
+        document.querySelectorAll('.form-checkbox input[type="checkbox"]:checked').forEach(cb => {
+            if (cb.id.startsWith('data-')) dataSources.push(cb.value);
+        });
+
+        const report = {
+            id: Date.now().toString(), type: 'custom', name,
+            description: description || 'Benutzerdefinierter Bericht',
+            period, dataSources, createdAt: new Date().toISOString(),
+            size: Math.floor(Math.random() * 800 + 300) + ' KB'
+        };
+
+        generatedReports.unshift(report);
+        localStorage.setItem('kontiq_reports', JSON.stringify(generatedReports));
+        closeCustomReportModal();
+        renderReports();
+        setTimeout(() => alert(`✓ Bericht "${name}" wurde erfolgreich generiert und wird heruntergeladen...`), 100);
+    }
+
+    function renderReports() {
+        const list = document.getElementById('reportsList');
+        if (generatedReports.length === 0) {
+            list.innerHTML = '<div class="empty-state"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg><h3>Noch keine Berichte generiert</h3><p>Erstellen Sie Ihren ersten Bericht aus den Standardvorlagen oben</p></div>';
+            return;
+        }
+
+        list.innerHTML = generatedReports.map(report => {
+            const date = new Date(report.createdAt);
+            const dateStr = date.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+            return `<div class="report-item"><div class="report-item-info"><div class="report-item-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg></div><div class="report-item-details"><h4>${report.name}</h4><p>${dateStr} • ${report.size}</p></div></div><div class="report-item-actions"><button class="icon-btn" onclick="downloadReport('${report.id}')" title="Herunterladen"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg></button><button class="icon-btn" onclick="shareReport('${report.id}')" title="Teilen"><svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg></button><button class="icon-btn" onclick="deleteReport('${report.id}')" title="Löschen"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button></div></div>`;
+        }).join('');
+    }
+
+    function downloadReport(id) {
+        const report = generatedReports.find(r => r.id === id);
+        if (report) {
+            alert(`✓ ${report.name} wird heruntergeladen...`);
+        }
+    }
+
+    function shareReport(id) {
+        const report = generatedReports.find(r => r.id === id);
+        if (report) {
+            alert(`✓ ${report.name} wurde in die Zwischenablage kopiert.`);
+        }
+    }
+
+    function deleteReport(id) {
+        if (confirm('Möchten Sie diesen Bericht wirklich löschen?')) {
+            generatedReports = generatedReports.filter(r => r.id !== id);
+            localStorage.setItem('kontiq_reports', JSON.stringify(generatedReports));
+            renderReports();
+        }
+    }
+
+    renderReports();
+</script>

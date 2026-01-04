@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kontiq - Anmelden</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #0A2540 0%, #0D3A5F 50%, #0A2540 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            position: relative;
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        body::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 30% 50%, rgba(14, 177, 122, 0.1) 0%, transparent 50%);
+            animation: pulse 15s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(5%, 5%) scale(1.05); }
+        }
+
+        .login-container {
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 24px 64px rgba(0,0,0,0.35);
+            width: 100%;
+            max-width: 480px;
+            padding: 56px 48px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .logo-icon {
+            width: 72px;
+            height: 72px;
+            background: linear-gradient(135deg, #0A2540 50%, #0EB17A 50%);
+            border-radius: 16px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 34px;
+            font-weight: 800;
+            margin-bottom: 18px;
+            box-shadow: 0 8px 24px rgba(10, 37, 64, 0.25);
+        }
+
+        .logo-text {
+            font-size: 32px;
+            font-weight: 800;
+            color: #0A2540;
+            letter-spacing: -0.5px;
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 800;
+            color: #0A2540;
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            color: #6B7280;
+            font-size: 16px;
+            margin-bottom: 36px;
+            line-height: 1.5;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 700;
+            color: #0A2540;
+            margin-bottom: 10px;
+            letter-spacing: -0.1px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 16px 18px;
+            border: 1px solid rgba(229, 231, 235, 0.8);
+            border-radius: 14px;
+            font-size: 16px;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: white;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #0EB17A;
+            box-shadow: 0 0 0 4px rgba(14, 177, 122, 0.08);
+            transform: translateY(-2px);
+        }
+
+        .forgot-password {
+            text-align: right;
+            margin-top: 10px;
+        }
+
+        .forgot-password a {
+            color: #0EB17A;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            transition: color 0.2s ease;
+        }
+
+        .forgot-password a:hover {
+            color: #059669;
+            text-decoration: underline;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 10px;
+            background: #0EB17A;
+            color: white;
+            border: 1px solid #0EB17A;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: 8px;
+        }
+
+        .btn:hover {
+            background: #0D9F6A;
+            border-color: #0D9F6A;
+        }
+        
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 36px 0;
+            color: #9CA3AF;
+            font-size: 14px;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid rgba(229, 231, 235, 0.8);
+        }
+
+        .divider span {
+            padding: 0 18px;
+            font-weight: 500;
+        }
+
+        .register-link {
+            text-align: center;
+            margin-top: 24px;
+            font-size: 15px;
+            color: #6B7280;
+        }
+
+        .register-link a {
+            color: #0EB17A;
+            text-decoration: none;
+            font-weight: 700;
+            transition: color 0.2s ease;
+        }
+
+        .register-link a:hover {
+            color: #059669;
+            text-decoration: underline;
+        }
+
+        .demo-credentials {
+            background: linear-gradient(135deg, #F8FAFC 0%, #F0F9FF 100%);
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 24px;
+            font-size: 13px;
+            color: #6B7280;
+            border: 1px solid rgba(229, 231, 235, 0.8);
+        }
+
+        .demo-credentials strong {
+            color: #0A2540;
+            font-weight: 700;
+        }
+
+        .alert {
+            padding: 16px 18px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            font-size: 14px;
+            display: none;
+            font-weight: 500;
+        }
+
+        .alert.error {
+            background: #FEE2E2;
+            color: #991B1B;
+            border: 1px solid #FCA5A5;
+        }
+
+        .alert.success {
+            background: #D1FAE5;
+            color: #065F46;
+            border: 1px solid #6EE7B7;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 640px) {
+            .login-container {
+                padding: 40px 24px;
+                max-width: 100%;
+            }
+
+            .logo-icon {
+                width: 56px;
+                height: 56px;
+                font-size: 28px;
+            }
+
+            .logo-text {
+                font-size: 24px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            .btn {
+                padding: 14px;
+                font-size: 15px;
+            }
+        }
+
+        @media (max-width: 420px) {
+            body {
+                padding: 12px;
+            }
+
+            .login-container {
+                padding: 32px 20px;
+            }
+
+            .form-input {
+                padding: 12px 14px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="logo">
+            <div class="logo-icon">K</div>
+            <div class="logo-text">KONTIQ</div>
+        </div>
+
+        <h1>Willkommen zurück</h1>
+        <p class="subtitle">Melden Sie sich bei Ihrem Konto an</p>
+
+        <div id="alert" class="alert"></div>
+
+        <form id="loginForm" novalidate>
+            <div class="form-group">
+                <label class="form-label">Email-Adresse</label>
+                <input type="email" class="form-input" id="email" placeholder="ihre@email.de" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Passwort</label>
+                <input type="password" class="form-input" id="password" placeholder="••••••••" required>
+            </div>
+
+            <div class="forgot-password">
+                <a href="#" onclick="alert('Passwort zurücksetzen wird implementiert'); return false;">
+                    Passwort vergessen?
+                </a>
+            </div>
+
+            <button type="submit" class="btn">Anmelden</button>
+        </form>
+
+        <div class="divider"><span>oder</span></div>
+
+        <div class="register-link">
+            Noch kein Konto? <a href="/auth/register.html">Jetzt registrieren</a>
+        </div>
+
+        <!-- Demo credentials removed -->
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+
+            if (!email || !password) {
+                showAlert('Bitte E-Mail und Passwort eingeben.', 'error');
+                return;
+            }
+            
+            try {
+                const res = await fetch('/api/users/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+                let text = '';
+                try { text = await res.text(); } catch(e){ text = '' }
+                let j = null;
+                try { j = JSON.parse(text); } catch(e) { j = null }
+                if (res.ok && j && j.user) {
+                    localStorage.setItem('kontiq_user', JSON.stringify({ email: j.user.email, name: j.user.name, company: j.user.company, loggedIn: true }));
+                    // check server-side onboarding
+                    try {
+                        const r2 = await fetch('/api/onboarding?email=' + encodeURIComponent(email));
+                        const o = await r2.json();
+                        if (o && o.data) {
+                            localStorage.setItem('kontiq_onboarding_complete', 'true');
+                            window.location.href = '/index.html';
+                        } else {
+                            localStorage.setItem('kontiq_onboarding_complete', 'false');
+                            window.location.href = '/onboarding.html';
+                        }
+                    } catch (e) {
+                        console.error('Onboarding fetch failed', e);
+                        window.location.href = '/onboarding.html';
+                    }
+                } else {
+                    const fallback = 'Anmeldung fehlgeschlagen. Bitte versuchen Sie es erneut.';
+                    const message = (j && (j.error || j.message)) || (text && text.includes('Internal Server Error') ? 'Interner Fehler. Bitte später erneut versuchen.' : text) || fallback;
+                    console.error('Anmeldung fehlgeschlagen', res.status, message);
+                    showAlert(message, 'error');
+                }
+            } catch (err) {
+                console.error('Netzwerkfehler bei Anmeldung', err);
+                showAlert('Verbindungsfehler. Bitte überprüfen Sie Ihre Internetverbindung.', 'error');
+            }
+        });
+
+        function showAlert(message, type) {
+            const alert = document.getElementById('alert');
+            alert.textContent = message;
+            alert.className = 'alert ' + type;
+            alert.style.display = 'block';
+        }
+
+        // Prüfe ob bereits eingeloggt
+        const user = localStorage.getItem('kontiq_user');
+        if (user) {
+            const userData = JSON.parse(user);
+            if (userData.loggedIn) {
+                window.location.href = '/index.html';
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,1291 @@
+<style>
+    /* Modern Minimal Costs Page - Kontiq Brand Colors Only */
+    
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 32px;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+
+    .page-title {
+        font-size: 28px;
+        color: var(--navy);
+        font-weight: 700;
+        letter-spacing: -0.5px;
+    }
+
+    .header-subtitle {
+        font-size: 14px;
+        color: var(--gray);
+        margin-top: 6px;
+    }
+
+    .header-controls {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+
+    /* Modern Select/Dropdown */
+    select {
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        background: var(--white) url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="%236B7280"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>') no-repeat right 12px center;
+        background-size: 20px;
+        padding: 10px 40px 10px 14px;
+        border: 1.5px solid var(--light-gray);
+        border-radius: 8px;
+        font-size: 14px;
+        color: var(--navy);
+        font-family: inherit;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-weight: 500;
+    }
+
+    select:hover {
+        border-color: var(--teal);
+    }
+
+    select:focus {
+        outline: none;
+        border-color: var(--teal);
+        box-shadow: 0 0 0 3px rgba(14, 177, 122, 0.1);
+    }
+
+    .btn {
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        border: none;
+        font-family: inherit;
+    }
+
+    .btn-primary {
+        background: var(--teal);
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background: #059669;
+        transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+        background: white;
+        color: var(--navy);
+        border: 1.5px solid var(--light-gray);
+    }
+
+    .btn-secondary:hover {
+        border-color: var(--navy);
+    }
+
+    /* KPI Cards */
+    .kpi-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+        margin-bottom: 32px;
+    }
+
+    .kpi-card {
+        background: white;
+        padding: 20px;
+        border-radius: 12px;
+        border: 1px solid var(--light-gray);
+        box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+        transition: all 0.2s;
+    }
+
+    .kpi-card:hover {
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        transform: translateY(-2px);
+    }
+
+    .kpi-label {
+        font-size: 11px;
+        color: var(--gray);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        margin-bottom: 8px;
+    }
+
+    .kpi-value {
+        font-size: 24px;
+        color: var(--navy);
+        font-weight: 800;
+        font-family: 'Roboto Mono', monospace;
+        margin-bottom: 4px;
+        letter-spacing: -0.5px;
+    }
+
+    .kpi-change {
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--gray);
+    }
+
+    .kpi-change.up {
+        color: var(--navy);
+    }
+
+    .kpi-change.down {
+        color: var(--teal);
+    }
+
+    /* Main content grid */
+    .content-grid {
+        display: grid;
+        grid-template-columns: 1.5fr 1fr;
+        gap: 24px;
+        margin-bottom: 32px;
+    }
+
+    .card {
+        background: white;
+        border: 1px solid var(--light-gray);
+        border-radius: 12px;
+        padding: 24px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+
+    .card-header {
+        margin-bottom: 20px;
+    }
+
+    .card-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--navy);
+        letter-spacing: -0.3px;
+    }
+
+    .card-subtitle {
+        font-size: 12px;
+        color: var(--gray);
+        margin-top: 4px;
+    }
+
+    .chart-container {
+        position: relative;
+        height: 280px;
+    }
+
+    /* Category breakdown */
+    .categories-list {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .category-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .category-name {
+        flex: 0 0 110px;
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--navy);
+    }
+
+    .category-bar {
+        flex: 1;
+        height: 24px;
+        background: #F3F4F6;
+        border-radius: 8px;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .category-bar-fill {
+        height: 100%;
+        background: var(--teal);
+        border-radius: 8px;
+        transition: width 0.3s ease;
+    }
+
+    .category-amount {
+        flex: 0 0 90px;
+        text-align: right;
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--navy);
+        font-family: 'Roboto Mono', monospace;
+    }
+
+    /* Planning section */
+    .planning-section {
+        background: white;
+        border: 1px solid var(--light-gray);
+        border-radius: 12px;
+        padding: 24px;
+        margin-bottom: 32px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+
+    .planning-header {
+        margin-bottom: 24px;
+    }
+
+    .section-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--navy);
+        margin-bottom: 6px;
+        letter-spacing: -0.3px;
+    }
+
+    .section-subtitle {
+        font-size: 14px;
+        color: var(--gray);
+    }
+
+    .planning-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+    }
+
+    .invoice-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .invoice-item {
+        display: grid;
+        grid-template-columns: 1fr auto auto;
+        gap: 16px;
+        align-items: center;
+        padding: 16px;
+        background: #F9FAFB;
+        border-radius: 10px;
+        border-left: 3px solid var(--teal);
+        transition: all 0.2s;
+        border: 1px solid var(--light-gray);
+        border-left: 3px solid var(--teal);
+    }
+
+    .invoice-item:hover {
+        background: white;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        transform: translateX(4px);
+    }
+
+    .invoice-item.warning {
+        border-left-color: var(--navy);
+        background: rgba(10, 37, 64, 0.02);
+    }
+
+    .invoice-info {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .invoice-vendor {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--navy);
+    }
+
+    .invoice-date {
+        font-size: 11px;
+        color: var(--gray);
+    }
+
+    .invoice-amount {
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--navy);
+        font-family: 'Roboto Mono', monospace;
+        text-align: right;
+    }
+
+    .invoice-actions {
+        display: flex;
+        gap: 6px;
+    }
+
+    .btn-small {
+        padding: 6px 10px;
+        border: none;
+        background: white;
+        cursor: pointer;
+        color: var(--gray);
+        font-size: 14px;
+        transition: all 0.2s;
+        border-radius: 6px;
+        border: 1px solid var(--light-gray);
+    }
+
+    .btn-small:hover {
+        background: var(--navy);
+        color: white;
+        border-color: var(--navy);
+    }
+
+    /* Impact Summary */
+    .impact-summary {
+        background: #F9FAFB;
+        border: 1px solid var(--light-gray);
+        border-left: 3px solid var(--teal);
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+
+    .impact-summary-title {
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--gray);
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        margin-bottom: 10px;
+    }
+
+    .impact-summary-value {
+        font-size: 24px;
+        font-weight: 800;
+        color: var(--teal);
+        font-family: 'Roboto Mono', monospace;
+        margin-bottom: 4px;
+        letter-spacing: -0.5px;
+    }
+
+    .impact-summary-desc {
+        font-size: 12px;
+        color: var(--gray);
+        line-height: 1.6;
+    }
+
+    .impact-chart-container {
+        position: relative;
+        height: 280px;
+        background: white;
+        border-radius: 10px;
+        padding: 16px;
+        border: 1px solid var(--light-gray);
+    }
+
+    /* Modal */
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0,0,0,0.5);
+        z-index: 10000;
+        align-items: center;
+        justify-content: center;
+        backdrop-filter: blur(4px);
+    }
+
+    .modal.active {
+        display: flex;
+    }
+
+    .modal-content {
+        background: white;
+        border-radius: 16px;
+        width: 90%;
+        max-width: 600px;
+        max-height: 90vh;
+        overflow-y: auto;
+        animation: slideUp 0.3s ease;
+    }
+
+    @keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 24px;
+        border-bottom: 1px solid var(--light-gray);
+    }
+
+    .modal-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--navy);
+    }
+
+    .close-modal {
+        background: none;
+        border: none;
+        font-size: 28px;
+        cursor: pointer;
+        color: var(--gray);
+        padding: 0;
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+        transition: all 0.2s;
+    }
+
+    .close-modal:hover {
+        background: var(--light-bg);
+        color: var(--navy);
+    }
+
+    .modal-body {
+        padding: 24px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-label {
+        display: block;
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--gray);
+        margin-bottom: 6px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .form-input, .form-select {
+        width: 100%;
+        padding: 12px 14px;
+        border: 1px solid var(--light-gray);
+        border-radius: 8px;
+        font-size: 14px;
+        color: var(--navy);
+        transition: all 0.2s;
+        font-family: inherit;
+    }
+
+    .form-input:focus, .form-select:focus {
+        outline: none;
+        border-color: var(--teal);
+        box-shadow: 0 0 0 3px rgba(14, 177, 122, 0.1);
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+    }
+
+    /* Impact Preview in Modal */
+    .impact-preview {
+        background: rgba(14, 177, 122, 0.05);
+        border-radius: 10px;
+        padding: 20px;
+        margin-top: 20px;
+        border-left: 3px solid var(--teal);
+        border: 1px solid rgba(14, 177, 122, 0.2);
+        border-left: 3px solid var(--teal);
+    }
+
+    .impact-preview.warning {
+        background: rgba(10, 37, 64, 0.05);
+        border-left-color: var(--navy);
+        border: 1px solid rgba(10, 37, 64, 0.2);
+        border-left: 3px solid var(--navy);
+    }
+
+    .impact-preview-title {
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--navy);
+        margin-bottom: 8px;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+    }
+
+    .impact-preview-value {
+        font-size: 24px;
+        font-weight: 800;
+        color: var(--teal);
+        font-family: 'Roboto Mono', monospace;
+        margin-bottom: 4px;
+        letter-spacing: -0.5px;
+    }
+
+    .impact-preview.warning .impact-preview-value {
+        color: var(--navy);
+    }
+
+    .impact-preview-desc {
+        font-size: 12px;
+        color: var(--gray);
+        line-height: 1.5;
+    }
+
+    .modal-footer {
+        padding: 20px 24px;
+        border-top: 1px solid var(--light-gray);
+        display: flex;
+        gap: 12px;
+    }
+
+    /* Info Box */
+    .info-box {
+        background: #F9FAFB;
+        border: 1px solid var(--light-gray);
+        border-left: 3px solid var(--navy);
+        border-radius: 10px;
+        padding: 16px;
+        margin-bottom: 20px;
+        display: flex;
+        gap: 12px;
+        align-items: start;
+    }
+
+    .info-box-icon {
+        font-size: 20px;
+        flex-shrink: 0;
+    }
+
+    .info-box-content {
+        flex: 1;
+    }
+
+    .info-box-title {
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--navy);
+        margin-bottom: 4px;
+    }
+
+    .info-box-text {
+        font-size: 12px;
+        color: var(--gray);
+        line-height: 1.5;
+    }
+
+    @media (max-width: 1200px) {
+        .kpi-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .content-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .planning-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .page-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .kpi-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .invoice-item {
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+
+        .invoice-amount {
+            text-align: left;
+        }
+
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<!-- PAGE CONTENT -->
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Kostenanalyse</h1>
+        <p class="header-subtitle">Übersicht Ihrer Ausgaben und Planung zukünftiger Kosten</p>
+    </div>
+    <div class="header-controls">
+        <select id="periodSelect">
+            <option value="current">Aktueller Monat</option>
+            <option value="last3">Letzte 3 Monate</option>
+            <option value="last6">Letzte 6 Monate</option>
+            <option value="year">Dieses Jahr</option>
+            <option value="lastyear">Letztes Jahr</option>
+        </select>
+        <button class="btn btn-secondary" onclick="exportData()">Exportieren</button>
+        <button class="btn btn-primary" onclick="openPlanModal()">Neue Ausgabe planen</button>
+    </div>
+</div>
+
+<!-- INFO BOX -->
+<div class="info-box">
+    <div class="info-box-icon">💡</div>
+    <div class="info-box-content">
+        <div class="info-box-title">Fixkosten vs. Variable Kosten erklärt</div>
+        <div class="info-box-text">
+            <strong>Fixkosten</strong> bleiben jeden Monat gleich (z.B. Miete, Gehälter, Abonnements). 
+            <strong>Variable Kosten</strong> schwanken je nach Geschäftstätigkeit (z.B. Wareneinkauf, Marketing-Kampagnen).
+        </div>
+    </div>
+</div>
+
+<!-- KPI CARDS -->
+<div class="kpi-grid">
+    <div class="kpi-card">
+        <div class="kpi-label">Gesamtkosten (Nov)</div>
+        <div class="kpi-value">79.300€</div>
+        <div class="kpi-change up">↗ +11% vs Okt</div>
+    </div>
+    <div class="kpi-card">
+        <div class="kpi-label">Fixkosten</div>
+        <div class="kpi-value">52.100€</div>
+        <div class="kpi-change" style="color: var(--gray);">→ 0% vs Okt</div>
+    </div>
+    <div class="kpi-card">
+        <div class="kpi-label">Variable Kosten</div>
+        <div class="kpi-value">27.200€</div>
+        <div class="kpi-change up">↗ +22% vs Okt</div>
+    </div>
+    <div class="kpi-card">
+        <div class="kpi-label">Durchschn. täglich</div>
+        <div class="kpi-value">2.561€</div>
+        <div class="kpi-change up">↗ +8% vs Okt</div>
+    </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="content-grid">
+    <!-- Chart -->
+    <div class="card">
+        <div class="card-header">
+            <div class="card-title">Kostenverlauf</div>
+            <div class="card-subtitle">Die letzten 3 Monate im Vergleich</div>
+        </div>
+        <div class="chart-container">
+            <canvas id="costsChart"></canvas>
+        </div>
+    </div>
+
+    <!-- Categories -->
+    <div class="card">
+        <div class="card-header">
+            <div class="card-title">Top Kategorien</div>
+            <div class="card-subtitle">November 2025</div>
+        </div>
+        <div class="categories-list">
+            <div class="category-row">
+                <div class="category-name">Personal</div>
+                <div class="category-bar">
+                    <div class="category-bar-fill" style="width: 87%;"></div>
+                </div>
+                <div class="category-amount">48.900€</div>
+            </div>
+            <div class="category-row">
+                <div class="category-name">Waren</div>
+                <div class="category-bar">
+                    <div class="category-bar-fill" style="width: 42%;"></div>
+                </div>
+                <div class="category-amount">17.200€</div>
+            </div>
+            <div class="category-row">
+                <div class="category-name">Miete</div>
+                <div class="category-bar">
+                    <div class="category-bar-fill" style="width: 20%;"></div>
+                </div>
+                <div class="category-amount">10.500€</div>
+            </div>
+            <div class="category-row">
+                <div class="category-name">IT/Software</div>
+                <div class="category-bar">
+                    <div class="category-bar-fill" style="width: 12%;"></div>
+                </div>
+                <div class="category-amount">8.400€</div>
+            </div>
+            <div class="category-row">
+                <div class="category-name">Sonstiges</div>
+                <div class="category-bar">
+                    <div class="category-bar-fill" style="width: 8%;"></div>
+                </div>
+                <div class="category-amount">4.700€</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- PLANNING SECTION -->
+<div class="planning-section">
+    <div class="planning-header">
+        <h2 class="section-title">💰 Kostenplanung & Liquiditäts-Impact</h2>
+        <p class="section-subtitle">Planen Sie zukünftige Ausgaben und sehen Sie deren Auswirkung auf Ihre Liquidität</p>
+    </div>
+
+    <div class="planning-grid">
+        <!-- Invoice List -->
+        <div>
+            <div style="font-size: 13px; font-weight: 700; color: var(--navy); margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center;">
+                <span>Geplante Ausgaben (5)</span>
+                <span style="font-family: 'Roboto Mono', monospace; color: var(--teal);" id="totalPlanned">45.150€</span>
+            </div>
+            <div class="invoice-list" id="invoiceList">
+                <!-- Items will be rendered by JavaScript -->
+                <div style="padding: 20px; text-align: center; color: var(--gray);">
+                    Lade geplante Ausgaben...
+                </div>
+            </div>
+        </div>
+
+        <!-- Impact Summary & Chart -->
+        <div>
+            <div style="font-size: 13px; font-weight: 700; color: var(--navy); margin-bottom: 16px;">Liquiditäts-Entwicklung</div>
+            
+            <div class="impact-summary">
+                <div class="impact-summary-title">Gesamte geplante Ausgaben</div>
+                <div class="impact-summary-value" id="totalImpact">-45.150€</div>
+                <div class="impact-summary-desc">
+                    <strong>Aktueller Stand:</strong> 58.420€<br>
+                    <strong>Nach allen Ausgaben:</strong> <span id="finalLiquidity">13.270€</span><br>
+                    <strong style="color: var(--navy);">⚠ Unter Minimum von 40.000€!</strong>
+                </div>
+            </div>
+
+            <div class="impact-chart-container">
+                <canvas id="impactChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL FOR ADDING/EDITING COST PLAN -->
+<div class="modal" id="planModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 class="modal-title" id="modalTitle">Neue Ausgabe planen</h2>
+            <button class="close-modal" onclick="closePlanModal()">×</button>
+        </div>
+        
+        <div class="modal-body">
+            <form id="planForm">
+                <div class="form-group">
+                    <label class="form-label">Art der Ausgabe</label>
+                    <select class="form-select" id="planType" required>
+                        <option value="">Bitte wählen...</option>
+                        <option value="invoice">Rechnung / Lieferant</option>
+                        <option value="employee">Neuer Mitarbeiter</option>
+                        <option value="investment">Investition / Anschaffung</option>
+                        <option value="subscription">Abonnement / Lizenz</option>
+                        <option value="other">Sonstiges</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Bezeichnung</label>
+                    <input type="text" class="form-input" id="planName" placeholder="z.B. Neuer Marketing Manager" required>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Betrag (€)</label>
+                        <input type="number" class="form-input" id="planAmount" placeholder="0.00" step="0.01" required oninput="updateImpactPreview()">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Fälligkeitsdatum</label>
+                        <input type="date" class="form-input" id="planDate" required oninput="updateImpactPreview()">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Kategorie</label>
+                        <select class="form-select" id="planCategory" required>
+                            <option value="">Bitte wählen...</option>
+                            <option value="personal">Personal</option>
+                            <option value="waren">Waren</option>
+                            <option value="miete">Miete</option>
+                            <option value="it">IT/Software</option>
+                            <option value="marketing">Marketing</option>
+                            <option value="versicherung">Versicherung</option>
+                            <option value="other">Sonstiges</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Wiederholung</label>
+                        <select class="form-select" id="planRecurring">
+                            <option value="once">Einmalig</option>
+                            <option value="monthly">Monatlich</option>
+                            <option value="quarterly">Vierteljährlich</option>
+                            <option value="yearly">Jährlich</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="impact-preview" id="impactPreview" style="display: none;">
+                    <div class="impact-preview-title">💡 Voraussichtlicher Liquiditäts-Impact</div>
+                    <div class="impact-preview-value" id="impactValue">-12.400€</div>
+                    <div class="impact-preview-desc" id="impactDesc">Ihre Liquidität wird am 5. Dezember voraussichtlich auf 27.600€ sinken</div>
+                </div>
+            </form>
+        </div>
+
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" onclick="closePlanModal()" style="flex: 1;">Abbrechen</button>
+            <button type="submit" form="planForm" class="btn btn-primary" style="flex: 1;">Speichern</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Store planned costs
+    let plannedCosts = [
+        { id: 1, name: 'Weber KG - Wareneinkauf', date: '2026-01-15', amount: 12400, type: 'invoice', category: 'waren' },
+        { id: 2, name: 'Büromiete Berlin', date: '2026-01-20', amount: 10500, type: 'invoice', category: 'miete' },
+        { id: 3, name: 'Versicherung AG', date: '2026-01-25', amount: 7050, type: 'invoice', category: 'versicherung' },
+        { id: 4, name: 'Microsoft - Office 365', date: '2026-02-01', amount: 8400, type: 'subscription', category: 'it' },
+        { id: 5, name: 'Google Ads Marketing', date: '2026-02-10', amount: 6800, type: 'invoice', category: 'marketing' }
+    ];
+    
+    let currentLiquidity = 58420; // Current liquidity
+    let minimumLiquidity = 40000; // Minimum required
+    let editingId = null;
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('DOM loaded, initializing planned costs...');
+        console.log('Planned costs:', plannedCosts);
+        console.log('Invoice list element:', document.getElementById('invoiceList'));
+        renderInvoices();
+        updateSummary();
+        updateImpactChart();
+    });
+    
+    // Fallback: Also try to render immediately if DOM is already loaded
+    if (document.readyState === 'loading') {
+        // DOM not ready yet
+    } else {
+        // DOM already loaded, render immediately
+        setTimeout(function() {
+            renderInvoices();
+            updateSummary();
+        }, 50);
+    }
+
+    // Modal functions
+    function openPlanModal(id = null) {
+        const modal = document.getElementById('planModal');
+        const form = document.getElementById('planForm');
+        const title = document.getElementById('modalTitle');
+        
+        if (id) {
+            editingId = id;
+            const plan = plannedCosts.find(p => p.id === id);
+            if (plan) {
+                title.textContent = 'Ausgabe bearbeiten';
+                document.getElementById('planType').value = plan.type;
+                document.getElementById('planName').value = plan.name;
+                document.getElementById('planAmount').value = plan.amount;
+                document.getElementById('planDate').value = plan.date;
+                document.getElementById('planCategory').value = plan.category;
+                document.getElementById('planRecurring').value = plan.recurring || 'once';
+            }
+        } else {
+            editingId = null;
+            title.textContent = 'Neue Ausgabe planen';
+            form.reset();
+            document.getElementById('impactPreview').style.display = 'none';
+        }
+        
+        modal.classList.add('active');
+    }
+
+    function closePlanModal() {
+        document.getElementById('planModal').classList.remove('active');
+        document.getElementById('planForm').reset();
+        document.getElementById('impactPreview').style.display = 'none';
+        editingId = null;
+    }
+
+    function editInvoice(id) {
+        openPlanModal(id);
+    }
+
+    function deleteInvoice(id) {
+        if (confirm('Möchten Sie diese geplante Ausgabe wirklich löschen?')) {
+            plannedCosts = plannedCosts.filter(p => p.id !== id);
+            renderInvoices();
+            updateSummary();
+            updateImpactChart();
+        }
+    }
+
+    function renderInvoices() {
+        const list = document.getElementById('invoiceList');
+        if (!list) {
+            console.error('invoiceList element not found');
+            return;
+        }
+        
+        if (plannedCosts.length === 0) {
+            list.innerHTML = `
+                <div style="text-align: center; padding: 40px; color: var(--gray);">
+                    <div style="font-size: 32px; margin-bottom: 12px;">📋</div>
+                    <div style="font-size: 14px;">Keine geplanten Ausgaben vorhanden</div>
+                    <div style="font-size: 12px; margin-top: 6px;">Klicken Sie auf "Neue Ausgabe planen" um zu starten</div>
+                </div>
+            `;
+            return;
+        }
+
+        // Sort by date
+        plannedCosts.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+        // Calculate cumulative impact to detect warnings
+        let runningLiquidity = currentLiquidity;
+        
+        list.innerHTML = plannedCosts.map(plan => {
+            const dateObj = new Date(plan.date);
+            const dateStr = dateObj.toLocaleDateString('de-DE', { day: 'numeric', month: 'long' });
+            
+            runningLiquidity -= plan.amount;
+            const isWarning = runningLiquidity < minimumLiquidity;
+            
+            return `
+                <div class="invoice-item ${isWarning ? 'warning' : ''}" data-id="${plan.id}">
+                    <div class="invoice-info">
+                        <div class="invoice-vendor">${plan.name}</div>
+                        <div class="invoice-date">Fällig: ${dateStr} ${isWarning ? '⚠️' : ''}</div>
+                    </div>
+                    <div class="invoice-amount">${plan.amount.toLocaleString('de-DE')}€</div>
+                    <div class="invoice-actions">
+                        <button class="btn-small" onclick="editInvoice(${plan.id})" title="Bearbeiten">✏️</button>
+                        <button class="btn-small" onclick="deleteInvoice(${plan.id})" title="Löschen">🗑️</button>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    function updateSummary() {
+        const total = plannedCosts.reduce((sum, p) => sum + p.amount, 0);
+        const finalLiq = currentLiquidity - total;
+        
+        const totalPlannedEl = document.getElementById('totalPlanned');
+        const totalImpactEl = document.getElementById('totalImpact');
+        const finalLiquidityEl = document.getElementById('finalLiquidity');
+        
+        if (totalPlannedEl) totalPlannedEl.textContent = total.toLocaleString('de-DE') + '€';
+        if (totalImpactEl) totalImpactEl.textContent = '-' + total.toLocaleString('de-DE') + '€';
+        if (finalLiquidityEl) finalLiquidityEl.textContent = finalLiq.toLocaleString('de-DE') + '€';
+        
+        // Update warning if below minimum
+        const summaryDesc = document.querySelector('.impact-summary-desc');
+        if (!summaryDesc) return;
+        
+        if (finalLiq < minimumLiquidity) {
+            summaryDesc.innerHTML = `
+                <strong>Aktueller Stand:</strong> ${currentLiquidity.toLocaleString('de-DE')}€<br>
+                <strong>Nach allen Ausgaben:</strong> ${finalLiq.toLocaleString('de-DE')}€<br>
+                <strong style="color: var(--navy);">⚠ Unter Minimum von ${minimumLiquidity.toLocaleString('de-DE')}€!</strong>
+            `;
+        } else {
+            summaryDesc.innerHTML = `
+                <strong>Aktueller Stand:</strong> ${currentLiquidity.toLocaleString('de-DE')}€<br>
+                <strong>Nach allen Ausgaben:</strong> ${finalLiq.toLocaleString('de-DE')}€<br>
+                <strong style="color: var(--teal);">✓ Über Minimum von ${minimumLiquidity.toLocaleString('de-DE')}€</strong>
+            `;
+        }
+    }
+
+    // Form submission
+    document.getElementById('planForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const formData = {
+            id: editingId || Date.now(),
+            name: document.getElementById('planName').value,
+            date: document.getElementById('planDate').value,
+            amount: parseFloat(document.getElementById('planAmount').value),
+            type: document.getElementById('planType').value,
+            category: document.getElementById('planCategory').value,
+            recurring: document.getElementById('planRecurring').value
+        };
+
+        if (editingId) {
+            const index = plannedCosts.findIndex(p => p.id === editingId);
+            if (index !== -1) {
+                plannedCosts[index] = formData;
+            }
+        } else {
+            plannedCosts.push(formData);
+        }
+
+        renderInvoices();
+        updateSummary();
+        updateImpactChart();
+        closePlanModal();
+    });
+
+    // Update impact preview in modal
+    function updateImpactPreview() {
+        const amount = parseFloat(document.getElementById('planAmount').value);
+        const date = document.getElementById('planDate').value;
+        
+        if (amount && date) {
+            const preview = document.getElementById('impactPreview');
+            const dateObj = new Date(date);
+            const dateStr = dateObj.toLocaleDateString('de-DE', { day: 'numeric', month: 'long' });
+            
+            // Calculate impact considering other planned costs before this date
+            let liquidityAtDate = currentLiquidity;
+            plannedCosts.forEach(cost => {
+                if (new Date(cost.date) < dateObj && cost.id !== editingId) {
+                    liquidityAtDate -= cost.amount;
+                }
+            });
+            
+            const newLiquidity = liquidityAtDate - amount;
+            const isWarning = newLiquidity < minimumLiquidity;
+            
+            document.getElementById('impactValue').textContent = `-${amount.toLocaleString('de-DE')}€`;
+            
+            if (isWarning) {
+                preview.classList.add('warning');
+                document.getElementById('impactDesc').innerHTML = 
+                    `⚠️ Ihre Liquidität wird am ${dateStr} voraussichtlich auf <strong>${newLiquidity.toLocaleString('de-DE')}€</strong> sinken.<br>` +
+                    `<strong>Das ist ${(minimumLiquidity - newLiquidity).toLocaleString('de-DE')}€ unter Ihrem Minimum!</strong>`;
+            } else {
+                preview.classList.remove('warning');
+                document.getElementById('impactDesc').textContent = 
+                    `✓ Ihre Liquidität wird am ${dateStr} voraussichtlich auf ${newLiquidity.toLocaleString('de-DE')}€ sinken (${(newLiquidity - minimumLiquidity).toLocaleString('de-DE')}€ über Minimum)`;
+            }
+            
+            preview.style.display = 'block';
+        }
+    }
+
+    function updateImpactChart() {
+        const canvas = document.getElementById('impactChart');
+        if (!canvas || typeof Chart === 'undefined') return;
+
+        // Destroy existing chart
+        const existingChart = Chart.getChart(canvas);
+        if (existingChart) {
+            existingChart.destroy();
+        }
+
+        // Prepare data
+        const sortedCosts = [...plannedCosts].sort((a, b) => new Date(a.date) - new Date(b.date));
+        
+        let runningLiquidity = currentLiquidity;
+        const labels = ['Heute'];
+        const data = [currentLiquidity];
+        
+        sortedCosts.forEach(cost => {
+            runningLiquidity -= cost.amount;
+            const dateObj = new Date(cost.date);
+            labels.push(dateObj.toLocaleDateString('de-DE', { day: 'numeric', month: 'short' }));
+            data.push(runningLiquidity);
+        });
+
+        const ctx = canvas.getContext('2d');
+        const gradient = ctx.createLinearGradient(0, 0, 0, 280);
+        gradient.addColorStop(0, 'rgba(14, 177, 122, 0.08)');
+        gradient.addColorStop(1, 'rgba(14, 177, 122, 0)');
+
+        new Chart(canvas, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Liquidität',
+                        data: data,
+                        borderColor: '#0EB17A',
+                        backgroundColor: gradient,
+                        borderWidth: 2.5,
+                        fill: true,
+                        tension: 0.3,
+                        pointRadius: 5,
+                        pointBackgroundColor: '#0EB17A',
+                        pointBorderColor: '#FFFFFF',
+                        pointBorderWidth: 2
+                    },
+                    {
+                        label: 'Minimum',
+                        data: Array(labels.length).fill(minimumLiquidity),
+                        borderColor: 'rgba(10, 37, 64, 0.3)',
+                        borderDash: [8, 4],
+                        borderWidth: 2,
+                        fill: false,
+                        pointRadius: 0
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: {
+                    mode: 'index',
+                    intersect: false
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        backgroundColor: '#0A2540',
+                        padding: 12,
+                        cornerRadius: 8,
+                        callbacks: {
+                            label: function(context) {
+                                if (context.dataset.label === 'Liquidität') {
+                                    return 'Liquidität: ' + context.parsed.y.toLocaleString('de-DE') + ' €';
+                                }
+                                return null;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.04)',
+                            drawBorder: false
+                        },
+                        ticks: {
+                            callback: function(value) {
+                                return (value / 1000) + 'k €';
+                            },
+                            color: '#6B7280',
+                            font: { size: 11 }
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false,
+                            drawBorder: false
+                        },
+                        ticks: {
+                            color: '#6B7280',
+                            font: { size: 11 }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    function exportData() {
+        alert('Export wird vorbereitet...\n\nKostendaten werden als Excel-Datei heruntergeladen');
+    }
+
+    // Initialize Charts
+    setTimeout(() => {
+        // Costs Development Chart
+        const costsCtx = document.getElementById('costsChart');
+        if (costsCtx && typeof Chart !== 'undefined') {
+            const context = costsCtx.getContext('2d');
+            const gradient = context.createLinearGradient(0, 0, 0, 280);
+            gradient.addColorStop(0, 'rgba(14, 177, 122, 0.08)');
+            gradient.addColorStop(1, 'rgba(14, 177, 122, 0)');
+
+            new Chart(costsCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Sep', 'Okt', 'Nov'],
+                    datasets: [
+                        {
+                            label: 'Gesamtkosten',
+                            data: [73200, 71400, 79300],
+                            borderColor: '#0A2540',
+                            backgroundColor: gradient,
+                            borderWidth: 2.5,
+                            fill: true,
+                            tension: 0.4,
+                            pointRadius: 0,
+                            pointHoverRadius: 6,
+                            pointHoverBackgroundColor: '#0A2540',
+                            pointHoverBorderColor: '#FFFFFF',
+                            pointHoverBorderWidth: 2
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: '#0A2540',
+                            padding: 12,
+                            cornerRadius: 8,
+                            callbacks: {
+                                label: function(context) {
+                                    return 'Kosten: ' + (context.parsed.y / 1000).toFixed(1) + 'k €';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.04)',
+                                drawBorder: false
+                            },
+                            ticks: {
+                                callback: function(value) {
+                                    return (value / 1000) + 'k €';
+                                },
+                                color: '#6B7280',
+                                font: { size: 11 }
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false,
+                                drawBorder: false
+                            },
+                            ticks: {
+                                color: '#6B7280',
+                                font: { size: 11 }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Initialize impact chart
+        updateImpactChart();
+    }, 100);
+</script>

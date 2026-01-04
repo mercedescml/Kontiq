@@ -1,0 +1,690 @@
+<style>
+    .bankkonten-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 32px;
+    }
+
+    .page-header {
+        margin-bottom: 32px;
+    }
+
+    .page-title {
+        font-size: 28px;
+        font-weight: 700;
+        color: var(--navy);
+        margin: 0 0 8px 0;
+    }
+
+    .page-subtitle {
+        color: var(--gray);
+        font-size: 14px;
+        margin: 0;
+    }
+
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .section-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--navy);
+        margin: 0;
+    }
+
+    .btn {
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        border: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .btn-primary {
+        background: var(--teal);
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background: #059669;
+    }
+
+    .btn-secondary {
+        background: #f3f4f6;
+        color: var(--navy);
+    }
+
+    .btn-secondary:hover {
+        background: #e5e7eb;
+    }
+
+    .btn-sm {
+        padding: 6px 12px;
+        font-size: 12px;
+    }
+
+    .accounts-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 16px;
+    }
+
+    .account-card {
+        background: white;
+        border-radius: 12px;
+        border: 1px solid var(--light-gray);
+        padding: 20px;
+        transition: all 0.2s;
+    }
+
+    .account-card:hover {
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    .account-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: start;
+        margin-bottom: 12px;
+    }
+
+    .account-bank {
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--navy);
+        margin: 0 0 4px 0;
+    }
+
+    .account-iban {
+        font-size: 13px;
+        color: var(--gray);
+        font-family: 'Roboto Mono', monospace;
+    }
+
+    .account-badge {
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 600;
+    }
+
+    .account-badge.primary {
+        background: rgba(14, 177, 122, 0.1);
+        color: #059669;
+    }
+
+    .account-badge.secondary {
+        background: #f3f4f6;
+        color: #6b7280;
+    }
+
+    .account-entity {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 12px;
+        background: #f8fafc;
+        border-radius: 8px;
+        margin-bottom: 12px;
+    }
+
+    .account-entity-icon {
+        font-size: 16px;
+    }
+
+    .account-entity-info {
+        flex: 1;
+    }
+
+    .account-entity-label {
+        font-size: 11px;
+        color: var(--gray);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .account-entity-name {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--navy);
+    }
+
+    .account-balance {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 12px;
+        border-top: 1px solid var(--light-gray);
+    }
+
+    .balance-label {
+        font-size: 12px;
+        color: var(--gray);
+    }
+
+    .balance-amount {
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--navy);
+    }
+
+    .balance-amount.positive {
+        color: #059669;
+    }
+
+    .account-actions {
+        display: flex;
+        gap: 8px;
+        margin-top: 12px;
+    }
+
+    /* Modal Styles */
+    .bank-modal-overlay {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        background: rgba(0,0,0,0.5) !important;
+        z-index: 999999 !important;
+        display: none;
+    }
+
+    .bank-modal-overlay.active {
+        display: block !important;
+    }
+
+    .bank-modal {
+        position: fixed !important;
+        top: 50% !important;
+        left: 50% !important;
+        transform: translate(-50%, -50%) !important;
+        background: #ffffff !important;
+        padding: 24px !important;
+        border-radius: 12px !important;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.2) !important;
+        width: 450px !important;
+        max-width: 90vw !important;
+        z-index: 1000000 !important;
+        display: none;
+    }
+
+    .bank-modal.active {
+        display: block !important;
+    }
+
+    .bank-modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    .bank-modal-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: #0A2540;
+        margin: 0;
+    }
+
+    .bank-modal-close {
+        background: none;
+        border: none;
+        font-size: 20px;
+        color: #6b7280;
+        cursor: pointer;
+    }
+
+    .bank-form-group {
+        margin-bottom: 16px;
+    }
+
+    .bank-form-label {
+        display: block;
+        font-size: 13px;
+        font-weight: 600;
+        color: #0A2540;
+        margin-bottom: 6px;
+    }
+
+    .bank-form-input,
+    .bank-form-select {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        font-size: 14px;
+        font-family: inherit;
+        box-sizing: border-box;
+    }
+
+    .bank-form-input:focus,
+    .bank-form-select:focus {
+        outline: none;
+        border-color: #0EB17A;
+        box-shadow: 0 0 0 2px rgba(14, 177, 122, 0.1);
+    }
+
+    .bank-modal-footer {
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+        margin-top: 20px;
+        padding-top: 16px;
+        border-top: 1px solid #e5e7eb;
+    }
+
+    .entity-checkbox-list {
+        max-height: 150px;
+        overflow-y: auto;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        padding: 8px;
+    }
+
+    .entity-checkbox-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+
+    .entity-checkbox-item:hover {
+        background: #f3f4f6;
+    }
+
+    .entity-checkbox-item input[type="checkbox"] {
+        width: 16px;
+        height: 16px;
+        accent-color: #0EB17A;
+    }
+
+    .entity-checkbox-item label {
+        font-size: 13px;
+        color: #0A2540;
+        cursor: pointer;
+        flex: 1;
+    }
+
+    .entity-checkbox-item .entity-type {
+        font-size: 11px;
+        color: #6b7280;
+        background: #f3f4f6;
+        padding: 2px 6px;
+        border-radius: 4px;
+    }
+
+    .all-entities-option {
+        padding: 10px 12px;
+        background: rgba(14, 177, 122, 0.08);
+        border-radius: 8px;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        cursor: pointer;
+    }
+
+    .all-entities-option:hover {
+        background: rgba(14, 177, 122, 0.15);
+    }
+
+    .all-entities-option input[type="checkbox"] {
+        width: 16px;
+        height: 16px;
+        accent-color: #0EB17A;
+    }
+
+    .all-entities-option label {
+        font-size: 13px;
+        font-weight: 600;
+        color: #0A2540;
+        cursor: pointer;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 48px 24px;
+        background: #f8fafc;
+        border-radius: 12px;
+        border: 2px dashed #e5e7eb;
+    }
+
+    .empty-state-icon {
+        font-size: 48px;
+        margin-bottom: 16px;
+    }
+
+    .empty-state h3 {
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--navy);
+        margin: 0 0 8px 0;
+    }
+
+    .empty-state p {
+        font-size: 14px;
+        color: var(--gray);
+        margin: 0;
+    }
+</style>
+
+<div class="bankkonten-container">
+    <div class="page-header">
+        <h1 class="page-title">Bankkonten</h1>
+        <p class="page-subtitle">Verwalten Sie Ihre Geschäftskonten und ordnen Sie diese Entitäten zu</p>
+    </div>
+
+    <div class="section-header">
+        <h2 class="section-title">Ihre Konten</h2>
+        <button class="btn btn-primary" onclick="openBankModal()">
+            + Konto hinzufügen
+        </button>
+    </div>
+
+    <div class="accounts-grid" id="accountsGrid"></div>
+</div>
+
+<!-- Bank Account Modal -->
+<div class="bank-modal-overlay" id="bankOverlay" onclick="closeBankModal()"></div>
+<div class="bank-modal" id="bankModal">
+    <div class="bank-modal-header">
+        <h3 class="bank-modal-title" id="bankModalTitle">Neues Konto</h3>
+        <button class="bank-modal-close" onclick="closeBankModal()">✕</button>
+    </div>
+    <form onsubmit="saveAccount(event)">
+        <input type="hidden" id="accountId">
+        
+        <div class="bank-form-group">
+            <label class="bank-form-label">Bank</label>
+            <input type="text" class="bank-form-input" id="accountBank" placeholder="z.B. Sparkasse, N26, Commerzbank" required>
+        </div>
+
+        <div class="bank-form-group">
+            <label class="bank-form-label">IBAN</label>
+            <input type="text" class="bank-form-input" id="accountIban" placeholder="DE00 0000 0000 0000 0000 00" required>
+        </div>
+
+        <div class="bank-form-group">
+            <label class="bank-form-label">Kontostand (€)</label>
+            <input type="number" class="bank-form-input" id="accountBalance" placeholder="0.00" step="0.01">
+        </div>
+
+        <div class="bank-form-group">
+            <label class="bank-form-label">Typ</label>
+            <select class="bank-form-select" id="accountType">
+                <option value="primary">Hauptkonto</option>
+                <option value="secondary">Sekundär</option>
+                <option value="savings">Sparkonto</option>
+            </select>
+        </div>
+
+        <div class="bank-form-group">
+            <label class="bank-form-label">Zuordnung zu Entitäten</label>
+            <div class="all-entities-option">
+                <input type="checkbox" id="allEntities" onchange="toggleAllEntities()">
+                <label for="allEntities">🌐 Alle Entitäten (Gesamtunternehmen)</label>
+            </div>
+            <div class="entity-checkbox-list" id="entityCheckboxList"></div>
+        </div>
+
+        <div class="bank-modal-footer">
+            <button type="button" class="btn btn-secondary" onclick="closeBankModal()">Abbrechen</button>
+            <button type="submit" class="btn btn-primary">Speichern</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    let accounts = JSON.parse(localStorage.getItem('kontiq_accounts') || '[]');
+    let entities = JSON.parse(localStorage.getItem('kontiq_entities') || '[]');
+
+    // Initialize with default accounts if none exist
+    if (accounts.length === 0) {
+        accounts = [
+            {
+                id: '1',
+                bank: 'Sparkasse',
+                iban: 'DE12 3456 7890 1234 5678 90',
+                balance: 45230.50,
+                type: 'primary',
+                entityIds: ['all'],
+                createdAt: new Date().toISOString()
+            },
+            {
+                id: '2',
+                bank: 'N26 Business',
+                iban: 'DE98 7654 3210 9876 5432 10',
+                balance: 12450.00,
+                type: 'secondary',
+                entityIds: ['1'],
+                createdAt: new Date().toISOString()
+            }
+        ];
+        localStorage.setItem('kontiq_accounts', JSON.stringify(accounts));
+    }
+
+    function getEntityName(entityId) {
+        if (entityId === 'all') return 'Alle Entitäten';
+        const entity = entities.find(e => e.id === entityId);
+        return entity ? entity.name : 'Unbekannt';
+    }
+
+    function getEntityIcon(entityId) {
+        if (entityId === 'all') return '🌐';
+        const entity = entities.find(e => e.id === entityId);
+        if (!entity) return '🏢';
+        return entity.category === 'abteilung' ? '🏢' : '📍';
+    }
+
+    function formatCurrency(value) {
+        return new Intl.NumberFormat('de-DE', {
+            style: 'currency',
+            currency: 'EUR'
+        }).format(value);
+    }
+
+    function formatIban(iban) {
+        return iban.replace(/(.{4})/g, '$1 ').trim();
+    }
+
+    function renderAccounts() {
+        const grid = document.getElementById('accountsGrid');
+        
+        if (accounts.length === 0) {
+            grid.innerHTML = `
+                <div class="empty-state" style="grid-column: 1/-1;">
+                    <div class="empty-state-icon">🏦</div>
+                    <h3>Keine Konten vorhanden</h3>
+                    <p>Fügen Sie Ihr erstes Bankkonto hinzu</p>
+                </div>
+            `;
+            return;
+        }
+
+        grid.innerHTML = accounts.map(account => {
+            const isAllEntities = account.entityIds.includes('all');
+            const entityDisplay = isAllEntities 
+                ? { icon: '🌐', name: 'Alle Entitäten', label: 'Gesamtunternehmen' }
+                : { 
+                    icon: getEntityIcon(account.entityIds[0]), 
+                    name: account.entityIds.length > 1 
+                        ? `${getEntityName(account.entityIds[0])} +${account.entityIds.length - 1}`
+                        : getEntityName(account.entityIds[0]),
+                    label: account.entityIds.length > 1 ? 'Mehrere Entitäten' : 'Zugeordnet'
+                };
+
+            return `
+                <div class="account-card">
+                    <div class="account-header">
+                        <div>
+                            <h3 class="account-bank">${account.bank}</h3>
+                            <div class="account-iban">${formatIban(account.iban)}</div>
+                        </div>
+                        <span class="account-badge ${account.type}">${
+                            account.type === 'primary' ? 'Hauptkonto' : 
+                            account.type === 'savings' ? 'Sparkonto' : 'Sekundär'
+                        }</span>
+                    </div>
+
+                    <div class="account-entity">
+                        <span class="account-entity-icon">${entityDisplay.icon}</span>
+                        <div class="account-entity-info">
+                            <div class="account-entity-label">${entityDisplay.label}</div>
+                            <div class="account-entity-name">${entityDisplay.name}</div>
+                        </div>
+                    </div>
+
+                    <div class="account-balance">
+                        <span class="balance-label">Aktueller Kontostand</span>
+                        <span class="balance-amount ${account.balance >= 0 ? 'positive' : ''}">${formatCurrency(account.balance)}</span>
+                    </div>
+
+                    <div class="account-actions">
+                        <button class="btn btn-secondary btn-sm" onclick="editAccount('${account.id}')">Bearbeiten</button>
+                        <button class="btn btn-secondary btn-sm" onclick="deleteAccount('${account.id}')">Löschen</button>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    function renderEntityCheckboxes() {
+        const container = document.getElementById('entityCheckboxList');
+        
+        if (entities.length === 0) {
+            container.innerHTML = '<p style="color:#6b7280;font-size:12px;text-align:center;padding:12px;">Keine Entitäten vorhanden</p>';
+            return;
+        }
+
+        container.innerHTML = entities.map(entity => `
+            <div class="entity-checkbox-item">
+                <input type="checkbox" id="entity_${entity.id}" value="${entity.id}" class="entity-checkbox">
+                <label for="entity_${entity.id}">${entity.name}</label>
+                <span class="entity-type">${entity.category === 'abteilung' ? 'Abteilung' : 'Standort'}</span>
+            </div>
+        `).join('');
+    }
+
+    function toggleAllEntities() {
+        const allChecked = document.getElementById('allEntities').checked;
+        document.querySelectorAll('.entity-checkbox').forEach(cb => {
+            cb.checked = false;
+            cb.disabled = allChecked;
+        });
+    }
+
+    function openBankModal(id = null) {
+        const modal = document.getElementById('bankModal');
+        const overlay = document.getElementById('bankOverlay');
+        const title = document.getElementById('bankModalTitle');
+
+        renderEntityCheckboxes();
+
+        if (id) {
+            const account = accounts.find(a => a.id === id);
+            title.textContent = 'Konto bearbeiten';
+            document.getElementById('accountId').value = account.id;
+            document.getElementById('accountBank').value = account.bank;
+            document.getElementById('accountIban').value = account.iban;
+            document.getElementById('accountBalance').value = account.balance;
+            document.getElementById('accountType').value = account.type;
+
+            // Set entity checkboxes
+            const isAllEntities = account.entityIds.includes('all');
+            document.getElementById('allEntities').checked = isAllEntities;
+            toggleAllEntities();
+
+            if (!isAllEntities) {
+                account.entityIds.forEach(entityId => {
+                    const cb = document.getElementById(`entity_${entityId}`);
+                    if (cb) cb.checked = true;
+                });
+            }
+        } else {
+            title.textContent = 'Neues Konto';
+            document.getElementById('accountId').value = '';
+            document.querySelector('form').reset();
+            document.getElementById('allEntities').checked = true;
+            toggleAllEntities();
+        }
+
+        overlay.classList.add('active');
+        modal.classList.add('active');
+    }
+
+    function closeBankModal() {
+        document.getElementById('bankOverlay').classList.remove('active');
+        document.getElementById('bankModal').classList.remove('active');
+    }
+
+    function saveAccount(event) {
+        event.preventDefault();
+        
+        const id = document.getElementById('accountId').value;
+        const isAllEntities = document.getElementById('allEntities').checked;
+        
+        let entityIds = [];
+        if (isAllEntities) {
+            entityIds = ['all'];
+        } else {
+            document.querySelectorAll('.entity-checkbox:checked').forEach(cb => {
+                entityIds.push(cb.value);
+            });
+            if (entityIds.length === 0) {
+                alert('Bitte wählen Sie mindestens eine Entität aus.');
+                return;
+            }
+        }
+
+        const account = {
+            id: id || Date.now().toString(),
+            bank: document.getElementById('accountBank').value,
+            iban: document.getElementById('accountIban').value,
+            balance: parseFloat(document.getElementById('accountBalance').value) || 0,
+            type: document.getElementById('accountType').value,
+            entityIds: entityIds,
+            createdAt: id ? accounts.find(a => a.id === id).createdAt : new Date().toISOString()
+        };
+
+        if (id) {
+            const index = accounts.findIndex(a => a.id === id);
+            accounts[index] = account;
+        } else {
+            accounts.push(account);
+        }
+
+        localStorage.setItem('kontiq_accounts', JSON.stringify(accounts));
+        closeBankModal();
+        renderAccounts();
+    }
+
+    function editAccount(id) {
+        openBankModal(id);
+    }
+
+    function deleteAccount(id) {
+        if (confirm('Möchten Sie dieses Konto wirklich löschen?')) {
+            accounts = accounts.filter(a => a.id !== id);
+            localStorage.setItem('kontiq_accounts', JSON.stringify(accounts));
+            renderAccounts();
+        }
+    }
+
+    // Initial render
+    renderAccounts();
+</script>

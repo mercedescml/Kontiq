@@ -1,0 +1,1590 @@
+<style>
+    /* ===== FORDERUNGEN - MINIMAL DESIGN SYSTEM ===== */
+    
+    /* Stats Bar - consistent with dashboard */
+    .stats-bar {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+
+    .stat-card {
+        background: var(--white);
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+        border: 1px solid var(--light-gray);
+        transition: all 0.2s;
+    }
+
+    .stat-card:hover {
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        transform: translateY(-2px);
+    }
+
+    .stat-label {
+        font-size: 11px;
+        color: var(--gray);
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        margin-bottom: 8px;
+        font-weight: 600;
+    }
+
+    .stat-value {
+        font-size: 24px;
+        font-weight: 800;
+        color: var(--navy);
+        font-family: 'Roboto Mono', monospace;
+        margin-bottom: 4px;
+        letter-spacing: -0.5px;
+    }
+
+    .stat-meta {
+        font-size: 12px;
+        color: var(--gray);
+        font-weight: 500;
+    }
+
+    .stat-meta.positive { color: var(--teal); }
+    .stat-meta.negative { color: var(--error); }
+    .stat-meta.warning { color: var(--gray); }
+
+    /* Filter Section */
+    .filter-section {
+        background: var(--white);
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+        border: 1px solid var(--light-gray);
+        margin-bottom: 20px;
+    }
+
+    .filter-grid {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 16px;
+    }
+
+    .filter-group {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .filter-label {
+        font-size: 12px;
+        color: var(--gray);
+        font-weight: 600;
+    }
+
+    .filter-group select,
+    .filter-group input {
+        padding: 10px 12px;
+        border: 1px solid var(--light-gray);
+        border-radius: 8px;
+        font-size: 13px;
+        color: var(--navy);
+        background: var(--white);
+        transition: border-color 0.2s;
+    }
+
+    .filter-group select:focus,
+    .filter-group input:focus {
+        outline: none;
+        border-color: var(--navy);
+    }
+
+    /* Invoices Table */
+    .invoices-table {
+        background: var(--white);
+        border-radius: 12px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+        border: 1px solid var(--light-gray);
+        overflow: hidden;
+        margin-bottom: 24px;
+    }
+
+    .table-header {
+        display: grid;
+        grid-template-columns: 40px 180px 120px 110px 110px 110px 120px 100px 140px;
+        column-gap: 10px;
+        padding: 15px 20px;
+        background: #F9FAFB;
+        border-bottom: 1px solid var(--light-gray);
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--gray);
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+    }
+
+    .invoice-row {
+        display: grid;
+        grid-template-columns: 40px 180px 120px 110px 110px 110px 120px 100px 140px;
+        column-gap: 10px;
+        padding: 16px 20px;
+        border-bottom: 1px solid #F3F4F6;
+        align-items: center;
+        transition: background 0.2s;
+        font-size: 13px;
+    }
+
+    .invoice-row:last-child {
+        border-bottom: none;
+    }
+
+    .invoice-row:hover {
+        background: #F9FAFB;
+    }
+
+    .invoice-row.overdue {
+        background: rgba(220, 38, 38, 0.04);
+        border-left: 3px solid var(--error);
+    }
+
+    .invoice-row.overdue:hover {
+        background: rgba(220, 38, 38, 0.08);
+    }
+
+    .invoice-row.paid {
+        opacity: 0.6;
+    }
+
+    /* Client Info */
+    .client-info {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        min-width: 0;
+        overflow: hidden;
+    }
+
+    .client-name {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--navy);
+    }
+
+    .client-warning {
+        font-size: 9px;
+        color: var(--error);
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 3px;
+        white-space: nowrap;
+    }
+
+    .client-warning::before {
+        content: "⚠";
+        font-size: 9px;
+    }
+
+    .invoice-number {
+        font-size: 11px;
+        color: var(--gray);
+    }
+
+    /* Amount */
+    .amount {
+        font-size: 13px;
+        font-weight: 700;
+        font-family: 'Roboto Mono', monospace;
+        color: var(--navy);
+    }
+
+    /* Date Info */
+    .date-info {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+    }
+
+    .date-main {
+        font-size: 13px;
+        font-weight: 600;
+        font-family: 'Roboto Mono', monospace;
+    }
+
+    .date-sub {
+        font-size: 11px;
+        color: var(--gray);
+    }
+
+    .date-overdue .date-main { color: var(--error); }
+    .date-warning .date-main { color: var(--navy); }
+    .date-success .date-main { color: var(--teal); }
+    .date-overdue .date-sub { color: var(--error); }
+    .date-warning .date-sub { color: var(--gray); }
+    .date-success .date-sub { color: var(--teal); }
+
+    /* Badges - Minimal Style */
+    .badge {
+        display: inline-block;
+        padding: 4px 10px;
+        border-radius: 6px;
+        font-size: 11px;
+        font-weight: 600;
+    }
+
+    .badge-offen {
+        background: rgba(10, 37, 64, 0.08);
+        color: var(--navy);
+    }
+
+    .badge-bezahlt {
+        background: rgba(14, 177, 122, 0.12);
+        color: var(--teal);
+    }
+
+    .badge-uberfällig {
+        background: rgba(220, 38, 38, 0.12);
+        color: var(--error);
+    }
+
+    .badge-mahnung {
+        background: rgba(220, 38, 38, 0.08);
+        color: var(--error);
+        display: block;
+        margin-top: 4px;
+        text-align: center;
+    }
+
+    .badge-uberweisung {
+        background: var(--light-bg);
+        color: var(--gray);
+    }
+
+    .badge-lastschrift {
+        background: var(--light-bg);
+        color: var(--gray);
+    }
+
+    .badge-bar {
+        background: var(--light-bg);
+        color: var(--gray);
+    }
+
+    /* Action Buttons */
+    .action-buttons {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .btn-icon {
+        padding: 10px 16px;
+        border: 1.5px solid var(--light-gray);
+        border-radius: 8px;
+        background: var(--white);
+        font-size: 12px;
+        color: var(--navy);
+        cursor: pointer;
+        transition: all 0.2s;
+        font-weight: 600;
+        line-height: 1.2;
+        min-width: 82px;
+    }
+
+    .btn-icon:hover {
+        border-color: var(--navy);
+        color: var(--navy);
+        background: var(--light-bg);
+    }
+
+    .btn-icon.warning {
+        border-color: var(--error);
+        color: var(--error);
+    }
+
+    .btn-icon.warning:hover {
+        background: rgba(220, 38, 38, 0.08);
+    }
+
+    /* Analysis Section */
+    .analysis-section {
+        background: var(--white);
+        padding: 24px;
+        border-radius: 12px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+        border: 1px solid var(--light-gray);
+    }
+
+    .analysis-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--navy);
+        letter-spacing: -0.3px;
+        margin-bottom: 20px;
+    }
+
+    .analysis-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+    }
+
+    .analysis-card {
+        border: 1px solid var(--light-gray);
+        border-radius: 10px;
+        padding: 16px;
+        background: var(--light-bg);
+    }
+
+    .analysis-card-header {
+        font-size: 13px;
+        color: var(--gray);
+        margin-bottom: 14px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .client-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .client-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 12px;
+        background: var(--white);
+        border: 1px solid var(--light-gray);
+        border-radius: 8px;
+        font-size: 12px;
+    }
+
+    .client-item-name {
+        font-weight: 500;
+        color: var(--navy);
+    }
+
+    .client-item-value {
+        font-weight: 600;
+        font-family: 'Roboto Mono', monospace;
+        font-size: 11px;
+    }
+
+    .client-item-value.positive { color: var(--teal); }
+    .client-item-value.negative { color: var(--error); }
+    .client-item-value.warning { color: var(--gray); }
+
+    /* ===== MODAL - MINIMAL DESIGN ===== */
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(10, 37, 64, 0.4);
+        backdrop-filter: blur(2px);
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .modal.active {
+        display: flex;
+    }
+
+    .modal-content {
+        background: var(--white);
+        border-radius: 16px;
+        width: 90%;
+        max-width: 640px;
+        max-height: 85vh;
+        overflow-y: auto;
+        box-shadow: 0 20px 60px rgba(10, 37, 64, 0.2);
+    }
+
+    .modal-header {
+        padding: 20px 24px;
+        border-bottom: 1px solid var(--light-gray);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .modal-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--navy);
+    }
+
+    .close-modal {
+        font-size: 20px;
+        color: var(--gray);
+        cursor: pointer;
+        background: none;
+        border: none;
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+        transition: all 0.15s;
+    }
+
+    .close-modal:hover {
+        background: var(--light-gray);
+        color: var(--navy);
+    }
+
+    .modal-body {
+        padding: 24px;
+    }
+
+    /* Form Styles */
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        margin-bottom: 16px;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .form-group.full-width {
+        grid-column: 1 / -1;
+    }
+
+    .form-label {
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: var(--gray);
+        font-weight: 600;
+    }
+
+    .form-input {
+        padding: 12px 14px;
+        border: 1px solid var(--light-gray);
+        border-radius: 8px;
+        font-size: 14px;
+        color: var(--navy);
+        transition: border-color 0.2s;
+    }
+
+    .form-input:focus {
+        outline: none;
+        border-color: var(--navy);
+    }
+
+    .form-input[readonly] {
+        background: var(--light-bg);
+        color: var(--gray);
+    }
+
+    textarea.form-input {
+        min-height: 80px;
+        resize: vertical;
+        font-family: inherit;
+    }
+
+    /* Items Section - Invoice Line Items */
+    .items-section {
+        margin: 20px 0;
+        padding: 20px;
+        background: var(--light-bg);
+        border-radius: 10px;
+        border: 1px solid var(--light-gray);
+    }
+
+    .items-section-title {
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: var(--gray);
+        font-weight: 600;
+        margin-bottom: 14px;
+    }
+
+    .item-row {
+        display: grid;
+        grid-template-columns: 2fr 80px 100px 100px 36px;
+        gap: 12px;
+        margin-bottom: 10px;
+        align-items: end;
+    }
+
+    .item-row .form-input {
+        padding: 10px 12px;
+        font-size: 13px;
+    }
+
+    /* Total Section */
+    .total-section {
+        background: var(--light-bg);
+        padding: 16px 20px;
+        border-radius: 10px;
+        margin-top: 20px;
+        border: 1px solid var(--light-gray);
+    }
+
+    .total-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 0;
+        font-size: 13px;
+        color: var(--gray);
+    }
+
+    .total-row span:last-child {
+        font-family: 'Roboto Mono', monospace;
+        font-weight: 600;
+        color: var(--navy);
+    }
+
+    .total-row.final {
+        border-top: 1px solid var(--light-gray);
+        padding-top: 14px;
+        margin-top: 8px;
+        font-size: 16px;
+        font-weight: 700;
+    }
+
+    .total-row.final span:first-child {
+        color: var(--navy);
+    }
+
+    .total-row.final span:last-child {
+        font-size: 18px;
+    }
+
+    /* Modal Footer */
+    .modal-footer {
+        padding: 20px 24px;
+        border-top: 1px solid var(--light-gray);
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        background: var(--light-bg);
+    }
+
+    /* Reminder Info Block */
+    .reminder-info {
+        background: var(--light-bg);
+        padding: 16px 20px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        border: 1px solid var(--light-gray);
+    }
+
+    .reminder-detail {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 0;
+        border-bottom: 1px solid var(--light-gray);
+        font-size: 13px;
+    }
+
+    .reminder-detail:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+    }
+
+    .reminder-detail span:first-child {
+        color: var(--gray);
+    }
+
+    .reminder-detail span:last-child {
+        font-weight: 600;
+        color: var(--navy);
+        font-family: 'Roboto Mono', monospace;
+    }
+
+    /* Mahnung Calculator */
+    .mahnung-calculator {
+        background: rgba(220, 38, 38, 0.04);
+        border: 1px solid rgba(220, 38, 38, 0.15);
+        padding: 16px 20px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+    }
+
+    .mahnung-calculator-title {
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: var(--navy);
+        font-weight: 600;
+        margin-bottom: 12px;
+    }
+
+    .calc-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 0;
+        font-size: 13px;
+        color: var(--gray);
+    }
+
+    .calc-row span:last-child {
+        font-family: 'Roboto Mono', monospace;
+        font-weight: 600;
+    }
+
+    .calc-row.total {
+        border-top: 1px solid rgba(220, 38, 38, 0.2);
+        margin-top: 8px;
+        padding-top: 12px;
+        font-weight: 700;
+        font-size: 15px;
+    }
+
+    .calc-row.total span:first-child {
+        color: var(--navy);
+    }
+
+    .calc-row.total span:last-child {
+        color: var(--error);
+    }
+
+    /* Import Methods */
+    .import-methods {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+        margin-bottom: 20px;
+    }
+
+    .import-method {
+        padding: 20px 16px;
+        border: 1px solid var(--light-gray);
+        border-radius: 10px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.2s;
+        background: var(--white);
+    }
+
+    .import-method:hover {
+        border-color: var(--navy);
+        background: var(--light-bg);
+    }
+
+    .import-method.active {
+        border-color: var(--teal);
+        background: rgba(14, 177, 122, 0.06);
+    }
+
+    .import-title {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--navy);
+        margin-bottom: 6px;
+    }
+
+    .import-desc {
+        font-size: 11px;
+        color: var(--gray);
+    }
+
+    /* Upload Zone */
+    .upload-zone {
+        text-align: center;
+        padding: 40px;
+        border: 2px dashed var(--light-gray);
+        border-radius: 10px;
+        transition: all 0.2s;
+    }
+
+    .upload-zone:hover {
+        border-color: var(--navy);
+        background: var(--light-bg);
+    }
+
+    .upload-zone-title {
+        font-size: 15px;
+        font-weight: 600;
+        color: var(--navy);
+        margin-bottom: 8px;
+    }
+
+    .upload-zone-desc {
+        font-size: 12px;
+        color: var(--gray);
+        margin-bottom: 16px;
+    }
+
+    /* History Box */
+    .history-box {
+        background: var(--light-bg);
+        padding: 14px 16px;
+        border-radius: 8px;
+        margin-top: 16px;
+        border: 1px solid var(--light-gray);
+    }
+
+    .history-box-title {
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-weight: 600;
+        color: var(--gray);
+        margin-bottom: 8px;
+    }
+
+    .history-box-content {
+        font-size: 11px;
+        color: var(--gray);
+    }
+
+    .history-item {
+        padding: 6px 0;
+        border-bottom: 1px solid var(--light-gray);
+    }
+
+    .history-item:last-child {
+        border-bottom: none;
+    }
+</style>
+
+<div class="page-header">
+    <h1 class="page-title">Forderungsmanagement</h1>
+    <div class="header-actions">
+        <button class="btn btn-secondary" onclick="openImport()">Import</button>
+        <button class="btn btn-primary" onclick="openCreateInvoice()">Neue Rechnung</button>
+    </div>
+</div>
+
+<!-- STATS -->
+<div class="stats-bar">
+    <div class="stat-card">
+        <div class="stat-label">Gesamt Forderungen</div>
+        <div class="stat-value">42</div>
+        <div class="stat-meta">Alle Rechnungen</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-label">Offen</div>
+        <div class="stat-value">18</div>
+        <div class="stat-meta">52.340€</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-label">Bezahlt</div>
+        <div class="stat-value">22</div>
+        <div class="stat-meta">89.650€</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-label">Überfällig</div>
+        <div class="stat-value">2</div>
+        <div class="stat-meta">8.200€</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-label">Ø Zahlungsdauer</div>
+        <div class="stat-value">12 T</div>
+        <div class="stat-meta">Durchschnitt</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-label">Diese Woche fällig</div>
+        <div class="stat-value">5</div>
+        <div class="stat-meta">14.800€</div>
+    </div>
+</div>
+
+<!-- FILTERS -->
+<div class="filter-section">
+    <div class="filter-grid">
+        <div class="filter-group">
+            <label class="filter-label">Status</label>
+            <select>
+                <option>Alle</option>
+                <option>Offen</option>
+                <option>Bezahlt</option>
+                <option>Überfällig</option>
+                <option>Mahnung versendet</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label class="filter-label">Kunde</label>
+            <select>
+                <option>Alle Kunden</option>
+                <option>Firma ABC GmbH</option>
+                <option>Tech Solutions AG</option>
+                <option>Handels Partner KG</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label class="filter-label">Zeitraum</label>
+            <select>
+                <option>Alle</option>
+                <option>Diese Woche</option>
+                <option>Dieser Monat</option>
+                <option>Dieses Quartal</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label class="filter-label">Zahlungsart</label>
+            <select>
+                <option>Alle</option>
+                <option>Überweisung</option>
+                <option>Lastschrift</option>
+                <option>Bar</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label class="filter-label">Suche</label>
+            <input type="text" placeholder="Kunde, Rechnung...">
+        </div>
+    </div>
+</div>
+
+<!-- INVOICES TABLE -->
+<div class="invoices-table">
+    <div class="table-header">
+        <div><input type="checkbox"></div>
+        <div>Kunde</div>
+        <div>Rechnung</div>
+        <div>Betrag</div>
+        <div>Erstellt</div>
+        <div>Fällig</div>
+        <div>Status</div>
+        <div>Zahlungsart</div>
+        <div>Aktionen</div>
+    </div>
+
+    <div class="invoice-row overdue">
+        <div><input type="checkbox"></div>
+        <div class="client-info">
+            <div class="client-name">Firma ABC GmbH</div>
+            <div class="client-warning">Häufig verspätet</div>
+        </div>
+        <div class="invoice-number">#RE-2025-001</div>
+        <div class="amount">4.850€</div>
+        <div class="date-info">
+            <div class="date-main">15.11.2025</div>
+        </div>
+        <div class="date-info date-overdue">
+            <div class="date-main">05.12.2025</div>
+            <div class="date-sub">3 Tage überfällig</div>
+        </div>
+        <div>
+            <span class="badge badge-uberfällig">Überfällig</span>
+            <span class="badge badge-mahnung">1. Mahnung</span>
+        </div>
+        <div><span class="badge badge-uberweisung">Überw.</span></div>
+        <div class="action-buttons">
+            <button class="btn-icon warning" onclick="openReminder('ABC')">Mahn.</button>
+            <button class="btn-icon" onclick="editInvoice('RE-2025-001')">Bearb.</button>
+        </div>
+    </div>
+
+    <div class="invoice-row">
+        <div><input type="checkbox"></div>
+        <div class="client-info">
+            <div class="client-name">Tech Solutions AG</div>
+        </div>
+        <div class="invoice-number">#RE-2025-002</div>
+        <div class="amount">12.400€</div>
+        <div class="date-info">
+            <div class="date-main">20.11.2025</div>
+        </div>
+        <div class="date-info date-warning">
+            <div class="date-main">15.12.2025</div>
+            <div class="date-sub">In 7 Tagen</div>
+        </div>
+        <div><span class="badge badge-offen">Offen</span></div>
+        <div><span class="badge badge-lastschrift">Lastschr.</span></div>
+        <div class="action-buttons">
+            <button class="btn-icon" onclick="openReminder('Tech')">Erinner.</button>
+            <button class="btn-icon" onclick="editInvoice('RE-2025-002')">Bearb.</button>
+        </div>
+    </div>
+
+    <div class="invoice-row paid">
+        <div><input type="checkbox"></div>
+        <div class="client-info">
+            <div class="client-name">Handels Partner KG</div>
+        </div>
+        <div class="invoice-number">#RE-2025-003</div>
+        <div class="amount">3.200€</div>
+        <div class="date-info">
+            <div class="date-main">25.11.2025</div>
+        </div>
+        <div class="date-info date-success">
+            <div class="date-main">28.11.2025</div>
+            <div class="date-sub">Bezahlt: 27.11.</div>
+        </div>
+        <div><span class="badge badge-bezahlt">Bezahlt</span></div>
+        <div><span class="badge badge-uberweisung">Überw.</span></div>
+        <div class="action-buttons">
+            <button class="btn-icon" onclick="editInvoice('RE-2025-003')">Bearb.</button>
+        </div>
+    </div>
+
+    <div class="invoice-row overdue">
+        <div><input type="checkbox"></div>
+        <div class="client-info">
+            <div class="client-name">Bau Service GmbH</div>
+            <div class="client-warning">Lastschrift fehlgeschlagen</div>
+        </div>
+        <div class="invoice-number">#RE-2025-004</div>
+        <div class="amount">3.350€</div>
+        <div class="date-info">
+            <div class="date-main">28.11.2025</div>
+        </div>
+        <div class="date-info date-overdue">
+            <div class="date-main">01.12.2025</div>
+            <div class="date-sub">7 Tage überfällig</div>
+        </div>
+        <div>
+            <span class="badge badge-uberfällig">Überfällig</span>
+            <span class="badge badge-mahnung">2. Mahnung</span>
+        </div>
+        <div><span class="badge badge-lastschrift">Lastschr.</span></div>
+        <div class="action-buttons">
+            <button class="btn-icon warning" onclick="openReminder('Bau')">Mahn.</button>
+            <button class="btn-icon" onclick="editInvoice('RE-2025-004')">Bearb.</button>
+        </div>
+    </div>
+
+    <div class="invoice-row">
+        <div><input type="checkbox"></div>
+        <div class="client-info">
+            <div class="client-name">Retail Express KG</div>
+        </div>
+        <div class="invoice-number">#RE-2025-005</div>
+        <div class="amount">8.900€</div>
+        <div class="date-info">
+            <div class="date-main">01.12.2025</div>
+        </div>
+        <div class="date-info">
+            <div class="date-main">22.12.2025</div>
+            <div class="date-sub">In 14 Tagen</div>
+        </div>
+        <div><span class="badge badge-offen">Offen</span></div>
+        <div><span class="badge badge-bar">Bar</span></div>
+        <div class="action-buttons">
+            <button class="btn-icon" onclick="editInvoice('RE-2025-005')">Bearb.</button>
+        </div>
+    </div>
+</div>
+
+<!-- ANALYSIS SECTION -->
+<div class="analysis-section">
+    <div class="analysis-title">Kundenanalyse</div>
+    <div class="analysis-grid">
+        <div class="analysis-card">
+            <div class="analysis-card-header">Pünktliche Zahler</div>
+            <div class="client-list">
+                <div class="client-item">
+                    <span class="client-item-name">Handels Partner KG</span>
+                    <span class="client-item-value positive">Ø 8 Tage</span>
+                </div>
+                <div class="client-item">
+                    <span class="client-item-name">Tech Solutions AG</span>
+                    <span class="client-item-value positive">Ø 10 Tage</span>
+                </div>
+                <div class="client-item">
+                    <span class="client-item-name">Retail Express KG</span>
+                    <span class="client-item-value positive">Ø 12 Tage</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="analysis-card">
+            <div class="analysis-card-header">Verspätete Zahler</div>
+            <div class="client-list">
+                <div class="client-item">
+                    <span class="client-item-name">Firma ABC GmbH</span>
+                    <span class="client-item-value negative">Ø 35 Tage</span>
+                </div>
+                <div class="client-item">
+                    <span class="client-item-name">Bau Service GmbH</span>
+                    <span class="client-item-value negative">Ø 42 Tage</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="analysis-card">
+            <div class="analysis-card-header">Risikokunden</div>
+            <div class="client-list">
+                <div class="client-item">
+                    <span class="client-item-name">Firma ABC GmbH</span>
+                    <span class="client-item-value negative">3× Mahnung</span>
+                </div>
+                <div class="client-item">
+                    <span class="client-item-name">Bau Service GmbH</span>
+                    <span class="client-item-value negative">2× Fehlgeschlagen</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CREATE INVOICE MODAL -->
+<div class="modal" id="createInvoiceModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <div class="modal-title">Neue Rechnung erstellen</div>
+            <button class="close-modal" onclick="closeCreateInvoice()">×</button>
+        </div>
+        <div class="modal-body">
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Kunde</label>
+                    <select class="form-input">
+                        <option>Kunde wählen</option>
+                        <option>Firma ABC GmbH</option>
+                        <option>Tech Solutions AG</option>
+                        <option>Handels Partner KG</option>
+                        <option>+ Neuer Kunde</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Rechnungsnummer</label>
+                    <input type="text" class="form-input" value="#RE-2025-006" readonly>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Rechnungsdatum</label>
+                    <input type="date" class="form-input" value="2025-12-08">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Fälligkeitsdatum</label>
+                    <input type="date" class="form-input">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Zahlungsziel (Tage)</label>
+                    <input type="number" class="form-input" value="14">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Zahlungsart</label>
+                    <select class="form-input">
+                        <option>Überweisung</option>
+                        <option>Lastschrift</option>
+                        <option>Bar</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="items-section">
+                <div class="items-section-title">Positionen</div>
+                <div class="item-row">
+                    <div class="form-group">
+                        <label class="form-label">Beschreibung</label>
+                        <input type="text" class="form-input" placeholder="Leistung/Produkt">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Menge</label>
+                        <input type="number" class="form-input" value="1">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Preis (€)</label>
+                        <input type="number" class="form-input" step="0.01">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Gesamt</label>
+                        <input type="number" class="form-input" readonly>
+                    </div>
+                    <button class="btn-icon" style="margin-top: 22px; border-color: var(--error); color: var(--error);">×</button>
+                </div>
+                <button class="btn btn-secondary" style="margin-top: 10px;">+ Position</button>
+            </div>
+
+            <div class="total-section">
+                <div class="total-row">
+                    <span>Zwischensumme</span>
+                    <span>0,00 €</span>
+                </div>
+                <div class="total-row">
+                    <span>MwSt. 19%</span>
+                    <span>0,00 €</span>
+                </div>
+                <div class="total-row final">
+                    <span>Gesamt</span>
+                    <span>0,00 €</span>
+                </div>
+            </div>
+
+            <div class="form-group full-width" style="margin-top: 16px;">
+                <label class="form-label">Notizen (Optional)</label>
+                <textarea class="form-input" placeholder="Zusätzliche Informationen..."></textarea>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="closeCreateInvoice()">Abbrechen</button>
+            <button class="btn btn-secondary">Entwurf speichern</button>
+            <button class="btn btn-primary">Erstellen & Versenden</button>
+        </div>
+    </div>
+</div>
+
+<!-- REMINDER/MAHNUNG MODAL -->
+<div class="modal" id="reminderModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <div class="modal-title">Zahlungserinnerung / Mahnung</div>
+            <button class="close-modal" onclick="closeReminder()">×</button>
+        </div>
+        <div class="modal-body">
+            <div class="reminder-info">
+                <div class="reminder-detail">
+                    <span>Kunde</span>
+                    <span>Firma ABC GmbH</span>
+                </div>
+                <div class="reminder-detail">
+                    <span>Rechnung</span>
+                    <span>#RE-2025-001</span>
+                </div>
+                <div class="reminder-detail">
+                    <span>Betrag</span>
+                    <span>4.850€</span>
+                </div>
+                <div class="reminder-detail">
+                    <span>Fällig seit</span>
+                    <span style="color: var(--error);">3 Tagen</span>
+                </div>
+                <div class="reminder-detail">
+                    <span>Bisherige Mahnungen</span>
+                    <span>1</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Typ</label>
+                <select class="form-input" id="reminderType" onchange="updateMahnungCalculation()">
+                    <option>Freundliche Erinnerung</option>
+                    <option>1. Mahnung</option>
+                    <option>2. Mahnung</option>
+                    <option>3. Mahnung (Letzte Warnung)</option>
+                </select>
+            </div>
+
+            <div class="mahnung-calculator" id="mahnungCalc" style="display: none;">
+                <div class="mahnung-calculator-title">Mahnungsberechnung</div>
+                <div class="calc-row">
+                    <span>Ursprünglicher Betrag</span>
+                    <span>4.850,00 €</span>
+                </div>
+                <div class="calc-row">
+                    <span>Verzugszinsen (9,12% p.a., 3 Tage)</span>
+                    <span style="color: var(--error);">+3,65 €</span>
+                </div>
+                <div class="calc-row">
+                    <span>Mahngebühr (1. Mahnung)</span>
+                    <span style="color: var(--error);">+5,00 €</span>
+                </div>
+                <div class="calc-row total">
+                    <span>Forderung gesamt</span>
+                    <span>4.858,65 €</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Email-Betreff</label>
+                <input type="text" class="form-input" value="Zahlungserinnerung Rechnung #RE-2025-001">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Nachricht</label>
+                <textarea class="form-input" rows="6">Sehr geehrte Damen und Herren,
+
+wir möchten Sie daran erinnern, dass die Rechnung #RE-2025-001 über 4.850,00 € seit dem 05.12.2025 fällig ist.
+
+Bitte überweisen Sie den ausstehenden Betrag innerhalb der nächsten 7 Tage.
+
+Mit freundlichen Grüßen</textarea>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Neue Zahlungsfrist (Tage)</label>
+                <input type="number" class="form-input" value="7">
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="closeReminder()">Abbrechen</button>
+            <button class="btn btn-secondary">Vorschau</button>
+            <button class="btn btn-primary">Versenden</button>
+        </div>
+    </div>
+</div>
+
+<!-- IMPORT MODAL -->
+<div class="modal" id="importModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <div class="modal-title">Rechnungen importieren</div>
+            <button class="close-modal" onclick="closeImport()">×</button>
+        </div>
+        <div class="modal-body">
+            <div class="import-methods">
+                <div class="import-method active" onclick="selectImport('pdf')">
+                    <div class="import-title">PDF Import</div>
+                    <div class="import-desc">Rechnungen als PDF hochladen</div>
+                </div>
+                <div class="import-method" onclick="selectImport('excel')">
+                    <div class="import-title">Excel Import</div>
+                    <div class="import-desc">Mehrere Rechnungen aus Excel</div>
+                </div>
+                <div class="import-method" onclick="selectImport('datev')">
+                    <div class="import-title">DATEV Import</div>
+                    <div class="import-desc">Aus Buchhaltungssystem</div>
+                </div>
+            </div>
+
+            <div id="pdfImport" class="upload-zone">
+                <div class="upload-zone-title">PDF-Rechnungen hochladen</div>
+                <div class="upload-zone-desc">Automatische Erkennung von Kunde, Betrag, Datum</div>
+                <input type="file" accept=".pdf" multiple style="display: none;" id="pdfFileInput">
+                <button class="btn btn-primary" onclick="document.getElementById('pdfFileInput').click()">Dateien wählen</button>
+            </div>
+
+            <div id="excelImport" class="upload-zone" style="display: none;">
+                <div class="upload-zone-title">Excel-Datei importieren</div>
+                <div class="upload-zone-desc">Mehrere Rechnungen gleichzeitig</div>
+                <input type="file" accept=".xlsx,.xls" style="display: none;" id="excelFileInput">
+                <button class="btn btn-primary" onclick="document.getElementById('excelFileInput').click()">Datei wählen</button>
+                <div style="margin-top: 12px;">
+                    <a href="#" style="color: var(--teal); font-size: 12px; text-decoration: none;">Excel-Vorlage herunterladen</a>
+                </div>
+            </div>
+
+            <div id="datevImport" style="display: none;">
+                <div class="form-group">
+                    <label class="form-label">DATEV Export-Datei</label>
+                    <input type="file" accept=".csv" class="form-input">
+                </div>
+                <div class="history-box" style="margin-top: 16px;">
+                    <div class="history-box-content">
+                        Unterstützte Formate: DATEV ASCII, DATEV CSV
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="closeImport()">Abbrechen</button>
+            <button class="btn btn-primary">Importieren</button>
+        </div>
+    </div>
+</div>
+
+<!-- EDIT INVOICE MODAL -->
+<div class="modal" id="editInvoiceModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <div class="modal-title">Rechnung bearbeiten</div>
+            <button class="close-modal" onclick="closeEditInvoice()">×</button>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" id="editInvoiceId">
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Rechnungsnummer</label>
+                    <input type="text" id="editInvoiceNumber" class="form-input" placeholder="#RE-2025-...">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Kunde</label>
+                    <input type="text" id="editClientName" class="form-input" placeholder="Kundenname">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Betrag (€)</label>
+                    <input type="number" id="editAmount" class="form-input" placeholder="0.00" step="0.01">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Status</label>
+                    <select id="editStatus" class="form-input">
+                        <option value="offen">Offen</option>
+                        <option value="bezahlt">Bezahlt</option>
+                        <option value="uberfällig">Überfällig</option>
+                        <option value="storniert">Storniert</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Rechnungsdatum</label>
+                    <input type="date" id="editInvoiceDate" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Fälligkeitsdatum</label>
+                    <input type="date" id="editDueDate" class="form-input">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Zahlungsart</label>
+                    <select id="editPaymentMethod" class="form-input">
+                        <option>Überweisung</option>
+                        <option>Lastschrift</option>
+                        <option>Bar</option>
+                        <option>PayPal</option>
+                        <option>Kreditkarte</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Skonto %</label>
+                    <input type="number" id="editSkonto" class="form-input" placeholder="0" step="0.1" min="0" max="100">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Skonto-Frist</label>
+                    <input type="date" id="editSkontoDeadline" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Bezahlt am</label>
+                    <input type="date" id="editPaidDate" class="form-input">
+                </div>
+            </div>
+
+            <div class="form-group full-width">
+                <label class="form-label">Notizen</label>
+                <textarea id="editNotes" class="form-input" rows="3" placeholder="Zusätzliche Informationen..."></textarea>
+            </div>
+
+            <div class="history-box">
+                <div class="history-box-title">Änderungshistorie</div>
+                <div id="editHistory" class="history-box-content">
+                    Keine Änderungen
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="closeEditInvoice()">Abbrechen</button>
+            <button class="btn btn-primary" onclick="saveInvoiceChanges()">Speichern</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    function openCreateInvoice() {
+        document.getElementById('createInvoiceModal').classList.add('active');
+    }
+
+    function closeCreateInvoice() {
+        document.getElementById('createInvoiceModal').classList.remove('active');
+    }
+
+    function openReminder(client) {
+        document.getElementById('reminderModal').classList.add('active');
+    }
+
+    function closeReminder() {
+        document.getElementById('reminderModal').classList.remove('active');
+    }
+
+    function openImport() {
+        document.getElementById('importModal').classList.add('active');
+    }
+
+    function closeImport() {
+        document.getElementById('importModal').classList.remove('active');
+    }
+
+    function selectImport(type) {
+        document.querySelectorAll('.import-method').forEach(el => el.classList.remove('active'));
+        event.target.closest('.import-method').classList.add('active');
+        
+        document.getElementById('pdfImport').style.display = 'none';
+        document.getElementById('excelImport').style.display = 'none';
+        document.getElementById('datevImport').style.display = 'none';
+        
+        document.getElementById(type + 'Import').style.display = 'block';
+    }
+
+    function updateMahnungCalculation() {
+        const type = document.getElementById('reminderType').value;
+        const calc = document.getElementById('mahnungCalc');
+        
+        if (type.includes('Mahnung')) {
+            calc.style.display = 'block';
+        } else {
+            calc.style.display = 'none';
+        }
+    }
+
+    // Edit Invoice Functions
+    const invoiceDatabase = {
+        'RE-2025-001': {
+            id: 'RE-2025-001',
+            client: 'ABC GmbH',
+            amount: 4850,
+            invoiceDate: '2025-11-15',
+            dueDate: '2025-12-05',
+            status: 'uberfällig',
+            paymentMethod: 'Überweisung',
+            skonto: 2,
+            skontoDeadline: '2025-11-25',
+            paidDate: '',
+            notes: '',
+            history: []
+        },
+        'RE-2025-002': {
+            id: 'RE-2025-002',
+            client: 'Tech Solutions AG',
+            amount: 12400,
+            invoiceDate: '2025-11-20',
+            dueDate: '2025-12-15',
+            status: 'offen',
+            paymentMethod: 'Lastschrift',
+            skonto: 0,
+            skontoDeadline: '',
+            paidDate: '',
+            notes: '',
+            history: []
+        },
+        'RE-2025-003': {
+            id: 'RE-2025-003',
+            client: 'Handels Partner KG',
+            amount: 3200,
+            invoiceDate: '2025-11-25',
+            dueDate: '2025-11-28',
+            status: 'bezahlt',
+            paymentMethod: 'Überweisung',
+            skonto: 0,
+            skontoDeadline: '',
+            paidDate: '2025-11-27',
+            notes: '',
+            history: []
+        },
+        'RE-2025-004': {
+            id: 'RE-2025-004',
+            client: 'Bau Service GmbH',
+            amount: 3350,
+            invoiceDate: '2025-11-28',
+            dueDate: '2025-12-01',
+            status: 'uberfällig',
+            paymentMethod: 'Lastschrift',
+            skonto: 0,
+            skontoDeadline: '',
+            paidDate: '',
+            notes: 'Lastschrift fehlgeschlagen',
+            history: []
+        },
+        'RE-2025-005': {
+            id: 'RE-2025-005',
+            client: 'Retail Express KG',
+            amount: 8900,
+            invoiceDate: '2025-12-01',
+            dueDate: '2025-12-22',
+            status: 'offen',
+            paymentMethod: 'Überweisung',
+            skonto: 3,
+            skontoDeadline: '2025-12-11',
+            paidDate: '',
+            notes: '',
+            history: []
+        }
+    };
+
+    function editInvoice(invoiceId) {
+        const invoice = invoiceDatabase[invoiceId];
+        if (!invoice) {
+            alert('Rechnung nicht gefunden');
+            return;
+        }
+
+        // Populate form
+        document.getElementById('editInvoiceId').value = invoice.id;
+        document.getElementById('editInvoiceNumber').value = invoice.id;
+        document.getElementById('editClientName').value = invoice.client;
+        document.getElementById('editAmount').value = invoice.amount;
+        document.getElementById('editStatus').value = invoice.status;
+        document.getElementById('editInvoiceDate').value = invoice.invoiceDate;
+        document.getElementById('editDueDate').value = invoice.dueDate;
+        document.getElementById('editPaymentMethod').value = invoice.paymentMethod;
+        document.getElementById('editSkonto').value = invoice.skonto;
+        document.getElementById('editSkontoDeadline').value = invoice.skontoDeadline;
+        document.getElementById('editPaidDate').value = invoice.paidDate;
+        document.getElementById('editNotes').value = invoice.notes;
+
+        // Show history
+        const historyDiv = document.getElementById('editHistory');
+        if (invoice.history && invoice.history.length > 0) {
+            historyDiv.innerHTML = invoice.history.map(h => 
+                `<div style="margin-bottom: 4px;">${h.date}: ${h.change} (${h.user})</div>`
+            ).join('');
+        } else {
+            historyDiv.textContent = 'Keine Änderungen';
+        }
+
+        // Show modal
+        document.getElementById('editInvoiceModal').classList.add('active');
+    }
+
+    function closeEditInvoice() {
+        document.getElementById('editInvoiceModal').classList.remove('active');
+    }
+
+    function saveInvoiceChanges() {
+        const invoiceId = document.getElementById('editInvoiceId').value;
+        const invoice = invoiceDatabase[invoiceId];
+        
+        if (!invoice) {
+            alert('Fehler beim Speichern');
+            return;
+        }
+
+        // Get old values for history
+        const oldAmount = invoice.amount;
+        const oldStatus = invoice.status;
+        const oldDueDate = invoice.dueDate;
+
+        // Update invoice
+        invoice.id = document.getElementById('editInvoiceNumber').value;
+        invoice.client = document.getElementById('editClientName').value;
+        invoice.amount = parseFloat(document.getElementById('editAmount').value);
+        invoice.status = document.getElementById('editStatus').value;
+        invoice.invoiceDate = document.getElementById('editInvoiceDate').value;
+        invoice.dueDate = document.getElementById('editDueDate').value;
+        invoice.paymentMethod = document.getElementById('editPaymentMethod').value;
+        invoice.skonto = parseFloat(document.getElementById('editSkonto').value);
+        invoice.skontoDeadline = document.getElementById('editSkontoDeadline').value;
+        invoice.paidDate = document.getElementById('editPaidDate').value;
+        invoice.notes = document.getElementById('editNotes').value;
+
+        // Add to history
+        const changes = [];
+        if (oldAmount !== invoice.amount) changes.push(`Betrag: ${oldAmount}€ → ${invoice.amount}€`);
+        if (oldStatus !== invoice.status) changes.push(`Status: ${oldStatus} → ${invoice.status}`);
+        if (oldDueDate !== invoice.dueDate) changes.push(`Fälligkeit: ${oldDueDate} → ${invoice.dueDate}`);
+
+        if (changes.length > 0) {
+            if (!invoice.history) invoice.history = [];
+            invoice.history.push({
+                date: new Date().toLocaleString('de-DE'),
+                change: changes.join(', '),
+                user: 'Admin'
+            });
+        }
+
+        // Save to localStorage (in real app, this would be an API call)
+        localStorage.setItem('kontiq_invoices', JSON.stringify(invoiceDatabase));
+
+        alert('Änderungen wurden gespeichert!\n\n' + (changes.length > 0 ? changes.join('\n') : 'Keine Änderungen'));
+        closeEditInvoice();
+        
+        // In production, you would reload the invoice list here
+        // location.reload();
+    }
+
+    // Load invoices from localStorage on page load
+    const savedInvoices = localStorage.getItem('kontiq_invoices');
+    if (savedInvoices) {
+        Object.assign(invoiceDatabase, JSON.parse(savedInvoices));
+    }
+</script>

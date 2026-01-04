@@ -1,0 +1,52 @@
+[
+  {
+    "id": "sample-1",
+    "name": "Mietvertrag Bürofläche",
+    "partner": "Immobilien Schmidt GmbH",
+    "startDate": "2024-01-01",
+    "endDate": "2026-12-31",
+    "amount": 2500,
+    "status": "active",
+    "description": "Büro im 3. Stock, 120m², inkl. Nebenkosten"
+  },
+  {
+    "id": "sample-2",
+    "name": "Software-Lizenz Microsoft 365",
+    "partner": "Microsoft Deutschland GmbH",
+    "startDate": "2024-03-01",
+    "endDate": "2027-02-28",
+    "amount": 5400,
+    "status": "active",
+    "description": "15 Business Premium Lizenzen"
+  },
+  {
+    "id": "sample-3",
+    "name": "Versicherungsvertrag Betriebshaftpflicht",
+    "partner": "Allianz Versicherung AG",
+    "startDate": "2024-06-01",
+    "endDate": "2025-05-31",
+    "amount": 1200,
+    "status": "active",
+    "description": "Betriebshaftpflichtversicherung bis 5 Mio EUR"
+  },
+  {
+    "id": "sample-4",
+    "name": "Telefonanlage Wartungsvertrag",
+    "partner": "Deutsche Telekom AG",
+    "startDate": "2023-09-01",
+    "endDate": "2026-02-15",
+    "amount": 300,
+    "status": "expiring",
+    "description": "Wartung und Support für VoIP-Telefonanlage"
+  },
+  {
+    "id": "sample-5",
+    "name": "Leasingvertrag Firmenwagen",
+    "partner": "BMW Financial Services",
+    "startDate": "2022-11-01",
+    "endDate": "2025-10-31",
+    "amount": 650,
+    "status": "active",
+    "description": "BMW 3er Touring, 36 Monate Leasing"
+  }
+]

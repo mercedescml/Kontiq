@@ -1,0 +1,26 @@
+[
+  {
+    "id": "1",
+    "name": "KontiQ GmbH",
+    "manager": "christianmeli71@gmail.com",
+    "managers": ["christianmeli71@gmail.com"],
+    "type": "hauptsitz",
+    "created": "2026-01-02T23:16:07.977Z"
+  },
+  {
+    "id": "2",
+    "name": "Karibu Group",
+    "manager": "laurichtatiss@gmail.com",
+    "managers": ["laurichtatiss@gmail.com"],
+    "type": "standard",
+    "created": "2026-01-03T03:44:22.971Z"
+  },
+  {
+    "id": "3",
+    "name": "Bonbon Hauptsitz",
+    "manager": "Bonbonama@yahoo.com",
+    "managers": ["Bonbonama@yahoo.com"],
+    "type": "hauptsitz",
+    "created": "2026-01-04T00:55:08.997Z"
+  }
+]

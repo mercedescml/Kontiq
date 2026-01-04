@@ -1,0 +1,1038 @@
+<style>
+    /* Page-specific styles - inherit from global index.html */
+    .entities-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 32px;
+    }
+
+    .view-toggle {
+        display: flex;
+        gap: 10px;
+        background: white;
+        padding: 8px;
+        border-radius: 16px;
+        border: 1px solid rgba(229, 231, 235, 0.8);
+        width: fit-content;
+        margin-bottom: 40px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+
+    .view-toggle-btn {
+        padding: 10px 20px;
+        border: none;
+        background: transparent;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--gray);
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .view-toggle-btn.active {
+        background: var(--teal);
+        color: white;
+    }
+
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+    }
+
+    .section-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--navy);
+        margin: 0;
+        letter-spacing: -0.3px;
+    }
+
+    .btn {
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        border: none;
+    }
+
+    .btn-primary {
+        background: var(--teal);
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background: #059669;
+        transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+        background: white;
+        color: var(--navy);
+        border: 1.5px solid var(--light-gray);
+    }
+
+    .btn-secondary:hover {
+        border-color: var(--navy);
+    }
+
+    .btn-icon {
+        width: 18px;
+        height: 18px;
+        stroke: currentColor;
+        fill: none;
+        stroke-width: 2.5;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+    .entities-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+        gap: 24px;
+        margin-bottom: 48px;
+    }
+
+    .entity-card {
+        background: white;
+        border-radius: 12px;
+        border: 2px solid var(--light-gray);
+        overflow: hidden;
+        transition: all 0.2s;
+        cursor: pointer;
+    }
+
+    .entity-card:hover {
+        box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+        transform: translateY(-4px);
+        border-color: var(--teal);
+    }
+
+    .entity-card.active {
+        border-color: var(--teal);
+        box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
+    }
+
+    .entity-header {
+        padding: 20px;
+        background: var(--light-bg);
+        border-bottom: 1px solid var(--light-gray);
+        display: flex;
+        justify-content: space-between;
+        align-items: start;
+    }
+
+    .entity-info h3 {
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--navy);
+        margin: 0 0 6px 0;
+        letter-spacing: -0.3px;
+    }
+
+    .entity-info p {
+        font-size: 12px;
+        color: var(--gray);
+        margin: 0;
+    }
+
+    .entity-badge {
+        padding: 4px 10px;
+        border-radius: 6px;
+        font-size: 11px;
+        font-weight: 600;
+    }
+
+    .entity-badge.active {
+        background: var(--light-teal);
+        color: var(--teal);
+    }
+
+    .entity-badge.inactive {
+        background: var(--light-gray);
+        color: var(--gray);
+    }
+
+    .entity-body {
+        padding: 20px;
+    }
+
+    .entity-metrics {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+        margin-bottom: 20px;
+    }
+
+    .entity-metric {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .entity-metric-label {
+        font-size: 11px;
+        color: var(--gray);
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        font-weight: 600;
+    }
+
+    .entity-metric-value {
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--navy);
+        font-family: 'Roboto Mono', monospace;
+        letter-spacing: -0.5px;
+    }
+
+    .entity-actions {
+        display: flex;
+        gap: 8px;
+        padding-top: 20px;
+        border-top: 1px solid var(--light-gray);
+    }
+
+    .entity-actions button {
+        flex: 1;
+        padding: 10px 14px;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        border: 1px solid var(--light-gray);
+        background: white;
+        color: var(--navy);
+    }
+
+    .entity-actions button:hover {
+        background: var(--light-bg);
+        border-color: var(--navy);
+    }
+
+    .consolidation-view {
+        display: none;
+    }
+
+    .consolidation-view.active {
+        display: block;
+    }
+
+    .consolidation-summary {
+        background: white;
+        border-radius: 12px;
+        padding: 32px;
+        border: 1px solid var(--light-gray);
+        margin-bottom: 32px;
+    }
+
+    .summary-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--navy);
+        margin: 0 0 20px 0;
+        letter-spacing: -0.3px;
+    }
+
+    .summary-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 24px;
+    }
+
+    .summary-metric {
+        padding: 20px;
+        background: var(--light-bg);
+        border-radius: 12px;
+        border: 1px solid var(--light-gray);
+    }
+
+    .summary-metric-label {
+        font-size: 13px;
+        color: var(--gray);
+        margin-bottom: 8px;
+        font-weight: 600;
+    }
+
+    .summary-metric-value {
+        font-size: 32px;
+        font-weight: 700;
+        color: var(--navy);
+        margin-bottom: 8px;
+    }
+
+    .summary-metric-detail {
+        font-size: 12px;
+        color: var(--gray);
+    }
+
+    .entities-comparison {
+        background: white;
+        border-radius: 12px;
+        padding: 32px;
+        border: 1px solid var(--light-gray);
+    }
+
+    .comparison-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+
+    .comparison-table th {
+        text-align: left;
+        padding: 16px;
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--gray);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        border-bottom: 2px solid var(--light-gray);
+    }
+
+    .comparison-table td {
+        padding: 16px;
+        border-bottom: 1px solid var(--light-gray);
+        font-size: 14px;
+        color: var(--navy);
+    }
+
+    .comparison-table tr:hover {
+        background: var(--light-bg);
+    }
+
+    .comparison-table td:first-child {
+        font-weight: 600;
+    }
+
+    .entity-modal-overlay {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        background: rgba(0,0,0,0.5) !important;
+        z-index: 999999 !important;
+        display: none;
+    }
+
+    .entity-modal-overlay.active {
+        display: block !important;
+    }
+
+    .entity-modal {
+        position: fixed !important;
+        top: 50% !important;
+        left: 50% !important;
+        transform: translate(-50%, -50%) !important;
+        background: #ffffff !important;
+        padding: 24px !important;
+        border-radius: 12px !important;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.2) !important;
+        width: 480px !important;
+        max-width: 90vw !important;
+        max-height: 85vh !important;
+        overflow-y: auto !important;
+        z-index: 1000000 !important;
+        display: none;
+    }
+
+    .entity-modal.active {
+        display: block !important;
+    }
+
+    .entity-modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    .entity-modal-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: #0A2540;
+        margin: 0;
+    }
+
+    .entity-modal-close {
+        background: none;
+        border: none;
+        font-size: 20px;
+        color: #6b7280;
+        cursor: pointer;
+        width: 28px;
+        height: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .entity-modal-close:hover {
+        color: #0A2540;
+    }
+
+    .entity-form-group {
+        margin-bottom: 16px;
+    }
+
+    .entity-form-label {
+        display: block;
+        font-size: 13px;
+        font-weight: 600;
+        color: #0A2540;
+        margin-bottom: 6px;
+    }
+
+    .entity-form-input,
+    .entity-form-select,
+    .entity-form-textarea {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        font-size: 14px;
+        font-family: inherit;
+        transition: all 0.2s;
+        background: #ffffff;
+        box-sizing: border-box;
+    }
+
+    .entity-form-input:focus,
+    .entity-form-select:focus,
+    .entity-form-textarea:focus {
+        outline: none;
+        border-color: #0EB17A;
+        box-shadow: 0 0 0 2px rgba(14, 177, 122, 0.1);
+    }
+
+    .entity-modal-footer {
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+        margin-top: 20px;
+        padding-top: 16px;
+        border-top: 1px solid #e5e7eb;
+    }
+
+    .entity-type-selector {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+    }
+
+    .entity-type-option {
+        padding: 14px 12px;
+        border: 2px solid #e5e7eb;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.2s;
+        background: #ffffff;
+        text-align: center;
+    }
+
+    .entity-type-option:hover {
+        border-color: #0EB17A;
+        background: rgba(14, 177, 122, 0.05);
+    }
+
+    .entity-type-option.selected {
+        border-color: #0EB17A;
+        background: rgba(14, 177, 122, 0.08);
+    }
+
+    .entity-type-option input[type="radio"] {
+        display: none;
+    }
+
+    .entity-type-option-icon {
+        font-size: 24px;
+        margin-bottom: 6px;
+    }
+
+    .entity-type-option-title {
+        font-size: 14px;
+        font-weight: 600;
+        color: #0A2540;
+        margin: 0 0 4px 0;
+    }
+
+    .entity-type-option-desc {
+        font-size: 11px;
+        color: #6b7280;
+        margin: 0;
+        line-height: 1.4;
+    }
+
+    .conditional-field {
+        display: none !important;
+    }
+
+    .conditional-field.visible {
+        display: block !important;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 64px 32px;
+        background: var(--light-bg);
+        border-radius: 12px;
+        border: 2px dashed var(--light-gray);
+    }
+
+    .empty-state svg {
+        width: 64px;
+        height: 64px;
+        margin: 0 auto 24px;
+        stroke: var(--gray);
+        fill: none;
+        stroke-width: 1.5;
+    }
+
+    .empty-state h3 {
+        font-size: 20px;
+        font-weight: 700;
+        color: var(--navy);
+        margin: 0 0 8px 0;
+    }
+
+    .empty-state p {
+        font-size: 14px;
+        color: var(--gray);
+        margin: 0;
+    }
+
+    @media (max-width: 768px) {
+        .entities-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .summary-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .comparison-table {
+            font-size: 12px;
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            padding: 12px 8px;
+        }
+    }
+</style>
+
+<div class="entities-container">
+    <div class="page-header">
+        <h1 class="page-title">Entitäten</h1>
+        <p class="page-subtitle">Verwalten Sie mehrere Unternehmen und konsolidieren Sie deren Finanzdaten</p>
+    </div>
+
+    <!-- View Toggle -->
+    <div class="view-toggle">
+        <button class="view-toggle-btn active" onclick="switchView('entities')">Einzelne Entitäten</button>
+        <button class="view-toggle-btn" onclick="switchView('consolidation')">Konsolidierte Ansicht</button>
+    </div>
+
+    <!-- Entities View -->
+    <div id="entitiesView" class="entities-view">
+        <div class="section-header">
+            <h2 class="section-title">Ihre Entitäten</h2>
+            <button class="btn btn-primary" onclick="openEntityModal()">
+                <svg class="btn-icon" viewBox="0 0 24 24">
+                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+                Entität erstellen
+            </button>
+        </div>
+
+        <div class="entities-grid" id="entitiesGrid"></div>
+    </div>
+
+    <!-- Consolidation View -->
+    <div id="consolidationView" class="consolidation-view">
+        <div class="consolidation-summary">
+            <h3 class="summary-title">Konsolidierte Übersicht</h3>
+            <div class="summary-grid" id="summaryGrid"></div>
+        </div>
+
+        <div class="entities-comparison">
+            <h3 class="summary-title">Vergleich der Entitäten</h3>
+            <table class="comparison-table" id="comparisonTable"></table>
+        </div>
+    </div>
+</div>
+
+<!-- Entity Modal -->
+<div class="entity-modal-overlay" id="entityOverlay" onclick="closeEntityModal()"></div>
+<div class="entity-modal" id="entityModal">
+    <div class="entity-modal-header">
+        <h3 class="entity-modal-title" id="modalTitle">Neue Entität erstellen</h3>
+        <button class="entity-modal-close" onclick="closeEntityModal()">✕</button>
+    </div>
+    <form onsubmit="saveEntity(event)">
+        <input type="hidden" id="entityId">
+        
+        <!-- Entity Category Selection -->
+        <div class="entity-form-group">
+            <label class="entity-form-label">Typ</label>
+            <div class="entity-type-selector">
+                <label class="entity-type-option" id="abteilungOption">
+                    <input type="radio" name="entityCategory" value="abteilung" onchange="toggleEntityFields('abteilung')">
+                    <div class="entity-type-option-icon">🏢</div>
+                    <div class="entity-type-option-title">Abteilung</div>
+                    <p class="entity-type-option-desc">Ohne eigene Adresse</p>
+                </label>
+                <label class="entity-type-option" id="standortOption">
+                    <input type="radio" name="entityCategory" value="standort" onchange="toggleEntityFields('standort')">
+                    <div class="entity-type-option-icon">📍</div>
+                    <div class="entity-type-option-title">Standort</div>
+                    <p class="entity-type-option-desc">Mit eigener Adresse</p>
+                </label>
+            </div>
+        </div>
+
+        <!-- Common Fields -->
+        <div class="entity-form-group">
+            <label class="entity-form-label">Name</label>
+            <input type="text" class="entity-form-input" id="entityName" placeholder="z.B. Vertrieb oder Berlin" required>
+        </div>
+
+        <!-- Standort-specific Fields -->
+        <div class="entity-form-group conditional-field" id="rechtsformGroup">
+            <label class="entity-form-label">Rechtsform</label>
+            <select class="entity-form-select" id="entityType">
+                <option value="GmbH">GmbH</option>
+                <option value="AG">AG</option>
+                <option value="UG">UG</option>
+                <option value="KG">KG</option>
+                <option value="Andere">Andere</option>
+            </select>
+        </div>
+
+        <div class="entity-form-group conditional-field" id="addressGroup">
+            <label class="entity-form-label">Adresse</label>
+            <input type="text" class="entity-form-input" id="entityAddress" placeholder="Straße, PLZ Stadt">
+        </div>
+
+        <div class="entity-form-group conditional-field" id="taxIdGroup">
+            <label class="entity-form-label">Steuernummer</label>
+            <input type="text" class="entity-form-input" id="entityTaxId" placeholder="Optional">
+        </div>
+
+        <div class="entity-form-group conditional-field" id="fiscalYearGroup" style="display:none !important;">
+            <select class="entity-form-select" id="entityFiscalYear">
+                <option value="calendar">Kalenderjahr</option>
+            </select>
+        </div>
+
+        <div class="entity-form-group" style="display:none;">
+            <select class="entity-form-select" id="entityCurrency">
+                <option value="EUR">EUR</option>
+            </select>
+        </div>
+
+        <div class="entity-form-group" style="display:none;">
+            <textarea class="entity-form-input" id="entityNotes" rows="1"></textarea>
+        </div>
+
+        <div class="entity-modal-footer">
+            <button type="button" class="btn btn-secondary" onclick="closeEntityModal()">Abbrechen</button>
+            <button type="submit" class="btn btn-primary">Speichern</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    let entities = [];
+    let activeEntityId = localStorage.getItem('kontiq_active_entity') || null;
+    let currentView = 'entities';
+    let currentEntityCategory = 'standort';
+    
+    // Get current user from localStorage
+    const currentUserData = localStorage.getItem('user') || localStorage.getItem('kontiq_user');
+    const currentUser = currentUserData ? JSON.parse(currentUserData) : null;
+
+    // Load entities from API - filtered by current user
+    async function loadEntitiesFromAPI() {
+        if (!currentUser || !currentUser.email) {
+            console.error('No current user found');
+            return;
+        }
+        
+        try {
+            const res = await fetch(`/api/entitaeten?email=${encodeURIComponent(currentUser.email)}`);
+            if (res.ok) {
+                const data = await res.json();
+                entities = (data.entitaeten || []).map(e => ({
+                    ...e,
+                    currency: e.currency || 'EUR',
+                    isActive: true,
+                    metrics: e.metrics || {
+                        revenue: 0,
+                        costs: 0,
+                        cashflow: 0,
+                        bankAccounts: 0,
+                        employees: 0
+                    }
+                }));
+                if (entities.length > 0 && !activeEntityId) {
+                    activeEntityId = entities[0].id;
+                    localStorage.setItem('kontiq_active_entity', activeEntityId);
+                }
+                renderEntities();
+            }
+        } catch (error) {
+            console.error('Error loading entities:', error);
+        }
+    }
+
+    function toggleEntityFields(category) {
+        currentEntityCategory = category;
+        
+        // Update visual selection
+        document.getElementById('abteilungOption').classList.remove('selected');
+        document.getElementById('standortOption').classList.remove('selected');
+        
+        if (category === 'abteilung') {
+            document.getElementById('abteilungOption').classList.add('selected');
+            // Hide Standort-specific fields
+            document.getElementById('rechtsformGroup').classList.remove('visible');
+            document.getElementById('taxIdGroup').classList.remove('visible');
+            document.getElementById('addressGroup').classList.remove('visible');
+            document.getElementById('fiscalYearGroup').classList.remove('visible');
+            
+            // Clear values for hidden fields
+            document.getElementById('entityType').value = 'Abteilung';
+            document.getElementById('entityTaxId').value = '';
+            document.getElementById('entityAddress').value = '';
+        } else {
+            document.getElementById('standortOption').classList.add('selected');
+            // Show all Standort fields
+            document.getElementById('rechtsformGroup').classList.add('visible');
+            document.getElementById('taxIdGroup').classList.add('visible');
+            document.getElementById('addressGroup').classList.add('visible');
+            document.getElementById('fiscalYearGroup').classList.add('visible');
+        }
+    }
+
+    // Initialize by loading from API
+    loadEntitiesFromAPI();
+
+    function switchView(view) {
+        currentView = view;
+        document.querySelectorAll('.view-toggle-btn').forEach(btn => btn.classList.remove('active'));
+        event.target.classList.add('active');
+
+        if (view === 'entities') {
+            document.getElementById('entitiesView').style.display = 'block';
+            document.getElementById('consolidationView').classList.remove('active');
+            renderEntities();
+        } else {
+            document.getElementById('entitiesView').style.display = 'none';
+            document.getElementById('consolidationView').classList.add('active');
+            renderConsolidation();
+        }
+    }
+
+    function renderEntities() {
+        const grid = document.getElementById('entitiesGrid');
+        
+        if (entities.length === 0) {
+            grid.innerHTML = `
+                <div class="empty-state" style="grid-column: 1/-1;">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                        <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                    </svg>
+                    <h3>Keine Entitäten vorhanden</h3>
+                    <p>Erstellen Sie Ihre erste Entität, um zu beginnen</p>
+                </div>
+            `;
+            return;
+        }
+
+        grid.innerHTML = entities.map(entity => {
+            const isActive = entity.id === activeEntityId;
+            return `
+                <div class="entity-card ${isActive ? 'active' : ''}" onclick="selectEntity('${entity.id}')">
+                    <div class="entity-header">
+                        <div class="entity-info">
+                            <h3>${entity.name}</h3>
+                            <p>${entity.type} • ${entity.currency}</p>
+                        </div>
+                        <span class="entity-badge ${entity.isActive ? 'active' : 'inactive'}">
+                            ${isActive ? 'Aktiv' : 'Inaktiv'}
+                        </span>
+                    </div>
+                    <div class="entity-body">
+                        <div class="entity-metrics">
+                            <div class="entity-metric">
+                                <span class="entity-metric-label">Umsatz</span>
+                                <span class="entity-metric-value">${formatCurrency(entity.metrics.revenue)}</span>
+                            </div>
+                            <div class="entity-metric">
+                                <span class="entity-metric-label">Kosten</span>
+                                <span class="entity-metric-value">${formatCurrency(entity.metrics.costs)}</span>
+                            </div>
+                            <div class="entity-metric">
+                                <span class="entity-metric-label">Cash Flow</span>
+                                <span class="entity-metric-value">${formatCurrency(entity.metrics.cashflow)}</span>
+                            </div>
+                            <div class="entity-metric">
+                                <span class="entity-metric-label">Bankkonten</span>
+                                <span class="entity-metric-value">${entity.metrics.bankAccounts}</span>
+                            </div>
+                        </div>
+                        <div class="entity-actions">
+                            <button onclick="event.stopPropagation(); editEntity('${entity.id}')">Bearbeiten</button>
+                            <button onclick="event.stopPropagation(); deleteEntity('${entity.id}')">Löschen</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    function renderConsolidation() {
+        // Calculate consolidated metrics
+        const consolidated = {
+            totalRevenue: 0,
+            totalCosts: 0,
+            totalCashflow: 0,
+            totalBankAccounts: 0,
+            totalEmployees: 0,
+            totalEntities: entities.length
+        };
+
+        entities.forEach(entity => {
+            consolidated.totalRevenue += entity.metrics.revenue || 0;
+            consolidated.totalCosts += entity.metrics.costs || 0;
+            consolidated.totalCashflow += entity.metrics.cashflow || 0;
+            consolidated.totalBankAccounts += entity.metrics.bankAccounts || 0;
+            consolidated.totalEmployees += entity.metrics.employees || 0;
+        });
+
+        // Render summary
+        const summaryGrid = document.getElementById('summaryGrid');
+        summaryGrid.innerHTML = `
+            <div class="summary-metric">
+                <div class="summary-metric-label">Gesamtumsatz</div>
+                <div class="summary-metric-value">${formatCurrency(consolidated.totalRevenue)}</div>
+                <div class="summary-metric-detail">Über ${consolidated.totalEntities} Entitäten</div>
+            </div>
+            <div class="summary-metric">
+                <div class="summary-metric-label">Gesamtkosten</div>
+                <div class="summary-metric-value">${formatCurrency(consolidated.totalCosts)}</div>
+                <div class="summary-metric-detail">${((consolidated.totalCosts / consolidated.totalRevenue) * 100).toFixed(1)}% des Umsatzes</div>
+            </div>
+            <div class="summary-metric">
+                <div class="summary-metric-label">Gesamt Cash Flow</div>
+                <div class="summary-metric-value">${formatCurrency(consolidated.totalCashflow)}</div>
+                <div class="summary-metric-detail">${consolidated.totalCashflow >= 0 ? 'Positiv' : 'Negativ'}</div>
+            </div>
+            <div class="summary-metric">
+                <div class="summary-metric-label">Bankkonten</div>
+                <div class="summary-metric-value">${consolidated.totalBankAccounts}</div>
+                <div class="summary-metric-detail">Über alle Entitäten</div>
+            </div>
+            <div class="summary-metric">
+                <div class="summary-metric-label">Mitarbeiter</div>
+                <div class="summary-metric-value">${consolidated.totalEmployees}</div>
+                <div class="summary-metric-detail">Gesamt</div>
+            </div>
+        `;
+
+        // Render comparison table
+        const comparisonTable = document.getElementById('comparisonTable');
+        comparisonTable.innerHTML = `
+            <thead>
+                <tr>
+                    <th>Entität</th>
+                    <th>Umsatz</th>
+                    <th>Kosten</th>
+                    <th>Cash Flow</th>
+                    <th>Marge</th>
+                    <th>Konten</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${entities.map(entity => {
+                    const margin = ((entity.metrics.revenue - entity.metrics.costs) / entity.metrics.revenue * 100).toFixed(1);
+                    return `
+                        <tr>
+                            <td><strong>${entity.name}</strong></td>
+                            <td>${formatCurrency(entity.metrics.revenue)}</td>
+                            <td>${formatCurrency(entity.metrics.costs)}</td>
+                            <td>${formatCurrency(entity.metrics.cashflow)}</td>
+                            <td>${margin}%</td>
+                            <td>${entity.metrics.bankAccounts}</td>
+                        </tr>
+                    `;
+                }).join('')}
+                <tr style="background: var(--light-teal); font-weight: 700;">
+                    <td>GESAMT</td>
+                    <td>${formatCurrency(consolidated.totalRevenue)}</td>
+                    <td>${formatCurrency(consolidated.totalCosts)}</td>
+                    <td>${formatCurrency(consolidated.totalCashflow)}</td>
+                    <td>${((consolidated.totalRevenue - consolidated.totalCosts) / consolidated.totalRevenue * 100).toFixed(1)}%</td>
+                    <td>${consolidated.totalBankAccounts}</td>
+                </tr>
+            </tbody>
+        `;
+    }
+
+    function selectEntity(id) {
+        activeEntityId = id;
+        localStorage.setItem('kontiq_active_entity', id);
+        renderEntities();
+        // Trigger refresh of other modules with new entity data
+        window.dispatchEvent(new CustomEvent('entityChanged', { detail: { entityId: id } }));
+    }
+
+    function openEntityModal(id = null) {
+        const modal = document.getElementById('entityModal');
+        const overlay = document.getElementById('entityOverlay');
+        const title = document.getElementById('modalTitle');
+
+        if (id) {
+            const entity = entities.find(e => e.id === id);
+            title.textContent = 'Entität bearbeiten';
+            document.getElementById('entityId').value = entity.id;
+            document.getElementById('entityName').value = entity.name;
+            document.getElementById('entityType').value = entity.type;
+            document.getElementById('entityTaxId').value = entity.taxId || '';
+            document.getElementById('entityAddress').value = entity.address || '';
+            document.getElementById('entityFiscalYear').value = entity.fiscalYear;
+            document.getElementById('entityCurrency').value = entity.currency;
+            document.getElementById('entityNotes').value = entity.notes || '';
+            
+            // Set category based on entity type
+            const category = entity.category || (entity.type === 'Abteilung' ? 'abteilung' : 'standort');
+            document.querySelector(`input[name="entityCategory"][value="${category}"]`).checked = true;
+            toggleEntityFields(category);
+        } else {
+            title.textContent = 'Neue Entität erstellen';
+            document.getElementById('entityId').value = '';
+            document.querySelector('form').reset();
+            // Default to Standort
+            document.querySelector('input[name="entityCategory"][value="standort"]').checked = true;
+            toggleEntityFields('standort');
+        }
+
+        overlay.classList.add('active');
+        modal.classList.add('active');
+    }
+
+    function closeEntityModal() {
+        document.getElementById('entityOverlay').classList.remove('active');
+        document.getElementById('entityModal').classList.remove('active');
+    }
+
+    async function saveEntity(event) {
+        event.preventDefault();
+        
+        const id = document.getElementById('entityId').value;
+        const category = document.querySelector('input[name="entityCategory"]:checked').value;
+        const userData = localStorage.getItem('user') || localStorage.getItem('kontiq_user');
+        const currentUserSave = userData ? JSON.parse(userData) : {};
+        
+        if (!currentUserSave.email) {
+            alert('Fehler: Nicht angemeldet');
+            return;
+        }
+        
+        const entity = {
+            id: id || Date.now().toString(),
+            name: document.getElementById('entityName').value,
+            category: category,
+            type: category === 'abteilung' ? 'Abteilung' : document.getElementById('entityType').value,
+            taxId: category === 'standort' ? document.getElementById('entityTaxId').value : '',
+            address: category === 'standort' ? document.getElementById('entityAddress').value : '',
+            fiscalYear: category === 'standort' ? document.getElementById('entityFiscalYear').value : 'calendar',
+            currency: document.getElementById('entityCurrency').value,
+            notes: document.getElementById('entityNotes').value,
+            manager: currentUserSave.email,
+            isActive: true
+        };
+
+        try {
+            if (id) {
+                // Update existing entity
+                const res = await fetch(`/api/entitaeten/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(entity)
+                });
+                if (!res.ok) throw new Error('Update failed');
+            } else {
+                // Create new entity
+                const res = await fetch('/api/entitaeten', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(entity)
+                });
+                if (!res.ok) throw new Error('Create failed');
+            }
+            
+            closeEntityModal();
+            await loadEntitiesFromAPI();
+        } catch (error) {
+            console.error('Error saving entity:', error);
+            alert('Fehler beim Speichern der Entität');
+        }
+    }
+
+    function editEntity(id) {
+        openEntityModal(id);
+    }
+
+    async function deleteEntity(id) {
+        if (entities.length === 1) {
+            alert('Sie können die letzte Entität nicht löschen.');
+            return;
+        }
+
+        if (confirm('Möchten Sie diese Entität wirklich löschen?')) {
+            try {
+                const res = await fetch(`/api/entitaeten/${id}`, {
+                    method: 'DELETE'
+                });
+                if (!res.ok) throw new Error('Delete failed');
+                
+                if (activeEntityId === id) {
+                    const remaining = entities.filter(e => e.id !== id);
+                    if (remaining.length > 0) {
+                        activeEntityId = remaining[0].id;
+                        localStorage.setItem('kontiq_active_entity', activeEntityId);
+                    }
+                }
+                
+                await loadEntitiesFromAPI();
+            } catch (error) {
+                console.error('Error deleting entity:', error);
+                alert('Fehler beim Löschen der Entität');
+            }
+        }
+    }
+
+    function formatCurrency(value) {
+        return new Intl.NumberFormat('de-DE', {
+            style: 'currency',
+            currency: 'EUR',
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0
+        }).format(value);
+    }
+
+    // Initial render
+    renderEntities();
+</script>

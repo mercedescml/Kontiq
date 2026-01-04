@@ -1,0 +1,1016 @@
+<style>
+    /* Modern Minimal Dashboard - Kontiq Brand Colors Only */
+    
+    .greeting {
+        margin-bottom: 48px;
+    }
+
+    .greeting h1 {
+        font-size: 28px;
+        color: var(--navy);
+        margin-bottom: 8px;
+        font-weight: 700;
+        letter-spacing: -0.5px;
+    }
+
+    .greeting-meta {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        color: var(--gray);
+        font-size: 14px;
+        font-weight: 500;
+    }
+
+    /* Hero Card - Clean & Minimal */
+    .hero-card {
+        background: var(--white);
+        border-radius: 16px;
+        padding: 40px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        margin-bottom: 32px;
+        border: 1px solid var(--light-gray);
+    }
+
+    .hero-grid {
+        display: grid;
+        grid-template-columns: 320px 1fr;
+        gap: 48px;
+    }
+
+    .liquidity-info {
+        border-right: 1px solid var(--light-gray);
+        padding-right: 48px;
+    }
+
+    .info-label {
+        font-size: 11px;
+        color: var(--gray);
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        margin-bottom: 12px;
+        font-weight: 600;
+    }
+
+    .liquidity-amount {
+        font-size: 48px;
+        font-weight: 800;
+        color: var(--navy);
+        margin-bottom: 8px;
+        font-family: 'Roboto Mono', monospace;
+        letter-spacing: -1.5px;
+    }
+
+    .liquidity-change {
+        color: var(--teal);
+        font-size: 14px;
+        margin-bottom: 32px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-weight: 600;
+    }
+
+    .divider {
+        border: 0;
+        border-top: 1px solid var(--light-gray);
+        margin: 24px 0;
+    }
+
+    .info-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 14px 0;
+        border-bottom: 1px solid #F3F4F6;
+    }
+
+    .info-row:last-child {
+        border-bottom: none;
+    }
+
+    .info-row-label {
+        font-size: 13px;
+        color: var(--gray);
+        font-weight: 500;
+    }
+
+    .info-row-value {
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--navy);
+        font-family: 'Roboto Mono', monospace;
+    }
+
+    /* Chart Section */
+    .chart-header {
+        margin-bottom: 24px;
+    }
+
+    .chart-title {
+        font-size: 15px;
+        font-weight: 600;
+        color: var(--navy);
+        margin-bottom: 4px;
+    }
+
+    .chart-subtitle {
+        font-size: 12px;
+        color: var(--gray);
+    }
+
+    .chart-container {
+        position: relative;
+        height: 280px;
+        margin-bottom: 16px;
+    }
+
+    /* Chart Indicators - New */
+    .chart-indicator {
+        position: absolute;
+        width: 24px;
+        height: 24px;
+        background: var(--navy);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 14px;
+        font-weight: 700;
+        border: 2px solid white;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        cursor: pointer;
+        z-index: 10;
+        transition: all 0.2s;
+    }
+
+    .chart-indicator:hover {
+        transform: scale(1.15);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+    }
+
+    .chart-indicator.critical {
+        background: #DC2626;
+        animation: pulse 2s infinite;
+    }
+
+    .chart-indicator.warning {
+        background: #F59E0B;
+    }
+
+    .chart-indicator.info {
+        background: var(--navy);
+    }
+
+    @keyframes pulse {
+        0%, 100% {
+            box-shadow: 0 2px 8px rgba(220, 38, 38, 0.3);
+        }
+        50% {
+            box-shadow: 0 2px 16px rgba(220, 38, 38, 0.6);
+        }
+    }
+
+    .chart-legend {
+        display: flex;
+        gap: 24px;
+        font-size: 12px;
+        color: var(--gray);
+        flex-wrap: wrap;
+    }
+
+    .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .legend-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+    }
+
+    .threshold-controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        align-items: center;
+        margin-top: 12px;
+        color: var(--gray);
+        font-size: 12px;
+    }
+
+    .threshold-group {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        background: #F9FAFB;
+        border: 1px solid var(--light-gray);
+        border-radius: 10px;
+        padding: 8px 10px;
+    }
+
+    .threshold-group label {
+        font-weight: 700;
+        color: var(--navy);
+        font-size: 12px;
+    }
+
+    .threshold-group input {
+        width: 90px;
+        padding: 6px 8px;
+        border: 1px solid var(--light-gray);
+        border-radius: 6px;
+        font-size: 13px;
+    }
+
+    /* Alert Box - Minimal Design */
+    .alert-box {
+        background: #F9FAFB;
+        border: 1px solid #E5E7EB;
+        border-left: 3px solid var(--navy);
+        padding: 24px;
+        border-radius: 12px;
+        margin-top: 24px;
+    }
+
+    .alert-header {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        margin-bottom: 12px;
+    }
+
+    .alert-icon {
+        width: 20px;
+        height: 20px;
+        background: var(--navy);
+        border-radius: 4px;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 14px;
+        flex-shrink: 0;
+    }
+
+    .alert-title {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--navy);
+    }
+
+    .alert-content {
+        font-size: 13px;
+        color: var(--gray);
+        margin-bottom: 16px;
+        line-height: 1.6;
+        padding-left: 32px;
+    }
+
+    .alert-list {
+        list-style: none;
+        margin: 0;
+        padding-left: 32px;
+    }
+
+    .alert-list li {
+        font-size: 13px;
+        color: var(--gray);
+        margin-bottom: 6px;
+        padding-left: 12px;
+        position: relative;
+    }
+
+    .alert-list li:before {
+        content: "•";
+        position: absolute;
+        left: 0;
+        color: var(--navy);
+    }
+
+    /* Buttons */
+    .btn {
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        border: none;
+        font-family: inherit;
+    }
+
+    .btn-primary {
+        background: var(--teal);
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background: #059669;
+        transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+        background: white;
+        color: var(--navy);
+        border: 1.5px solid var(--light-gray);
+    }
+
+    .btn-secondary:hover {
+        border-color: var(--navy);
+    }
+
+    /* Section Header */
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .section-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--navy);
+        letter-spacing: -0.3px;
+    }
+
+    .view-all {
+        color: var(--teal);
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .view-all:hover {
+        text-decoration: underline;
+    }
+
+    /* Action Cards - Clean Design */
+    .action-cards {
+        display: grid;
+        gap: 12px;
+        margin-bottom: 32px;
+    }
+
+    .action-card {
+        background: var(--white);
+        border-radius: 12px;
+        padding: 20px 24px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+        border: 1px solid var(--light-gray);
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        gap: 20px;
+        align-items: center;
+        transition: all 0.2s;
+    }
+
+    .action-card:hover {
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        transform: translateY(-1px);
+    }
+
+    .action-badge {
+        padding: 4px 10px;
+        border-radius: 4px;
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        background: #F3F4F6;
+        color: var(--navy);
+    }
+
+    .action-content {
+        flex: 1;
+    }
+
+    .action-title {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--navy);
+        margin-bottom: 4px;
+    }
+
+    .action-description {
+        color: var(--gray);
+        font-size: 13px;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 8px;
+    }
+
+    /* Widget Grid */
+    .widget-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+        margin-bottom: 32px;
+    }
+
+    .widget {
+        background: var(--white);
+        border-radius: 12px;
+        padding: 24px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+        border: 1px solid var(--light-gray);
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .widget:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    .widget-header {
+        font-size: 11px;
+        color: var(--gray);
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        margin-bottom: 16px;
+        font-weight: 600;
+    }
+
+    .metric {
+        font-size: 28px;
+        font-weight: 800;
+        color: var(--navy);
+        margin-bottom: 4px;
+        font-family: 'Roboto Mono', monospace;
+        letter-spacing: -0.5px;
+    }
+
+    .metric-label {
+        font-size: 12px;
+        color: var(--gray);
+        font-weight: 500;
+    }
+
+    .widget-list {
+        list-style: none;
+        margin: 12px 0 0 0;
+        padding: 0;
+    }
+
+    .widget-list li {
+        padding: 10px 0;
+        border-bottom: 1px solid #F3F4F6;
+        font-size: 13px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .widget-list li:last-child {
+        border-bottom: none;
+    }
+
+    .amount-positive {
+        color: var(--teal);
+        font-weight: 700;
+        font-family: 'Roboto Mono', monospace;
+    }
+
+    .amount-negative {
+        color: var(--navy);
+        font-weight: 700;
+        font-family: 'Roboto Mono', monospace;
+    }
+
+    @media (max-width: 1200px) {
+        .hero-grid {
+            grid-template-columns: 1fr;
+        }
+        .liquidity-info {
+            border-right: none;
+            border-bottom: 1px solid var(--light-gray);
+            padding-right: 0;
+            padding-bottom: 32px;
+            margin-bottom: 32px;
+        }
+        .widget-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (max-width: 768px) {
+        .widget-grid {
+            grid-template-columns: 1fr;
+        }
+        .action-card {
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+        .action-buttons {
+            width: 100%;
+        }
+        .action-buttons .btn {
+            flex: 1;
+        }
+    }
+</style>
+
+<div class="greeting">
+    <h1 id="greetingTitle">Guten Morgen</h1>
+    <div class="greeting-meta">
+        <span id="greetingDate">Freitag, 2. Januar 2026</span>
+        <span>•</span>
+        <span id="greetingEntity">Kostenstelle: Hauptstandort Berlin</span>
+    </div>
+</div>
+
+<script>
+    (function personalizeGreeting() {
+        const user = JSON.parse(localStorage.getItem('kontiq_user') || '{}');
+        const entities = JSON.parse(localStorage.getItem('kontiq_entities') || '[]');
+        const activeId = localStorage.getItem('kontiq_active_entity');
+        const activeEntity = entities.find(e => e.id === activeId) || entities[0];
+
+        const name = user.name || 'Willkommen';
+        const entityLabel = activeEntity?.name || user.company || 'Aktive Entität';
+
+        const date = new Date();
+        const formattedDate = date.toLocaleDateString('de-DE', {
+            weekday: 'long',
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric'
+        });
+
+        const titleEl = document.getElementById('greetingTitle');
+        const dateEl = document.getElementById('greetingDate');
+        const entityEl = document.getElementById('greetingEntity');
+
+        if (titleEl) titleEl.textContent = `Hallo, ${name}`;
+        if (dateEl) dateEl.textContent = formattedDate;
+        if (entityEl) entityEl.textContent = `Kostenstelle: ${entityLabel}`;
+    })();
+</script>
+
+<div class="hero-card">
+    <div class="hero-grid">
+        <div class="liquidity-info">
+            <div class="info-label">Aktuelle Liquidität</div>
+            <div class="liquidity-amount">45.320 €</div>
+            <div class="liquidity-change">
+                <span>↗</span>
+                <span>+5,4% vs. gestern</span>
+            </div>
+            
+            <div class="divider"></div>
+            
+            <div class="info-row">
+                <span class="info-row-label">Runway</span>
+                <span class="info-row-value">4,8 Monate</span>
+            </div>
+            
+            <div class="info-row">
+                <span class="info-row-label">Täglicher Verbrauch Ø</span>
+                <span class="info-row-value">2.608 €</span>
+            </div>
+            
+            <div class="info-row">
+                <span class="info-row-label">Minimum-Schwelle</span>
+                <span class="info-row-value">40.000 €</span>
+            </div>
+        </div>
+
+        <div>
+            <div class="chart-header">
+                <div class="chart-title">Liquiditätsprognose (90 Tage)</div>
+                <div class="chart-subtitle">Anfangsbestand + Einnahmen - Ausgaben</div>
+            </div>
+            <div class="chart-container" id="chartWrapper">
+                <canvas id="liquidityChart"></canvas>
+                <!-- Les indicateurs seront ajoutés dynamiquement ici -->
+            </div>
+            <div class="chart-legend">
+                <div class="legend-item">
+                    <span class="legend-dot" style="background: var(--teal);"></span>
+                    <span>Liquidität</span>
+                </div>
+                <div class="legend-item">
+                    <span style="width: 16px; height: 2px; background: var(--navy); opacity: 0.3;"></span>
+                    <span>Minimum (40.000€)</span>
+                </div>
+                <div class="legend-item">
+                    <span style="width: 16px; height: 16px; background: #DC2626; border-radius: 50%;"></span>
+                    <span>Kritisch</span>
+                </div>
+                <div class="legend-item">
+                    <span style="width: 16px; height: 16px; background: #F59E0B; border-radius: 50%;"></span>
+                    <span>Warnung</span>
+                </div>
+            </div>
+            <div class="threshold-controls">
+                <span style="font-weight: 700; color: var(--navy);">Schwellwerte:</span>
+                <div class="threshold-group">
+                    <label for="thresholdWarning">Warnung ab</label>
+                    <input type="number" id="thresholdWarning" min="0" step="100" aria-label="Warnschwelle"> €
+                </div>
+                <div class="threshold-group">
+                    <label for="thresholdCritical">Kritisch ab</label>
+                    <input type="number" id="thresholdCritical" min="0" step="100" aria-label="Kritischschwelle"> €
+                </div>
+                <button class="btn btn-secondary" id="applyThresholds" style="padding: 8px 14px;">Übernehmen</button>
+                <span style="font-size: 11px; color: var(--gray);">Hohe Ausgaben oberhalb der Schwellen werden markiert.</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="alert-box">
+        <div class="alert-header">
+            <div class="alert-icon">!</div>
+            <div class="alert-title">Liquiditätsengpass vorhergesagt für 22. Dezember</div>
+        </div>
+        <div class="alert-content">
+            Prognostizierte Liquidität von <strong>38.200 €</strong> liegt 1.800 € unter dem definierten Minimum.
+        </div>
+        <ul class="alert-list">
+            <li>Weber KG: 8.900 € fällig</li>
+            <li>Miete Büro Berlin: 3.500 € fällig</li>
+            <li>Versicherung: 2.400 € fällig</li>
+        </ul>
+        <div style="padding-left: 32px; margin-top: 16px;">
+            <button class="btn btn-primary">Handlungsoptionen anzeigen</button>
+        </div>
+    </div>
+</div>
+
+<div class="section-header">
+    <h2 class="section-title">Empfohlene Maßnahmen</h2>
+    <a href="#" class="view-all">Alle anzeigen (3) →</a>
+</div>
+
+<div class="action-cards">
+    <div class="action-card">
+        <div class="action-badge">Heute</div>
+        <div class="action-content">
+            <div class="action-title">Skonto-Frist läuft heute ab</div>
+            <div class="action-description">Müller GmbH – 3% Skonto (180 €) bei Zahlung bis 23:59 Uhr</div>
+        </div>
+        <div class="action-buttons">
+            <button class="btn btn-primary">Zahlung freigeben</button>
+            <button class="btn btn-secondary">Details</button>
+        </div>
+    </div>
+
+    <div class="action-card">
+        <div class="action-badge">Morgen</div>
+        <div class="action-content">
+            <div class="action-title">Deckung für Lastschrift sicherstellen</div>
+            <div class="action-description">Telekom Lastschrift (89 €) morgen fällig</div>
+        </div>
+        <div class="action-buttons">
+            <button class="btn btn-primary">Kontostand prüfen</button>
+        </div>
+    </div>
+
+    <div class="action-card">
+        <div class="action-badge">Optimierung</div>
+        <div class="action-content">
+            <div class="action-title">Zahlungstermine optimieren</div>
+            <div class="action-description">Einsparungspotenzial 365 € durch Skontonutzung</div>
+        </div>
+        <div class="action-buttons">
+            <button class="btn btn-primary">Vorschläge anzeigen</button>
+        </div>
+    </div>
+</div>
+
+<div class="widget-grid">
+    <div class="widget">
+        <div class="widget-header">Heute fällig</div>
+        <div>
+            <div class="metric">2</div>
+            <div class="metric-label">Rechnungen</div>
+        </div>
+        <ul class="widget-list">
+            <li>
+                <span>Gesamtbetrag</span>
+                <span class="amount-negative">3.650€</span>
+            </li>
+            <li>
+                <span>Skonto verfügbar</span>
+                <span class="amount-positive">73€</span>
+            </li>
+        </ul>
+        <button class="btn btn-primary" style="width: 100%; margin-top: 12px;">Freigeben</button>
+    </div>
+
+    <div class="widget">
+        <div class="widget-header">Diese Woche</div>
+        <ul class="widget-list">
+            <li>
+                <span>Einnahmen</span>
+                <span class="amount-positive">23.500€</span>
+            </li>
+            <li>
+                <span>Ausgaben</span>
+                <span class="amount-negative">18.200€</span>
+            </li>
+        </ul>
+        <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #F3F4F6;">
+            <div class="metric-label">Netto Cashflow</div>
+            <div class="metric amount-positive" style="font-size: 24px;">+5.300€</div>
+        </div>
+    </div>
+
+    <div class="widget">
+        <div class="widget-header">Burn Rate</div>
+        <div>
+            <div class="metric">78.200€</div>
+            <div class="metric-label">Monatlich</div>
+        </div>
+        <ul class="widget-list">
+            <li>
+                <span>Fixkosten</span>
+                <span>45.000€</span>
+            </li>
+            <li>
+                <span>Variable</span>
+                <span>33.200€</span>
+            </li>
+        </ul>
+    </div>
+
+    <div class="widget">
+        <div class="widget-header">Lastschriften (7 Tage)</div>
+        <ul class="widget-list">
+            <li>
+                <span>09.12. Telekom</span>
+                <span>89€</span>
+            </li>
+            <li>
+                <span>15.12. Versicherung</span>
+                <span>320€</span>
+            </li>
+            <li>
+                <span>20.12. Miete</span>
+                <span>3.500€</span>
+            </li>
+        </ul>
+        <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #F3F4F6;">
+            <div class="metric" style="font-size: 20px;">3.909€</div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Chart.js configuration - Modern & Clean avec Einnahmen/Ausgaben + Indicators
+    setTimeout(() => {
+        const canvas = document.getElementById('liquidityChart');
+        const chartWrapper = document.getElementById('chartWrapper');
+        const warningInput = document.getElementById('thresholdWarning');
+        const criticalInput = document.getElementById('thresholdCritical');
+        const applyBtn = document.getElementById('applyThresholds');
+
+        if (!(canvas && chartWrapper && typeof Chart !== 'undefined')) return;
+
+        const defaults = { warning: 5000, critical: 8000 };
+        const thresholds = { ...defaults };
+        let liquidityChart;
+
+        const baseData = [
+            {date: 'Heute', liquidität: 45320, einnahmen: 0, ausgaben: 0},
+            {date: '15.12', liquidität: 42000, einnahmen: 3200, ausgaben: 6520},
+            {date: '22.12', liquidität: 38200, einnahmen: 1800, ausgaben: 5600},
+            {date: '12.01', liquidität: 44000, einnahmen: 12400, ausgaben: 6600},
+            {date: '26.01', liquidität: 48000, einnahmen: 8900, ausgaben: 4900},
+            {date: '09.02', liquidität: 46000, einnahmen: 5200, ausgaben: 7200},
+            {date: '23.02', liquidität: 50000, einnahmen: 9800, ausgaben: 5800},
+            {date: '09.03', liquidität: 52000, einnahmen: 7500, ausgaben: 5500}
+        ];
+
+        const formatEuro = (value) => `${value.toLocaleString('de-DE')} €`;
+
+        const withCriticals = () => baseData.map((d) => {
+            const outgoing = d.ausgaben;
+            let critical = null;
+
+            if (outgoing >= thresholds.critical) {
+                critical = { type: 'critical', title: 'Kritische Zahlung', description: `Ausgaben: ${formatEuro(outgoing)}` };
+            } else if (outgoing >= thresholds.warning) {
+                critical = { type: 'warning', title: 'Hohe Zahlung', description: `Ausgaben: ${formatEuro(outgoing)}` };
+            }
+
+            return { ...d, critical };
+        });
+
+        const clearIndicators = () => {
+            chartWrapper.querySelectorAll('.chart-indicator').forEach((el) => el.remove());
+        };
+
+        const renderChart = () => {
+            const chartData = withCriticals();
+            const ctx = canvas.getContext('2d');
+
+            const gradient = ctx.createLinearGradient(0, 0, 0, 280);
+            gradient.addColorStop(0, 'rgba(14, 177, 122, 0.08)');
+            gradient.addColorStop(1, 'rgba(14, 177, 122, 0)');
+
+            if (liquidityChart) liquidityChart.destroy();
+            clearIndicators();
+
+            liquidityChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: chartData.map((d) => d.date),
+                    datasets: [
+                        {
+                            label: 'Liquidität',
+                            data: chartData.map((d) => ({
+                                x: d.date,
+                                y: d.liquidität,
+                                einnahmen: d.einnahmen,
+                                ausgaben: d.ausgaben
+                            })),
+                            borderColor: '#0EB17A',
+                            backgroundColor: gradient,
+                            borderWidth: 2.5,
+                            fill: true,
+                            tension: 0.4,
+                            pointRadius: chartData.map((d) => (d.critical ? 0 : 0)),
+                            pointHoverRadius: 6,
+                            pointHoverBackgroundColor: '#0EB17A',
+                            pointHoverBorderColor: '#FFFFFF',
+                            pointHoverBorderWidth: 2
+                        },
+                        {
+                            label: 'Minimum',
+                            data: chartData.map(() => 40000),
+                            borderColor: 'rgba(10, 37, 64, 0.2)',
+                            borderDash: [8, 4],
+                            borderWidth: 1.5,
+                            fill: false,
+                            pointRadius: 0
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: '#0A2540',
+                            padding: 14,
+                            cornerRadius: 10,
+                            titleFont: {
+                                size: 13,
+                                weight: 700
+                            },
+                            bodyFont: {
+                                size: 13,
+                                weight: 500
+                            },
+                            bodySpacing: 6,
+                            callbacks: {
+                                title: function(context) {
+                                    return context[0].label;
+                                },
+                                label: function(context) {
+                                    if (context.dataset.label === 'Liquidität') {
+                                        const data = context.raw;
+                                        const lines = [
+                                            'Liquidität: ' + data.y.toLocaleString('de-DE') + ' €'
+                                        ];
+                                        
+                                        if (data.einnahmen > 0 || data.ausgaben > 0) {
+                                            lines.push('');
+                                            if (data.einnahmen > 0) {
+                                                lines.push('↗ Einnahmen: +' + data.einnahmen.toLocaleString('de-DE') + ' €');
+                                            }
+                                            if (data.ausgaben > 0) {
+                                                lines.push('↘ Ausgaben: -' + data.ausgaben.toLocaleString('de-DE') + ' €');
+                                            }
+                                            
+                                            const netto = data.einnahmen - data.ausgaben;
+                                            lines.push('');
+                                            lines.push('Netto: ' + (netto >= 0 ? '+' : '') + netto.toLocaleString('de-DE') + ' €');
+                                        }
+                                        
+                                        return lines;
+                                    }
+                                    return null;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            min: 35000,
+                            max: 55000,
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.04)',
+                                drawBorder: false
+                            },
+                            ticks: {
+                                callback: function(value) {
+                                    return (value / 1000) + 'k €';
+                                },
+                                color: '#6B7280',
+                                font: {
+                                    size: 11
+                                }
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false,
+                                drawBorder: false
+                            },
+                            ticks: {
+                                color: '#6B7280',
+                                font: {
+                                    size: 11
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            setTimeout(() => {
+                const yAxis = liquidityChart.scales.y;
+                const xAxis = liquidityChart.scales.x;
+
+                chartData.forEach((dataPoint, index) => {
+                    if (dataPoint.critical) {
+                        const x = xAxis.getPixelForValue(index);
+                        const y = yAxis.getPixelForValue(dataPoint.liquidität);
+                        
+                        const indicator = document.createElement('div');
+                        indicator.className = `chart-indicator ${dataPoint.critical.type}`;
+                        indicator.textContent = '!';
+                        indicator.title = `${dataPoint.critical.title}: ${dataPoint.critical.description}`;
+                        
+                        indicator.style.left = (x - 12) + 'px';
+                        indicator.style.top = (y - 12) + 'px';
+                        
+                        indicator.addEventListener('mouseenter', function() {
+                            const tooltip = document.createElement('div');
+                            tooltip.className = 'chart-indicator-tooltip';
+                            tooltip.innerHTML = `
+                                <div style="position: absolute; bottom: 110%; left: 50%; transform: translateX(-50%); 
+                                            background: #0A2540; color: white; padding: 10px 14px; border-radius: 8px; 
+                                            white-space: nowrap; font-size: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+                                            z-index: 1000;">
+                                    <strong>${dataPoint.critical.title}</strong><br>
+                                    ${dataPoint.critical.description}
+                                    <div style="position: absolute; bottom: -4px; left: 50%; transform: translateX(-50%); 
+                                                width: 0; height: 0; border-left: 6px solid transparent; 
+                                                border-right: 6px solid transparent; border-top: 6px solid #0A2540;"></div>
+                                </div>
+                            `;
+                            this.appendChild(tooltip);
+                        });
+                        
+                        indicator.addEventListener('mouseleave', function() {
+                            const tooltip = this.querySelector('.chart-indicator-tooltip');
+                            if (tooltip) tooltip.remove();
+                        });
+                        
+                        chartWrapper.appendChild(indicator);
+                    }
+                });
+            }, 80);
+        };
+
+        if (warningInput) warningInput.value = thresholds.warning;
+        if (criticalInput) criticalInput.value = thresholds.critical;
+
+        const applyThresholds = () => {
+            const warningVal = parseInt(warningInput?.value, 10);
+            const criticalVal = parseInt(criticalInput?.value, 10);
+
+            thresholds.warning = Number.isFinite(warningVal) ? warningVal : defaults.warning;
+            thresholds.critical = Number.isFinite(criticalVal) ? criticalVal : defaults.critical;
+
+            if (thresholds.critical < thresholds.warning) {
+                thresholds.critical = thresholds.warning;
+                if (criticalInput) criticalInput.value = thresholds.critical;
+            }
+
+            renderChart();
+        };
+
+        applyBtn?.addEventListener('click', applyThresholds);
+
+        renderChart();
+    }, 100);
+</script>

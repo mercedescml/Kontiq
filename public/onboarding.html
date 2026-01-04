@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kontiq - Einrichtung</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            background: #F8FAFC;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .onboarding-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .logo-icon {
+            width: 72px;
+            height: 72px;
+            background: linear-gradient(135deg, #0A2540 50%, #0EB17A 50%);
+            border-radius: 16px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 34px;
+            font-weight: 800;
+            margin-bottom: 18px;
+            box-shadow: 0 8px 24px rgba(10, 37, 64, 0.25);
+        }
+
+        .progress-bar {
+            background: white;
+            padding: 32px;
+            border-radius: 20px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+            margin-bottom: 40px;
+            border: 1px solid rgba(229, 231, 235, 0.8);
+        }
+
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            margin-bottom: 10px;
+        }
+
+        .progress-line {
+            position: absolute;
+            top: 20px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #E5E7EB;
+            z-index: 0;
+        }
+
+        .progress-line-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #0EB17A, #059669);
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 1px;
+        }
+
+        .progress-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .step-circle {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: #E5E7EB;
+            color: #6B7280;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            margin-bottom: 10px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 18px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+
+        .progress-step.active .step-circle {
+            background: linear-gradient(135deg, #0EB17A, #059669);
+            color: white;
+            box-shadow: 0 6px 16px rgba(14, 177, 122, 0.25);
+            transform: scale(1.1);
+        }
+
+        .progress-step.completed .step-circle {
+            background: #0EB17A;
+            color: white;
+            box-shadow: 0 4px 12px rgba(14, 177, 122, 0.2);
+        }
+
+        .step-label {
+            font-size: 12px;
+            color: #6B7280;
+            text-align: center;
+        }
+
+        .step-content {
+            background: white;
+            padding: 56px 48px;
+            border-radius: 20px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+            display: none;
+            border: 1px solid rgba(229, 231, 235, 0.8);
+        }
+
+        .step-content.active {
+            display: block;
+            animation: fadeIn 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .step-title {
+            font-size: 32px;
+            color: #0A2540;
+            margin-bottom: 12px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .step-subtitle {
+            color: #6B7280;
+            margin-bottom: 36px;
+            font-size: 17px;
+            line-height: 1.6;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 700;
+            color: #0A2540;
+            margin-bottom: 10px;
+            letter-spacing: -0.1px;
+        }
+
+        .form-input, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1.5px solid #E5E7EB;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: all 0.2s ease;
+        }
+
+        select {
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background: white url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="%236B7280"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>') no-repeat right 12px center;
+            background-size: 20px;
+            padding-right: 40px;
+        }
+
+        .form-input:hover {
+            border-color: #10B981;
+            box-shadow: 0 2px 6px rgba(16, 185, 129, 0.06);
+        }
+
+        select:hover {
+            border-color: #10B981;
+            box-shadow: 0 2px 8px rgba(16, 185, 129, 0.08);
+        }
+
+        .form-input:focus, select:focus {
+            outline: none;
+            border-color: #10B981;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            justify-content: space-between;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+        }
+
+        .btn-primary {
+            background: #10B981;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #059669;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #374151;
+            border: 1px solid #E5E7EB;
+        }
+
+        .btn-secondary:hover {
+            background: #F9FAFB;
+        }
+
+        .feature-cards {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .feature-card {
+            padding: 20px;
+            border: 2px solid #E5E7EB;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .feature-card:hover {
+            border-color: #10B981;
+            background: #F0FDF4;
+        }
+
+        .feature-card.selected {
+            border-color: #10B981;
+            background: #D1FAE5;
+        }
+
+        .feature-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #0A2540;
+            margin-bottom: 5px;
+        }
+
+        .feature-desc {
+            font-size: 13px;
+            color: #6B7280;
+        }
+
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background: #D1FAE5;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 40px;
+        }
+    </style>
+</head>
+<body>
+    <div class="onboarding-container">
+        <div class="logo">
+            <div class="logo-icon">K</div>
+        </div>
+
+        <!-- PROGRESS BAR -->
+        <div class="progress-bar">
+            <div class="progress-steps">
+                <div class="progress-line">
+                    <div class="progress-line-fill" id="progressFill" style="width: 0%"></div>
+                </div>
+                <div class="progress-step active" data-step="1">
+                    <div class="step-circle">1</div>
+                    <div class="step-label">Unternehmen</div>
+                </div>
+                <div class="progress-step" data-step="2">
+                    <div class="step-circle">2</div>
+                    <div class="step-label">Bank</div>
+                </div>
+                <div class="progress-step" data-step="3">
+                    <div class="step-circle">3</div>
+                    <div class="step-label">Einstellungen</div>
+                </div>
+                <div class="progress-step" data-step="4">
+                    <div class="step-circle">✓</div>
+                    <div class="step-label">Fertig</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- STEP 1: COMPANY INFO -->
+        <div class="step-content active" id="step1">
+            <h2 class="step-title">Unternehmensdaten</h2>
+            <p class="step-subtitle">Geben Sie Ihre Unternehmensinformationen ein</p>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Firmenname</label>
+                    <input type="text" class="form-input" id="companyName" placeholder="Meine Firma GmbH">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Rechtsform*</label>
+                    <select class="form-input" id="legalForm">
+                        <option>GmbH</option>
+                        <option>UG (haftungsbeschränkt)</option>
+                        <option>AG</option>
+                        <option>GbR</option>
+                        <option>Einzelunternehmen</option>
+                        <option>Sonstige</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Handelsregisternummer (falls vorhanden)</label>
+                    <input type="text" class="form-input" id="tradeRegister" placeholder="z.B. HRB 12345">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Umsatzsteuer-ID*</label>
+                    <input type="text" class="form-input" id="vatId" placeholder="DE123456789">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Branche / Geschäftsbereich*</label>
+                    <select class="form-input" id="industry">
+                        <option>Handel</option>
+                        <option>Handwerk</option>
+                        <option>Dienstleistung</option>
+                        <option>Produktion</option>
+                        <option>IT/Tech</option>
+                        <option>Gastronomie</option>
+                        <option>Gesundheitswesen</option>
+                        <option>Sonstige</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Anzahl der Mitarbeiter*</label>
+                    <select class="form-input" id="employeeCount">
+                        <option>1-5</option>
+                        <option>6-10</option>
+                        <option>11-25</option>
+                        <option>26-50</option>
+                        <option>51-100</option>
+                        <option>&gt;100</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Geschätzter Jahresumsatz*</label>
+                    <select class="form-input" id="annualRevenue">
+                        <option>Unter 100.000€</option>
+                        <option>100.000€ - 500.000€</option>
+                        <option>500.000€ - 1 Mio.€</option>
+                        <option>1-5 Mio.€</option>
+                        <option>Über 5 Mio.€</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Unternehmenssitz (PLZ + Stadt)*</label>
+                    <input type="text" class="form-input" id="hq" placeholder="12345 Berlin">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Adresse</label>
+                <input type="text" class="form-input" id="address" placeholder="Musterstraße 123">
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">PLZ</label>
+                    <input type="text" class="form-input" id="zipCode" placeholder="12345">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Stadt</label>
+                    <input type="text" class="form-input" id="city" placeholder="Berlin">
+                </div>
+            </div>
+
+            <hr style="margin:20px 0; border:none; border-top:1px solid #E5E7EB;">
+
+            <h3 style="margin-bottom:10px;">Zahlungsprofil — Lieferantenrechnungen</h3>
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Wie viele Lieferantenrechnungen erhalten Sie durchschnittlich pro Monat?*</label>
+                    <select class="form-input" id="supplierInvoices">
+                        <option>&lt;10</option>
+                        <option>10-25</option>
+                        <option>26-50</option>
+                        <option>51-100</option>
+                        <option>&gt;100</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Durchschnittliches Zahlungsziel Ihrer Lieferanten</label>
+                    <select class="form-input" id="avgPaymentTerm">
+                        <option>14 Tage</option>
+                        <option>30 Tage</option>
+                        <option>60 Tage</option>
+                        <option>90 Tage</option>
+                        <option>Gemischt</option>
+                    </select>
+                    <div style="font-size:12px;color:#6B7280;margin-top:6px;">💡 Hilft uns, Ihre Skonto-Potenziale besser einzuschätzen</div>
+                </div>
+            </div>
+
+            <hr style="margin:20px 0; border:none; border-top:1px solid #E5E7EB;">
+
+            <h3 style="margin-bottom:10px;">Buchhaltung & Banking</h3>
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Welche Buchhaltungssoftware nutzen Sie aktuell?</label>
+                    <select class="form-input" id="accountingSoftware">
+                        <option>DATEV</option>
+                        <option>Lexware</option>
+                        <option>SevDesk</option>
+                        <option>Billomat</option>
+                        <option>Debitoor</option>
+                        <option>Keine/Excel</option>
+                        <option>Sonstige</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Hauptbank(en) für Geschäftskonten*</label>
+                    <input type="text" class="form-input" id="mainBanks" placeholder="z.B. Sparkasse, Commerzbank, N26 Business">
+                </div>
+            </div>
+
+            <hr style="margin:20px 0; border:none; border-top:1px solid #E5E7EB;">
+
+            <h3 style="margin-bottom:10px;">Ansprechpartner — Verantwortliche Person für Zahlungen*</h3>
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Vor- und Nachname*</label>
+                    <input type="text" class="form-input" id="contactName" placeholder="Max Mustermann">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Position im Unternehmen*</label>
+                    <select class="form-input" id="contactPosition">
+                        <option>Geschäftsführer/in</option>
+                        <option>Inhaber/in</option>
+                        <option>Finanzbuchhalter/in</option>
+                        <option>Steuerberater/in</option>
+                        <option>Sonstige</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">E-Mail-Adresse* (geschäftlich)</label>
+                    <input type="email" class="form-input" id="contactEmail" placeholder="name@firma.de">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Telefonnummer*</label>
+                    <input type="text" class="form-input" id="contactPhone" placeholder="z.B. +49 30 1234567">
+                </div>
+            </div>
+
+            <div class="btn-group">
+                <button class="btn btn-secondary" onclick="saveAndExit()">Später fortsetzen</button>
+                <button class="btn btn-primary" onclick="saveAndNext(2)">Weiter</button>
+            </div>
+        </div>
+
+        <!-- STEP 2: BANK INFO -->
+        <div class="step-content" id="step2">
+            <h2 class="step-title">Bankverbindung</h2>
+            <p class="step-subtitle">Verbinden Sie Ihre Geschäftskonten (optional)</p>
+
+            <div class="feature-cards">
+                <div class="feature-card" onclick="alert('Manuelle Eingabe wird geöffnet')">
+                    <div class="feature-title">Manuell eingeben</div>
+                    <div class="feature-desc">IBAN, BIC manuell hinzufügen</div>
+                </div>
+                <div class="feature-card" onclick="alert('FinAPI Integration wird geöffnet')">
+                    <div class="feature-title">Automatisch verbinden</div>
+                    <div class="feature-desc">Via FinAPI (empfohlen)</div>
+                </div>
+            </div>
+
+            <div class="form-group" style="margin-top: 30px;">
+                <label class="form-label">IBAN</label>
+                <input type="text" class="form-input" id="iban" placeholder="DE89 3704 0044 0532 0130 00">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Bank</label>
+                <input type="text" class="form-input" id="bankName" placeholder="Deutsche Bank">
+            </div>
+
+            <div class="btn-group">
+                <button class="btn btn-secondary" onclick="saveAndPrev(1)">Zurück</button>
+                <button class="btn btn-primary" onclick="saveAndNext(3)">Weiter</button>
+            </div>
+        </div>
+
+        <!-- STEP 3: SETTINGS -->
+        <div class="step-content" id="step3">
+            <h2 class="step-title">Einstellungen</h2>
+            <p class="step-subtitle">Passen Sie Kontiq an Ihre Bedürfnisse an</p>
+
+            <div class="form-group">
+                <label class="form-label">Liquiditätsminimum (€)</label>
+                <input type="number" class="form-input" id="minLiquidity" value="40000" step="1000">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Standard Zahlungsziel (Tage)</label>
+                <input type="number" class="form-input" id="paymentTerm" value="14">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Welche Features möchten Sie nutzen?</label>
+                <div class="feature-cards">
+                    <div class="feature-card selected">
+                        <div class="feature-title">Zahlungsmanagement</div>
+                        <div class="feature-desc">Lieferantenrechnungen</div>
+                    </div>
+                    <div class="feature-card selected">
+                        <div class="feature-title">Forderungen</div>
+                        <div class="feature-desc">Kundenrechnungen</div>
+                    </div>
+                    <div class="feature-card selected">
+                        <div class="feature-title">Kostenanalyse</div>
+                        <div class="feature-desc">Ausgabenübersicht</div>
+                    </div>
+                    <div class="feature-card selected">
+                        <div class="feature-title">Liquiditätsplanung</div>
+                        <div class="feature-desc">Cashflow-Prognosen</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="btn-group">
+                <button class="btn btn-secondary" onclick="saveAndPrev(2)">Zurück</button>
+                <button class="btn btn-primary" onclick="saveAndComplete()">Fertigstellen</button>
+            </div>
+        </div>
+
+        <!-- STEP 4: SUCCESS -->
+        <div class="step-content" id="step4">
+            <div style="text-align: center;">
+                <div class="success-icon">✓</div>
+                <h2 class="step-title">Alles bereit!</h2>
+                <p class="step-subtitle" style="margin-bottom: 30px;">
+                    Ihr Kontiq-Konto ist eingerichtet und einsatzbereit
+                </p>
+                
+                <div style="background: #F9FAFB; padding: 20px; border-radius: 8px; margin-bottom: 30px; text-align: left;">
+                    <div style="font-size: 14px; font-weight: 600; margin-bottom: 15px; color: #0A2540;">
+                        Nächste Schritte:
+                    </div>
+                    <ul style="list-style: none; padding: 0; font-size: 14px; color: #6B7280;">
+                        <li style="padding: 8px 0; border-bottom: 1px solid #E5E7EB;">✓ Erste Lieferantenrechnung hinzufügen</li>
+                        <li style="padding: 8px 0; border-bottom: 1px solid #E5E7EB;">✓ Kundenrechnung erstellen</li>
+                        <li style="padding: 8px 0; border-bottom: 1px solid #E5E7EB;">✓ Kategorien anpassen</li>
+                        <li style="padding: 8px 0;">✓ Dashboard erkunden</li>
+                    </ul>
+                </div>
+
+                <button class="btn btn-primary" style="padding: 14px 40px; font-size: 16px;" onclick="completeOnboarding()">
+                    Zum Dashboard
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 1;
+        let isNavigatingBack = false;
+
+        // Email utilisateur courant (pour invalider un ancien cache d'onboarding)
+        function getCurrentUserEmail() {
+            try {
+                const user = JSON.parse(localStorage.getItem('kontiq_user') || '{}');
+                return user && user.email ? user.email : null;
+            } catch (e) {
+                return null;
+            }
+        }
+        
+        // Fonction pour sauvegarder toutes les données du formulaire dans localStorage
+        function saveFormData() {
+            const formData = {
+                step: currentStep,
+                companyName: document.getElementById('companyName')?.value || '',
+                legalForm: document.getElementById('legalForm')?.value || '',
+                tradeRegister: document.getElementById('tradeRegister')?.value || '',
+                vatId: document.getElementById('vatId')?.value || '',
+                industry: document.getElementById('industry')?.value || '',
+                employeeCount: document.getElementById('employeeCount')?.value || '',
+                annualRevenue: document.getElementById('annualRevenue')?.value || '',
+                hq: document.getElementById('hq')?.value || '',
+                address: document.getElementById('address')?.value || '',
+                zipCode: document.getElementById('zipCode')?.value || '',
+                city: document.getElementById('city')?.value || '',
+                supplierInvoices: document.getElementById('supplierInvoices')?.value || '',
+                avgPaymentTerm: document.getElementById('avgPaymentTerm')?.value || '',
+                accountingSoftware: document.getElementById('accountingSoftware')?.value || '',
+                mainBanks: document.getElementById('mainBanks')?.value || '',
+                iban: document.getElementById('iban')?.value || '',
+                bankName: document.getElementById('bankName')?.value || '',
+                contactName: document.getElementById('contactName')?.value || '',
+                contactPosition: document.getElementById('contactPosition')?.value || '',
+                contactEmail: document.getElementById('contactEmail')?.value || '',
+                contactPhone: document.getElementById('contactPhone')?.value || '',
+                minLiquidity: document.getElementById('minLiquidity')?.value || '40000',
+                paymentTerm: document.getElementById('paymentTerm')?.value || '14',
+                userEmail: getCurrentUserEmail() || 'guest'
+            };
+            
+            localStorage.setItem('kontiq_onboarding_progress', JSON.stringify(formData));
+            console.log('💾 Données sauvegardées');
+        }
+        
+        // Fonction pour restaurer les données du formulaire depuis localStorage
+        function restoreFormData() {
+            const saved = localStorage.getItem('kontiq_onboarding_progress');
+            if (!saved) return false;
+            
+            try {
+                const formData = JSON.parse(saved);
+                const currentEmail = getCurrentUserEmail() || 'guest';
+
+                // Si le cache appartient à un autre utilisateur, on ignore et on nettoie
+                if (formData.userEmail && formData.userEmail !== currentEmail) {
+                    localStorage.removeItem('kontiq_onboarding_progress');
+                    return false;
+                }
+                // Si ancien cache sans userEmail et que l'utilisateur courant est identifié, ignorer
+                if (!formData.userEmail && currentEmail !== 'guest') {
+                    localStorage.removeItem('kontiq_onboarding_progress');
+                    return false;
+                }
+                
+                // Restaurer tous les champs
+                if (formData.companyName) document.getElementById('companyName').value = formData.companyName;
+                if (formData.legalForm) document.getElementById('legalForm').value = formData.legalForm;
+                if (formData.tradeRegister) document.getElementById('tradeRegister').value = formData.tradeRegister;
+                if (formData.vatId) document.getElementById('vatId').value = formData.vatId;
+                if (formData.industry) document.getElementById('industry').value = formData.industry;
+                if (formData.employeeCount) document.getElementById('employeeCount').value = formData.employeeCount;
+                if (formData.annualRevenue) document.getElementById('annualRevenue').value = formData.annualRevenue;
+                if (formData.hq) document.getElementById('hq').value = formData.hq;
+                if (formData.address) document.getElementById('address').value = formData.address;
+                if (formData.zipCode) document.getElementById('zipCode').value = formData.zipCode;
+                if (formData.city) document.getElementById('city').value = formData.city;
+                if (formData.supplierInvoices) document.getElementById('supplierInvoices').value = formData.supplierInvoices;
+                if (formData.avgPaymentTerm) document.getElementById('avgPaymentTerm').value = formData.avgPaymentTerm;
+                if (formData.accountingSoftware) document.getElementById('accountingSoftware').value = formData.accountingSoftware;
+                if (formData.mainBanks) document.getElementById('mainBanks').value = formData.mainBanks;
+                if (formData.iban) document.getElementById('iban').value = formData.iban;
+                if (formData.bankName) document.getElementById('bankName').value = formData.bankName;
+                if (formData.contactName) document.getElementById('contactName').value = formData.contactName;
+                if (formData.contactPosition) document.getElementById('contactPosition').value = formData.contactPosition;
+                if (formData.contactEmail) document.getElementById('contactEmail').value = formData.contactEmail;
+                if (formData.contactPhone) document.getElementById('contactPhone').value = formData.contactPhone;
+                if (formData.minLiquidity) document.getElementById('minLiquidity').value = formData.minLiquidity;
+                if (formData.paymentTerm) document.getElementById('paymentTerm').value = formData.paymentTerm;
+                
+                // Restaurer l'étape
+                if (formData.step && formData.step !== currentStep) {
+                    goToStep(formData.step);
+                }
+                
+                console.log('✅ Données restaurées');
+                return true;
+            } catch (e) {
+                console.error('Erreur lors de la restauration:', e);
+                return false;
+            }
+        }
+        
+        // Fonction pour aller à une étape spécifique
+        function goToStep(step, updateHistory = true) {
+            // Hide current
+            document.getElementById('step' + currentStep).classList.remove('active');
+            
+            // Mise à jour des classes de progression
+            for (let i = 1; i <= 4; i++) {
+                const stepEl = document.querySelectorAll('.progress-step')[i - 1];
+                stepEl.classList.remove('active', 'completed');
+                
+                if (i < step) {
+                    stepEl.classList.add('completed');
+                } else if (i === step) {
+                    stepEl.classList.add('active');
+                }
+            }
+            
+            // Show target
+            currentStep = step;
+            document.getElementById('step' + currentStep).classList.add('active');
+            
+            // Update progress bar
+            const progress = ((currentStep - 1) / 3) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+            
+            // Mettre à jour l'historique du navigateur
+            if (updateHistory && !isNavigatingBack) {
+                const url = new URL(window.location);
+                url.searchParams.set('step', step);
+                history.pushState({ step: step }, '', url);
+            }
+            
+            window.scrollTo(0, 0);
+        }
+        
+        // Envoi côté serveur (progression partielle)
+        async function syncProgressToServer(status) {
+            const user = JSON.parse(localStorage.getItem('kontiq_user') || '{}');
+            if (!user || !user.email) return;
+            const saved = localStorage.getItem('kontiq_onboarding_progress');
+            const formData = saved ? JSON.parse(saved) : {};
+            const payload = {
+                status: status || 'incomplete',
+                lastStep: formData.step || currentStep,
+                updatedAt: new Date().toISOString(),
+                ...formData
+            };
+            try {
+                await fetch('/api/onboarding', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: user.email, data: payload })
+                });
+            } catch (e) {
+                console.warn('Sync onboarding progress failed', e);
+            }
+        }
+
+        // Fonction pour sauvegarder et aller à l'étape suivante
+        function saveAndNext(step) {
+            saveFormData();
+            goToStep(step);
+        }
+        
+        // Fonction pour sauvegarder et aller à l'étape précédente
+        function saveAndPrev(step) {
+            saveFormData();
+            goToStep(step);
+        }
+
+        // Fonction pour sauvegarder et quitter vers le dashboard
+        function saveAndExit() {
+            saveFormData();
+            syncProgressToServer('incomplete');
+            window.location.href = '/index.html';
+        }
+        
+        // Fonction pour sauvegarder et compléter
+        function saveAndComplete() {
+            saveFormData();
+            goToStep(4);
+        }
+
+        function nextStep(step) {
+            saveAndNext(step);
+        }
+
+        function prevStep(step) {
+            saveAndPrev(step);
+        }
+
+        async function completeOnboarding() {
+            // Récupérer les données depuis localStorage
+            const saved = localStorage.getItem('kontiq_onboarding_progress');
+            const formData = saved ? JSON.parse(saved) : {};
+            
+            // Sauvegarde des données d'onboarding
+            const onboardingData = {
+                company: formData.companyName || document.getElementById('companyName').value,
+                legalForm: formData.legalForm || document.getElementById('legalForm').value,
+                tradeRegister: formData.tradeRegister || document.getElementById('tradeRegister')?.value || '',
+                vatId: formData.vatId || document.getElementById('vatId').value,
+                industry: formData.industry || document.getElementById('industry')?.value || '',
+                employeeCount: formData.employeeCount || document.getElementById('employeeCount')?.value || '',
+                annualRevenue: formData.annualRevenue || document.getElementById('annualRevenue')?.value || '',
+                hq: formData.hq || document.getElementById('hq')?.value || '',
+                address: formData.address || document.getElementById('address').value,
+                zipCode: formData.zipCode || document.getElementById('zipCode').value,
+                city: formData.city || document.getElementById('city').value,
+                supplierInvoices: formData.supplierInvoices || document.getElementById('supplierInvoices')?.value || '',
+                avgPaymentTerm: formData.avgPaymentTerm || document.getElementById('avgPaymentTerm')?.value || '',
+                accountingSoftware: formData.accountingSoftware || document.getElementById('accountingSoftware')?.value || '',
+                mainBanks: formData.mainBanks || document.getElementById('mainBanks')?.value || '',
+                iban: formData.iban || document.getElementById('iban').value,
+                bankName: formData.bankName || document.getElementById('bankName').value,
+                contactName: formData.contactName || document.getElementById('contactName')?.value || '',
+                contactPosition: formData.contactPosition || document.getElementById('contactPosition')?.value || '',
+                contactEmail: formData.contactEmail || document.getElementById('contactEmail')?.value || '',
+                contactPhone: formData.contactPhone || document.getElementById('contactPhone')?.value || '',
+                minLiquidity: formData.minLiquidity || document.getElementById('minLiquidity').value,
+                paymentTerm: formData.paymentTerm || document.getElementById('paymentTerm').value,
+                status: 'complete',
+                lastStep: 4,
+                completedAt: new Date().toISOString()
+            };
+
+            // Save locally first
+            localStorage.setItem('kontiq_company', JSON.stringify(onboardingData));
+            localStorage.setItem('kontiq_onboarding_complete', 'true');
+            
+            // Nettoyer la progression temporaire
+            localStorage.removeItem('kontiq_onboarding_progress');
+
+            // If logged in, persist to server by email
+            const user = JSON.parse(localStorage.getItem('kontiq_user') || '{}');
+            if (user && user.email) {
+                try {
+                    await fetch('/api/onboarding', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email: user.email, data: onboardingData })
+                    });
+                } catch (e) {
+                    console.error('Failed to save onboarding to server', e);
+                }
+            }
+
+            // Redirection vers le dashboard
+            window.location.href = '/index.html';
+        }
+        
+        // Sauvegarder automatiquement à chaque changement
+        function setupAutoSave() {
+            const inputs = document.querySelectorAll('input, select');
+            inputs.forEach(input => {
+                input.addEventListener('change', saveFormData);
+                input.addEventListener('blur', saveFormData);
+            });
+        }
+
+        // Gérer le bouton retour du navigateur
+        window.addEventListener('popstate', function(event) {
+            isNavigatingBack = true;
+            if (event.state && event.state.step) {
+                goToStep(event.state.step, false);
+            }
+            setTimeout(() => { isNavigatingBack = false; }, 100);
+        });
+
+        // Préremplir avec les données du register
+        window.addEventListener('DOMContentLoaded', function() {
+            // Vérifier si une étape est spécifiée dans l'URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const urlStep = urlParams.get('step');
+            
+            // D'abord, essayer de restaurer la progression sauvegardée (si même utilisateur)
+            const restored = restoreFormData();
+            
+            // Si une étape est spécifiée dans l'URL, l'utiliser
+            if (urlStep && !restored) {
+                const stepNum = parseInt(urlStep);
+                if (stepNum >= 1 && stepNum <= 4) {
+                    goToStep(stepNum, false);
+                }
+            }
+            
+            // Initialiser l'état de l'historique
+            if (!urlStep) {
+                const url = new URL(window.location);
+                url.searchParams.set('step', currentStep);
+                history.replaceState({ step: currentStep }, '', url);
+            }
+
+            // Charger les données du register si rien restauré
+            if (!restored) {
+                const user = JSON.parse(localStorage.getItem('kontiq_user') || '{}');
+                if (user.company) {
+                    document.getElementById('companyName').value = user.company;
+                }
+
+                // If logged in, try to fetch saved onboarding from server
+                if (user && user.email) {
+                    fetch('/api/onboarding?email=' + encodeURIComponent(user.email))
+                        .then(r => r.json())
+                        .then(result => {
+                            if (result && result.data) {
+                                const d = result.data;
+                                // si le serveur indique incomplet, re-sauver en local et forcer la bannière côté client
+                                if (d.status !== 'complete') {
+                                    const local = {
+                                        step: d.lastStep || 1,
+                                        userEmail: user.email,
+                                        companyName: d.company || '',
+                                        legalForm: d.legalForm || '',
+                                        tradeRegister: d.tradeRegister || '',
+                                        vatId: d.vatId || '',
+                                        industry: d.industry || '',
+                                        employeeCount: d.employeeCount || '',
+                                        annualRevenue: d.annualRevenue || '',
+                                        hq: d.hq || '',
+                                        address: d.address || '',
+                                        zipCode: d.zipCode || '',
+                                        city: d.city || '',
+                                        supplierInvoices: d.supplierInvoices || '',
+                                        avgPaymentTerm: d.avgPaymentTerm || '',
+                                        accountingSoftware: d.accountingSoftware || '',
+                                        mainBanks: d.mainBanks || '',
+                                        iban: d.iban || '',
+                                        bankName: d.bankName || '',
+                                        contactName: d.contactName || '',
+                                        contactPosition: d.contactPosition || '',
+                                        contactEmail: d.contactEmail || '',
+                                        contactPhone: d.contactPhone || '',
+                                        minLiquidity: d.minLiquidity || '',
+                                        paymentTerm: d.paymentTerm || ''
+                                    };
+                                    localStorage.setItem('kontiq_onboarding_progress', JSON.stringify(local));
+                                    restoreFormData();
+                                } else {
+                                    // si complet, marquer en local
+                                    localStorage.setItem('kontiq_onboarding_complete', 'true');
+                                    localStorage.removeItem('kontiq_onboarding_progress');
+                                }
+                                // populate fields that exist (affichage immédiat)
+                                try {
+                                    if (d.company) document.getElementById('companyName').value = d.company;
+                                    if (d.legalForm) document.getElementById('legalForm').value = d.legalForm;
+                                    if (d.tradeRegister) document.getElementById('tradeRegister').value = d.tradeRegister;
+                                    if (d.vatId) document.getElementById('vatId').value = d.vatId;
+                                    if (d.industry) document.getElementById('industry').value = d.industry;
+                                    if (d.employeeCount) document.getElementById('employeeCount').value = d.employeeCount;
+                                    if (d.annualRevenue) document.getElementById('annualRevenue').value = d.annualRevenue;
+                                    if (d.hq) document.getElementById('hq').value = d.hq;
+                                    if (d.address) document.getElementById('address').value = d.address;
+                                    if (d.zipCode) document.getElementById('zipCode').value = d.zipCode;
+                                    if (d.city) document.getElementById('city').value = d.city;
+                                    if (d.supplierInvoices) document.getElementById('supplierInvoices').value = d.supplierInvoices;
+                                    if (d.avgPaymentTerm) document.getElementById('avgPaymentTerm').value = d.avgPaymentTerm;
+                                    if (d.accountingSoftware) document.getElementById('accountingSoftware').value = d.accountingSoftware;
+                                    if (d.mainBanks) document.getElementById('mainBanks').value = d.mainBanks;
+                                    if (d.iban) document.getElementById('iban').value = d.iban;
+                                    if (d.bankName) document.getElementById('bankName').value = d.bankName;
+                                    if (d.contactName) document.getElementById('contactName').value = d.contactName;
+                                    if (d.contactPosition) document.getElementById('contactPosition').value = d.contactPosition;
+                                    if (d.contactEmail) document.getElementById('contactEmail').value = d.contactEmail;
+                                    if (d.contactPhone) document.getElementById('contactPhone').value = d.contactPhone;
+                                    if (d.minLiquidity) document.getElementById('minLiquidity').value = d.minLiquidity;
+                                    if (d.paymentTerm) document.getElementById('paymentTerm').value = d.paymentTerm;
+                                } catch (e) { /* ignore missing fields */ }
+                            }
+                        }).catch(() => {});
+                }
+            }
+            
+            // Configurer la sauvegarde automatique
+            setupAutoSave();
+        });
+    </script>
+</body>
+</html>
