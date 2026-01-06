@@ -1,3 +1,53 @@
+/* ===================== MOBILE OPTIMIZATIONS ===================== */
+@media (max-width: 640px) {
+  button,
+  .btn,
+  input,
+  select,
+  textarea {
+    font-size: 18px !important;
+    padding: 16px 18px !important;
+    border-radius: 12px !important;
+    min-width: 48px;
+    min-height: 48px;
+  }
+  .form-label,
+  .label {
+    font-size: 16px !important;
+  }
+  .container {
+    padding: 12px !important;
+  }
+  .grid-2,
+  .grid-3,
+  .grid-4 {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+  .ai-chat-window {
+    width: 100vw !important;
+    height: 60vh !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+  }
+  .ai-chat-toggle {
+    width: 56px !important;
+    height: 56px !important;
+    bottom: 16px !important;
+    right: 16px !important;
+  }
+  .modal-content {
+    max-width: 98vw !important;
+    padding: 10px !important;
+    border-radius: 10px !important;
+  }
+  .modal {
+    align-items: flex-end !important;
+    justify-content: center !important;
+  }
+}
 /* ============================================================================
    KONTIQ - GLOBAL HARMONIZED STYLES
    Unified design system for all pages

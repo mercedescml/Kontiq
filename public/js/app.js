@@ -361,6 +361,11 @@ const APP = {
     toast.textContent = message;
     toastContainer.appendChild(toast);
 
+    // Ajout du log console pour les erreurs
+    if (type === 'error') {
+      console.error(`[APP.notify] Erreur: ${message}`);
+    }
+
     setTimeout(() => {
       toast.style.animation = 'slideOutRight 0.3s ease';
       setTimeout(() => toast.remove(), 300);

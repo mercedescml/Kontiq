@@ -219,6 +219,7 @@ app.post('/api/users/register', (req, res) => {
   const user = { email, name: name || '', company: company || '', passwordHash: hashPassword(password), created: new Date().toISOString() };
   users.push(user);
   writeJSON(FILES.users, users);
+  console.log(`[INSCRIPTION] Nouvel utilisateur: ${user.email} | Nom: ${user.name} | Société: ${user.company} | Date: ${user.created}`);
   res.status(201).json({ user: { email: user.email, name: user.name, company: user.company } });
 });
 app.post('/api/users/login', (req, res) => {
