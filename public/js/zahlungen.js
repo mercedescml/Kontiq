@@ -1,4 +1,30 @@
 /**
+ * Sauvegarde un paiement depuis le formulaire
+ */
+async function savePayment(event) {
+  event.preventDefault();
+  const recipient = document.getElementById('paymentRecipient').value.trim();
+  const amount = parseFloat(document.getElementById('paymentAmount').value) || 0;
+  const date = document.getElementById('paymentDate').value;
+  const status = document.getElementById('paymentStatus').value || 'pending';
+
+  if (!recipient || !date) {
+    APP.notify('Alle Felder sind erforderlich', 'error');
+    return;
+  }
+
+  const data = { recipient, amount, date, status };
+  try {
+    await addPayment(data);
+    APP.notify('Zahlung gespeichert', 'success');
+    closePaymentModal && closePaymentModal();
+    loadPayments();
+  } catch (error) {
+    APP.notify('Fehler beim Speichern der Zahlung', 'error');
+    console.error(error);
+  }
+}
+/**
  * zahlungen.js - Gestion de la page Paiements
  * OPTIMISÉ avec cache pour affichage instantané
  */

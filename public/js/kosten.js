@@ -1,4 +1,30 @@
 /**
+ * Sauvegarde un coût depuis le formulaire
+ */
+async function saveKosten(event) {
+  event.preventDefault();
+  const category = document.getElementById('kostenCategory').value.trim();
+  const description = document.getElementById('kostenDescription').value.trim();
+  const amount = parseFloat(document.getElementById('kostenAmount').value) || 0;
+  const date = document.getElementById('kostenDate').value;
+
+  if (!category || !description || !date) {
+    APP.notify('Alle Felder sind erforderlich', 'error');
+    return;
+  }
+
+  const data = { category, description, amount, date };
+  try {
+    await addKosten(data);
+    APP.notify('Kosten gespeichert', 'success');
+    closePlanModal && closePlanModal();
+    loadKosten();
+  } catch (error) {
+    APP.notify('Fehler beim Speichern der Kosten', 'error');
+    console.error(error);
+  }
+}
+/**
  * kosten.js - Gestion des Coûts
  * OPTIMISÉ avec cache pour affichage instantané
  */

@@ -65,10 +65,15 @@ app.use(express.static('public', { maxAge: '1d' }));
 app.get('/api/dashboard', (req, res) => res.json({ liquiditaet: 0, skontoMoeglichkeiten: 0, faelligeZahlungen: 0 }));
 
 // Zahlungen
-app.get('/api/zahlungen', (req, res) => res.json({ zahlungen: readJSON(FILES.zahlungen) }));
+app.get('/api/zahlungen', (req, res) => {
+  const data = readJSON(FILES.zahlungen);
+  const userId = req.query.userId;
+  const filtered = userId ? data.filter(x => x.userId === userId) : data;
+  res.json({ zahlungen: filtered });
+});
 app.post('/api/zahlungen', (req, res) => {
   const data = readJSON(FILES.zahlungen);
-  const item = { id: Date.now().toString(), ...req.body, createdAt: new Date().toISOString() };
+  const item = { id: Date.now().toString(), ...req.body, userId: req.body.userId, createdAt: new Date().toISOString() };
   data.push(item);
   writeJSON(FILES.zahlungen, data) ? res.status(201).json({ zahlung: item }) : res.status(500).json({ error: 'Fehler' });
 });
@@ -90,11 +95,13 @@ app.delete('/api/zahlungen/:id', (req, res) => {
 app.get('/api/contracts', (req, res) => {
   let data = readJSON(FILES.contracts);
   if (!data.length) { data = SAMPLE_CONTRACTS; writeJSON(FILES.contracts, data); }
-  res.json({ contracts: data });
+  const userId = req.query.userId;
+  const filtered = userId ? data.filter(x => x.userId === userId) : data;
+  res.json({ contracts: filtered });
 });
 app.post('/api/contracts', (req, res) => {
   const data = readJSON(FILES.contracts);
-  const item = { id: Date.now().toString(), ...req.body, createdAt: new Date().toISOString() };
+  const item = { id: Date.now().toString(), ...req.body, userId: req.body.userId, createdAt: new Date().toISOString() };
   data.push(item);
   writeJSON(FILES.contracts, data) ? res.status(201).json({ contract: item }) : res.status(500).json({ error: 'Fehler' });
 });
@@ -113,10 +120,15 @@ app.delete('/api/contracts/:id', (req, res) => {
 app.post('/api/contracts/upload', (req, res) => res.json({ ok: true }));
 
 // Kosten
-app.get('/api/kosten', (req, res) => res.json({ kosten: readJSON(FILES.kosten) }));
+app.get('/api/kosten', (req, res) => {
+  const data = readJSON(FILES.kosten);
+  const userId = req.query.userId;
+  const filtered = userId ? data.filter(x => x.userId === userId) : data;
+  res.json({ kosten: filtered });
+});
 app.post('/api/kosten', (req, res) => {
   const data = readJSON(FILES.kosten);
-  const item = { id: Date.now().toString(), ...req.body, createdAt: new Date().toISOString() };
+  const item = { id: Date.now().toString(), ...req.body, userId: req.body.userId, createdAt: new Date().toISOString() };
   data.push(item);
   writeJSON(FILES.kosten, data);
   res.status(201).json({ kosten: item });
@@ -135,10 +147,15 @@ app.delete('/api/kosten/:id', (req, res) => {
 });
 
 // Forderungen
-app.get('/api/forderungen', (req, res) => res.json({ forderungen: readJSON(FILES.forderungen) }));
+app.get('/api/forderungen', (req, res) => {
+  const data = readJSON(FILES.forderungen);
+  const userId = req.query.userId;
+  const filtered = userId ? data.filter(x => x.userId === userId) : data;
+  res.json({ forderungen: filtered });
+});
 app.post('/api/forderungen', (req, res) => {
   const data = readJSON(FILES.forderungen);
-  const item = { id: Date.now().toString(), ...req.body, createdAt: new Date().toISOString() };
+  const item = { id: Date.now().toString(), ...req.body, userId: req.body.userId, createdAt: new Date().toISOString() };
   data.push(item);
   writeJSON(FILES.forderungen, data);
   res.status(201).json({ forderung: item });
@@ -157,10 +174,15 @@ app.delete('/api/forderungen/:id', (req, res) => {
 });
 
 // Bankkonten
-app.get('/api/bankkonten', (req, res) => res.json({ bankkonten: readJSON(FILES.bankkonten) }));
+app.get('/api/bankkonten', (req, res) => {
+  const data = readJSON(FILES.bankkonten);
+  const userId = req.query.userId;
+  const filtered = userId ? data.filter(x => x.userId === userId) : data;
+  res.json({ bankkonten: filtered });
+});
 app.post('/api/bankkonten', (req, res) => {
   const data = readJSON(FILES.bankkonten);
-  const item = { id: Date.now().toString(), ...req.body, createdAt: new Date().toISOString() };
+  const item = { id: Date.now().toString(), ...req.body, userId: req.body.userId, createdAt: new Date().toISOString() };
   data.push(item);
   writeJSON(FILES.bankkonten, data);
   res.status(201).json({ bankkonto: item });

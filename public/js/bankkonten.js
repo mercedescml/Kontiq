@@ -1,4 +1,30 @@
 /**
+ * Sauvegarde un compte bancaire depuis le formulaire
+ */
+async function saveAccount(event) {
+  event.preventDefault();
+  const bank = document.getElementById('accountBank').value.trim();
+  const iban = document.getElementById('accountIban').value.trim();
+  const balance = parseFloat(document.getElementById('accountBalance').value) || 0;
+  const id = document.getElementById('accountId').value;
+
+  if (!bank || !iban) {
+    APP.notify('Bank und IBAN sind erforderlich', 'error');
+    return;
+  }
+
+  const data = { bank, iban, balance };
+  try {
+    await addBankkonto(data);
+    APP.notify('Bankkonto gespeichert', 'success');
+    closeBankModal();
+    loadBankkonten();
+  } catch (error) {
+    APP.notify('Fehler beim Speichern des Bankkontos', 'error');
+    console.error(error);
+  }
+}
+/**
  * bankkonten.js - Gestion des Comptes Bancaires
  * OPTIMISÉ avec cache pour affichage instantané
  */

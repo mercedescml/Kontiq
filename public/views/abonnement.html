@@ -19,6 +19,16 @@
     .btn-primary:hover{background:#059669;transform:translateY(-1px)}
     .btn-secondary{background:white;color:#0A2540;border:1.5px solid #E5E7EB}
     .btn-secondary:hover{background:#F8FAFC;border-color:#0A2540;transform:translateY(-1px)}
+  /* Masquer header/menu sur mobile */
+  @media (max-width: 768px) {
+    .sidebar,
+    .side-menu,
+    .module-list,
+    .main-nav,
+    .page-header {
+      display: none !important;
+    }
+  }
   </style>
 </head>
 <body>

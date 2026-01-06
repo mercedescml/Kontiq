@@ -131,6 +131,16 @@ textarea{resize:vertical;min-height:100px}
 .nav-group-title{display:none}
 .grid-2{grid-template-columns:1fr}
 }
+/* Masquer header/menu sur mobile */
+@media (max-width: 768px) {
+  .sidebar,
+  .side-menu,
+  .module-list,
+  .main-nav,
+  .page-header {
+    display: none !important;
+  }
+}
 </style>
 </head>
 <body>

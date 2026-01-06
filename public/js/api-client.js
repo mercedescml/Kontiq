@@ -8,7 +8,24 @@ const API = {
   /**
    * Requête générique
    */
-  async request(endpoint, method = 'GET', data = null) {
+  async request(endpoint, method = 'GET', data = null, withUser = false) {
+    // Ajoute automatiquement userId (email) si demandé
+    let userId = null;
+    try {
+      const user = JSON.parse(localStorage.getItem('kontiq_user') || '{}');
+      userId = user && user.email ? user.email : null;
+    } catch {}
+
+    // Ajoute userId dans le body pour POST/PUT
+    if (withUser && (method === 'POST' || method === 'PUT')) {
+      data = { ...(data || {}), userId };
+    }
+
+    // Ajoute userId dans la query pour GET
+    if (withUser && method === 'GET' && userId && !endpoint.includes('userId=')) {
+      endpoint += (endpoint.includes('?') ? '&' : '?') + 'userId=' + encodeURIComponent(userId);
+    }
+
     const config = {
       method,
       headers: { 'Content-Type': 'application/json' }
@@ -51,41 +68,41 @@ const API = {
 
   // Zahlungen (Paiements)
   zahlungen: {
-    getAll: () => API.request('/zahlungen'),
-    create: (data) => API.request('/zahlungen', 'POST', data),
-    update: (id, data) => API.request(`/zahlungen/${id}`, 'PUT', data),
+    getAll: () => API.request('/zahlungen', 'GET', null, true),
+    create: (data) => API.request('/zahlungen', 'POST', data, true),
+    update: (id, data) => API.request(`/zahlungen/${id}`, 'PUT', data, true),
     delete: (id) => API.request(`/zahlungen/${id}`, 'DELETE')
   },
 
   // Contracts (Verträge)
   contracts: {
-    getAll: () => API.request('/contracts'),
-    create: (data) => API.request('/contracts', 'POST', data),
-    update: (id, data) => API.request(`/contracts/${id}`, 'PUT', data),
+    getAll: () => API.request('/contracts', 'GET', null, true),
+    create: (data) => API.request('/contracts', 'POST', data, true),
+    update: (id, data) => API.request(`/contracts/${id}`, 'PUT', data, true),
     delete: (id) => API.request(`/contracts/${id}`, 'DELETE')
   },
 
   // Bankkonten
   bankkonten: {
-    getAll: () => API.request('/bankkonten'),
-    create: (data) => API.request('/bankkonten', 'POST', data),
-    update: (id, data) => API.request(`/bankkonten/${id}`, 'PUT', data),
+    getAll: () => API.request('/bankkonten', 'GET', null, true),
+    create: (data) => API.request('/bankkonten', 'POST', data, true),
+    update: (id, data) => API.request(`/bankkonten/${id}`, 'PUT', data, true),
     delete: (id) => API.request(`/bankkonten/${id}`, 'DELETE')
   },
 
   // Kosten
   kosten: {
-    getAll: () => API.request('/kosten'),
-    create: (data) => API.request('/kosten', 'POST', data),
-    update: (id, data) => API.request(`/kosten/${id}`, 'PUT', data),
+    getAll: () => API.request('/kosten', 'GET', null, true),
+    create: (data) => API.request('/kosten', 'POST', data, true),
+    update: (id, data) => API.request(`/kosten/${id}`, 'PUT', data, true),
     delete: (id) => API.request(`/kosten/${id}`, 'DELETE')
   },
 
   // Forderungen
   forderungen: {
-    getAll: () => API.request('/forderungen'),
-    create: (data) => API.request('/forderungen', 'POST', data),
-    update: (id, data) => API.request(`/forderungen/${id}`, 'PUT', data),
+    getAll: () => API.request('/forderungen', 'GET', null, true),
+    create: (data) => API.request('/forderungen', 'POST', data, true),
+    update: (id, data) => API.request(`/forderungen/${id}`, 'PUT', data, true),
     delete: (id) => API.request(`/forderungen/${id}`, 'DELETE')
   },
 

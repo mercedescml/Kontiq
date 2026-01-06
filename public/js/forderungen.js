@@ -1,4 +1,30 @@
 /**
+ * Sauvegarde une créance depuis le formulaire
+ */
+async function saveForderung(event) {
+  event.preventDefault();
+  const customer = document.getElementById('forderungCustomer').value.trim();
+  const amount = parseFloat(document.getElementById('forderungAmount').value) || 0;
+  const dueDate = document.getElementById('forderungDueDate').value;
+  const status = document.getElementById('forderungStatus').value || 'open';
+
+  if (!customer || !dueDate) {
+    APP.notify('Alle Felder sind erforderlich', 'error');
+    return;
+  }
+
+  const data = { customer, amount, dueDate, status };
+  try {
+    await addForderung(data);
+    APP.notify('Forderung gespeichert', 'success');
+    closeForderungModal && closeForderungModal();
+    loadForderungen();
+  } catch (error) {
+    APP.notify('Fehler beim Speichern der Forderung', 'error');
+    console.error(error);
+  }
+}
+/**
  * forderungen.js - Gestion des Créances
  * OPTIMISÉ avec cache pour affichage instantané
  */
