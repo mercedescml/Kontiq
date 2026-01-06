@@ -219,6 +219,26 @@ app.post('/api/users/register', (req, res) => {
   const user = { email, name: name || '', company: company || '', passwordHash: hashPassword(password), created: new Date().toISOString() };
   users.push(user);
   writeJSON(FILES.users, users);
+  // Ajout du rôle geschaeftsfuehrer dans permissions.json
+  const perms = readJSON(FILES.permissions);
+  if (!perms.globalPermissions) perms.globalPermissions = {};
+  perms.globalPermissions[email] = {
+    role: 'geschaeftsfuehrer',
+    permissions: {
+      entitaeten: { view: true, edit: true, delete: true, manage: true },
+      bankkonten: { view: true, edit: true, delete: true },
+      kosten: { view: true, edit: true, delete: true },
+      forderungen: { view: true, edit: true, delete: true },
+      zahlungen: { view: true, edit: true, delete: true },
+      vertrage: { view: true, edit: true, delete: true },
+      liquiditat: { view: true, edit: true },
+      reports: { view: true, edit: true },
+      kpis: { view: true, edit: true },
+      einstellungen: { view: true, edit: true },
+      permissions: { view: true, edit: true }
+    }
+  };
+  writeJSON(FILES.permissions, perms);
   console.log(`[INSCRIPTION] Nouvel utilisateur: ${user.email} | Nom: ${user.name} | Société: ${user.company} | Date: ${user.created}`);
   res.status(201).json({ user: { email: user.email, name: user.name, company: user.company } });
 });
