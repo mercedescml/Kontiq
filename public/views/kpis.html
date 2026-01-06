@@ -272,26 +272,29 @@
         background: var(--navy);
     }
 
-    /* Modal Styles */
+    /* Modal Styles - Optimized for instant display */
     .modal-overlay {
-        display: none;
         position: fixed;
         inset: 0;
         background: rgba(0,0,0,0.5);
         z-index: 1000;
         backdrop-filter: blur(4px);
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.15s ease, visibility 0.15s ease;
+        will-change: opacity, visibility;
     }
 
     .modal-overlay.active {
-        display: block;
+        opacity: 1;
+        visibility: visible;
     }
 
     .kpi-modal {
-        display: none;
         position: fixed;
         top: 50%;
         left: 50%;
-        transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%) scale(0.95);
         background: white;
         border-radius: 16px;
         width: 90%;
@@ -300,10 +303,16 @@
         overflow-y: auto;
         z-index: 1001;
         box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.15s ease, visibility 0.15s ease, transform 0.15s ease;
+        will-change: opacity, visibility, transform;
     }
 
     .kpi-modal.active {
-        display: block;
+        opacity: 1;
+        visibility: visible;
+        transform: translate(-50%, -50%) scale(1);
     }
 
     .modal-header {
@@ -1100,12 +1109,36 @@
     let kpiThresholds = {};
     let selectedCalcType = 'manual';
     let currentFormula = null;
-
-    // Initialize
-    document.addEventListener('DOMContentLoaded', function() {
+    let dataLoaded = false;
+    
+    // Pre-cache modal references for instant access
+    const modalCache = {};
+    
+    // Initialize IMMEDIATELY
+    (function initFast() {
+        // Load data synchronously from localStorage (instant)
         loadData();
-        renderCustomKpis();
-    });
+        
+        // Cache modal elements immediately
+        requestAnimationFrame(() => {
+            modalCache.thresholdOverlay = document.getElementById('thresholdOverlay');
+            modalCache.thresholdModal = document.getElementById('thresholdModal');
+            modalCache.explanationOverlay = document.getElementById('explanationOverlay');
+            modalCache.explanationModal = document.getElementById('explanationModal');
+            modalCache.addKpiOverlay = document.getElementById('addKpiOverlay');
+            modalCache.addKpiModal = document.getElementById('addKpiModal');
+            modalCache.thresholdTitle = document.getElementById('thresholdTitle');
+            modalCache.thresholdTarget = document.getElementById('thresholdTarget');
+            modalCache.thresholdWarning = document.getElementById('thresholdWarning');
+            modalCache.thresholdCritical = document.getElementById('thresholdCritical');
+            modalCache.explanationTitle = document.getElementById('explanationTitle');
+            modalCache.explanationContent = document.getElementById('explanationContent');
+            
+            // Render custom KPIs after DOM is ready
+            renderCustomKpis();
+            dataLoaded = true;
+        });
+    })();
 
     function loadData() {
         const stored = localStorage.getItem('kontiq_custom_kpis');
@@ -1199,29 +1232,32 @@
         const explanation = kpiExplanations[kpiId];
         if (!explanation) return;
 
-        document.getElementById('explanationTitle').textContent = explanation.title;
+        // Use cached elements
+        const titleEl = modalCache.explanationTitle || document.getElementById('explanationTitle');
+        const contentEl = modalCache.explanationContent || document.getElementById('explanationContent');
+        const overlay = modalCache.explanationOverlay || document.getElementById('explanationOverlay');
+        const modal = modalCache.explanationModal || document.getElementById('explanationModal');
         
-        const content = `
+        titleEl.textContent = explanation.title;
+        
+        // Use template literal with cached content
+        contentEl.innerHTML = `
             <div class="explanation-section">
                 <div class="explanation-label">Was bedeutet dieser KPI?</div>
                 <div class="explanation-content">${explanation.description}</div>
             </div>
-
             <div class="explanation-section">
                 <div class="explanation-label">Formel</div>
                 <div class="formula-box">${explanation.formula}</div>
             </div>
-
             <div class="explanation-section">
                 <div class="explanation-label">Berechnung</div>
                 <div class="explanation-content">${explanation.calculation}</div>
             </div>
-
             <div class="explanation-section">
                 <div class="explanation-label">Wie interpretieren?</div>
                 <div class="explanation-content">${explanation.interpretation}</div>
             </div>
-
             <div class="explanation-section">
                 <div class="explanation-label">Praktisches Beispiel</div>
                 <div class="example-box">
@@ -1231,32 +1267,47 @@
             </div>
         `;
 
-        document.getElementById('explanationContent').innerHTML = content;
-        document.getElementById('explanationOverlay').classList.add('active');
-        document.getElementById('explanationModal').classList.add('active');
+        overlay.classList.add('active');
+        modal.classList.add('active');
     }
 
     function closeExplanation() {
-        document.getElementById('explanationOverlay').classList.remove('active');
-        document.getElementById('explanationModal').classList.remove('active');
+        const overlay = modalCache.explanationOverlay || document.getElementById('explanationOverlay');
+        const modal = modalCache.explanationModal || document.getElementById('explanationModal');
+        overlay.classList.remove('active');
+        modal.classList.remove('active');
     }
 
-    // Custom KPI functions
+    // Custom KPI functions - OPTIMIZED
     function openAddKpiModal() {
-        document.getElementById('addKpiOverlay').classList.add('active');
-        document.getElementById('addKpiModal').classList.add('active');
+        const overlay = modalCache.addKpiOverlay || document.getElementById('addKpiOverlay');
+        const modal = modalCache.addKpiModal || document.getElementById('addKpiModal');
+        overlay.classList.add('active');
+        modal.classList.add('active');
         selectedCalcType = 'manual';
         updateCalcSelection();
+        
+        // Focus first input
+        requestAnimationFrame(() => {
+            const nameInput = document.getElementById('customKpiName');
+            if (nameInput) nameInput.focus();
+        });
     }
 
     function closeAddKpiModal() {
-        document.getElementById('addKpiOverlay').classList.remove('active');
-        document.getElementById('addKpiModal').classList.remove('active');
-        document.getElementById('customKpiForm').reset();
-        document.getElementById('calculationBuilder').style.display = 'none';
-        selectedCalcType = 'manual';
-        currentFormula = null;
-        updateCalcSelection();
+        const overlay = modalCache.addKpiOverlay || document.getElementById('addKpiOverlay');
+        const modal = modalCache.addKpiModal || document.getElementById('addKpiModal');
+        overlay.classList.remove('active');
+        modal.classList.remove('active');
+        
+        // Reset form after modal is hidden (non-blocking)
+        requestAnimationFrame(() => {
+            document.getElementById('customKpiForm').reset();
+            document.getElementById('calculationBuilder').style.display = 'none';
+            selectedCalcType = 'manual';
+            currentFormula = null;
+            updateCalcSelection();
+        });
     }
 
     function selectCalcType(type) {
@@ -1563,23 +1614,38 @@
         }
     }
 
-    // Threshold functions
+    // Threshold functions - OPTIMIZED for instant display
     function openThresholdModal(kpiId, kpiName) {
         currentThresholdKpi = kpiId;
         const thresholds = kpiThresholds[kpiId] || getDefaultThresholds()[kpiId];
         
-        document.getElementById('thresholdTitle').textContent = kpiName + ' - Schwellenwerte';
-        document.getElementById('thresholdTarget').value = thresholds.target;
-        document.getElementById('thresholdWarning').value = thresholds.warning;
-        document.getElementById('thresholdCritical').value = thresholds.critical;
+        // Use cached elements for instant access
+        const titleEl = modalCache.thresholdTitle || document.getElementById('thresholdTitle');
+        const targetEl = modalCache.thresholdTarget || document.getElementById('thresholdTarget');
+        const warningEl = modalCache.thresholdWarning || document.getElementById('thresholdWarning');
+        const criticalEl = modalCache.thresholdCritical || document.getElementById('thresholdCritical');
+        const overlay = modalCache.thresholdOverlay || document.getElementById('thresholdOverlay');
+        const modal = modalCache.thresholdModal || document.getElementById('thresholdModal');
         
-        document.getElementById('thresholdOverlay').classList.add('active');
-        document.getElementById('thresholdModal').classList.add('active');
+        // Set values directly
+        titleEl.textContent = kpiName + ' - Schwellenwerte';
+        targetEl.value = thresholds.target;
+        warningEl.value = thresholds.warning;
+        criticalEl.value = thresholds.critical;
+        
+        // Show modal immediately
+        overlay.classList.add('active');
+        modal.classList.add('active');
+        
+        // Focus first input for better UX
+        requestAnimationFrame(() => targetEl.focus());
     }
 
     function closeThresholdModal() {
-        document.getElementById('thresholdOverlay').classList.remove('active');
-        document.getElementById('thresholdModal').classList.remove('active');
+        const overlay = modalCache.thresholdOverlay || document.getElementById('thresholdOverlay');
+        const modal = modalCache.thresholdModal || document.getElementById('thresholdModal');
+        overlay.classList.remove('active');
+        modal.classList.remove('active');
         currentThresholdKpi = null;
     }
 

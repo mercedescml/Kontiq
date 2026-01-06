@@ -1,7 +1,7 @@
 /**
  * App.js - Gestion globale de l'application
  * Navigation, session, et contrôles globaux
- * OPTIMISÉ pour performance maximale
+ * ULTRA-OPTIMISÉ pour performance instantanée
  */
 
 const APP = {
@@ -12,51 +12,57 @@ const APP = {
   viewCache: new Map(),
   dataCache: new Map(),
   scriptLoaded: new Set(),
+  pendingFetches: new Map(),
   
   // Pré-chargement des vues les plus utilisées
-  priorityViews: ['dashboard', 'zahlungen', 'forderungen', 'kosten', 'liquiditat', 'vertrage', 'kpis', 'reports'],
+  priorityViews: ['dashboard', 'zahlungen', 'forderungen', 'kosten', 'liquiditat', 'vertrage', 'kpis', 'reports', 'bankkonten', 'entitaeten', 'einstellungen'],
 
   /**
    * Initialisation de l'app au chargement
    */
   init() {
-    console.log('Initializing Kontiq app...');
+    console.log('Initializing Kontiq app (ultra-optimized)...');
     this.loadUser();
     this.setupNavigation();
-    this.preloadViews();
-    this.preloadScripts();
+    // Préchargement parallèle immédiat
+    this.preloadAllNow();
   },
 
   /**
-   * Pré-charge toutes les vues en arrière-plan
+   * Pré-charge TOUT immédiatement en parallèle
    */
-  preloadViews() {
-    // Charger les vues prioritaires immédiatement
-    this.priorityViews.forEach((view, index) => {
-      setTimeout(() => {
-        if (!this.viewCache.has(view)) {
-          fetch(`/views/${view}.html`)
-            .then(r => r.ok ? r.text() : null)
-            .then(html => {
-              if (html) this.viewCache.set(view, html);
-            })
-            .catch(() => {});
-        }
-      }, index * 50); // Échelonner les requêtes
+  preloadAllNow() {
+    // Charger toutes les vues en parallèle immédiatement
+    const viewPromises = this.priorityViews.map(view => {
+      if (!this.viewCache.has(view)) {
+        const fetchPromise = fetch(`/views/${view}.html`)
+          .then(r => r.ok ? r.text() : null)
+          .then(html => {
+            if (html) {
+              this.viewCache.set(view, html);
+              console.log(`✓ Cached: ${view}`);
+            }
+          })
+          .catch(() => {});
+        this.pendingFetches.set(view, fetchPromise);
+        return fetchPromise;
+      }
+      return Promise.resolve();
     });
-  },
 
-  /**
-   * Pré-charge les scripts JS
-   */
-  preloadScripts() {
-    this.priorityViews.forEach((view, index) => {
-      setTimeout(() => {
-        const link = document.createElement('link');
-        link.rel = 'prefetch';
-        link.href = `/js/${view}.js`;
-        document.head.appendChild(link);
-      }, index * 30);
+    // Précharger tous les scripts en parallèle
+    this.priorityViews.forEach(view => {
+      const link = document.createElement('link');
+      link.rel = 'prefetch';
+      link.as = 'script';
+      link.href = `/js/${view}.js`;
+      document.head.appendChild(link);
+    });
+
+    // Log quand tout est prêt
+    Promise.all(viewPromises).then(() => {
+      console.log('✓ All views preloaded');
+      this.pendingFetches.clear();
     });
   },
 
@@ -144,9 +150,9 @@ const APP = {
   },
 
   /**
-   * Navigue vers une page/vue - ULTRA RAPIDE
+   * Navigue vers une page/vue - ULTRA RAPIDE avec animations
    */
-  navigateTo(view) {
+  async navigateTo(view) {
     console.log('Navigating to:', view);
     
     const container = document.getElementById('main-content') || 
@@ -169,44 +175,53 @@ const APP = {
       return;
     }
 
-    // Sinon, charger avec indicateur minimal
-    container.style.opacity = '0.7';
+    // Si un fetch est en cours pour cette vue, attendre
+    if (this.pendingFetches.has(view)) {
+      await this.pendingFetches.get(view);
+      if (this.viewCache.has(view)) {
+        this.renderView(container, view, this.viewCache.get(view));
+        return;
+      }
+    }
+
+    // Sinon, charger avec indicateur minimal (transition rapide)
+    container.style.opacity = '0.5';
+    container.style.transition = 'opacity 0.1s';
     
-    fetch(`/views/${view}.html`)
-      .then(r => {
-        if (!r.ok) throw new Error(`Failed to load ${view}`);
-        return r.text();
-      })
-      .then(html => {
-        this.viewCache.set(view, html);
-        this.renderView(container, view, html);
-      })
-      .catch(err => {
-        console.error('Navigation error:', err);
-        container.innerHTML = `<p style="color: red; padding: 20px;">Erreur lors du chargement. Veuillez réessayer.</p>`;
-        container.style.opacity = '1';
-      });
+    try {
+      const response = await fetch(`/views/${view}.html`);
+      if (!response.ok) throw new Error(`Failed to load ${view}`);
+      const html = await response.text();
+      this.viewCache.set(view, html);
+      this.renderView(container, view, html);
+    } catch (err) {
+      console.error('Navigation error:', err);
+      container.innerHTML = `<p style="color: red; padding: 20px;">Erreur lors du chargement. Veuillez réessayer.</p>`;
+      container.style.opacity = '1';
+    }
   },
 
   /**
-   * Render la vue et exécute les scripts
+   * Render la vue et exécute les scripts - OPTIMISÉ
    */
   renderView(container, view, html) {
     this.currentView = view;
     
-    // Injecter le HTML
+    // Injecter le HTML immédiatement
     container.innerHTML = html;
     container.style.opacity = '1';
     container.style.pointerEvents = 'auto';
     
-    // Exécuter les scripts inline immédiatement
-    this.executeInlineScripts(container);
+    // Exécuter les scripts inline avec requestAnimationFrame pour ne pas bloquer
+    requestAnimationFrame(() => {
+      this.executeInlineScripts(container);
+    });
     
     // Charger le script externe de la vue
     this.loadViewScript(view);
     
-    // Appeler l'initialisation spécifique à la vue après un court délai
-    setTimeout(() => this.initializeView(view), 10);
+    // Appeler l'initialisation spécifique à la vue
+    requestAnimationFrame(() => this.initializeView(view));
     
     // Scroll to top
     window.scrollTo({ top: 0, behavior: 'instant' });

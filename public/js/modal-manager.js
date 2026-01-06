@@ -1,97 +1,80 @@
 /**
- * Modal Manager - Harmonized Modal System
- * Gestion unifiée des modales dans toute l'application
+ * Modal Manager - Gestion unifiée des modales
+ * OPTIMISÉ pour ouverture/fermeture instantanée
  */
 
 const ModalManager = {
   openModals: [],
+  modalCache: new WeakMap(),
 
-  /**
-   * Ouvre une modale
-   */
   open(selector) {
-    const modal = typeof selector === 'string' 
-      ? document.querySelector(selector) 
-      : selector;
-    
+    const modal = typeof selector === 'string' ? document.querySelector(selector) : selector;
     if (!modal) return;
     
-    // Ajouter la classe active
+    // Utiliser classList pour les transitions CSS
     modal.classList.add('active');
+    modal.style.display = 'flex';
     this.openModals.push(modal);
-    
-    // Empêcher le scroll du body
     document.body.style.overflow = 'hidden';
     
-    // Focus sur le premier input
-    const firstInput = modal.querySelector('input, textarea, select');
-    if (firstInput) {
-      setTimeout(() => firstInput.focus(), 100);
-    }
+    // Focus sur le premier input immédiatement
+    requestAnimationFrame(() => {
+      const firstInput = modal.querySelector('input:not([type="hidden"]), textarea, select');
+      if (firstInput) firstInput.focus();
+    });
   },
 
-  /**
-   * Ferme une modale
-   */
   close(selector) {
-    const modal = typeof selector === 'string' 
-      ? document.querySelector(selector) 
-      : selector;
-    
+    const modal = typeof selector === 'string' ? document.querySelector(selector) : selector;
     if (!modal) return;
     
     modal.classList.remove('active');
+    // Attendre la fin de la transition avant de cacher
+    setTimeout(() => {
+      if (!modal.classList.contains('active')) {
+        modal.style.display = 'none';
+      }
+    }, 150);
+    
     this.openModals = this.openModals.filter(m => m !== modal);
     
-    // Rétablir le scroll si aucune modale ouverte
     if (this.openModals.length === 0) {
       document.body.style.overflow = '';
     }
   },
 
-  /**
-   * Ferme toutes les modales
-   */
   closeAll() {
     this.openModals.forEach(modal => {
       modal.classList.remove('active');
+      modal.style.display = 'none';
     });
     this.openModals = [];
     document.body.style.overflow = '';
   },
 
-  /**
-   * Configure les fermetures au clic sur l'overlay
-   */
-  setupOverlayClosing() {
-    document.querySelectorAll('[class*="modal-overlay"], [class*="modal"][id]').forEach(modal => {
-      const overlay = modal.classList.contains('modal-overlay') || 
-                     modal.id.includes('Overlay') ? modal : null;
-      
-      if (overlay) {
-        overlay.addEventListener('click', (e) => {
-          if (e.target === overlay) {
-            this.close(overlay);
-          }
-        });
+  init() {
+    // Utiliser event delegation pour de meilleures performances
+    document.addEventListener('click', (e) => {
+      // Fermeture au clic sur overlay
+      const modal = e.target.closest('[class*="modal"], [id*="modal"], [id*="Modal"]');
+      if (modal && e.target === modal) {
+        this.close(modal);
+        return;
       }
       
-      // Fermer au clic sur le bouton close
-      const closeBtn = modal.querySelector('[class*="close"]');
+      // Boutons close
+      const closeBtn = e.target.closest('[class*="close"], [onclick*="close"]');
       if (closeBtn) {
-        closeBtn.addEventListener('click', (e) => {
+        const parentModal = closeBtn.closest('[class*="modal"], [id*="modal"], [id*="Modal"]');
+        if (parentModal) {
           e.preventDefault();
           e.stopPropagation();
-          this.close(modal);
-        });
+          this.close(parentModal);
+        }
       }
     });
-  },
 
-  /**
-   * Fermer au clic sur Echap
-   */
-  setupEscapeKey() {
+    // Fermeture avec Escape
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && this.openModals.length > 0) {
         this.close(this.openModals[this.openModals.length - 1]);
@@ -100,21 +83,5 @@ const ModalManager = {
   }
 };
 
-// Initialiser quand le DOM est prêt
-document.addEventListener('DOMContentLoaded', () => {
-  ModalManager.setupOverlayClosing();
-  ModalManager.setupEscapeKey();
-});
-
-// Re-initialiser après chaque chargement de vue (pour app.js)
-if (typeof APP !== 'undefined') {
-  const originalExecuteViewScripts = APP.executeViewScripts;
-  APP.executeViewScripts = function(view) {
-    originalExecuteViewScripts.call(this, view);
-    // Re-setup après chargement de la vue
-    setTimeout(() => {
-      ModalManager.closeAll();
-      ModalManager.setupOverlayClosing();
-    }, 100);
-  };
-}
+// Initialiser au chargement
+document.addEventListener('DOMContentLoaded', () => ModalManager.init());

@@ -1,251 +1,134 @@
 /**
- * API Client centralisé
- * Gère tous les appels API
+ * API Client - Gestion centralisée des appels API
  */
 
 const API = {
   BASE_URL: '/api',
 
   /**
-   * Fonction générique de fetch
+   * Requête générique
    */
   async request(endpoint, method = 'GET', data = null) {
-    try {
-      const config = {
-        method,
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      };
+    const config = {
+      method,
+      headers: { 'Content-Type': 'application/json' }
+    };
+    if (data) config.body = JSON.stringify(data);
 
-      if (data) {
-        config.body = JSON.stringify(data);
-      }
-
-      const response = await fetch(`${this.BASE_URL}${endpoint}`, config);
-      
-      if (!response.ok) {
-        const error = await response.json().catch(() => ({}));
-        throw new Error(error.error || `HTTP ${response.status}`);
-      }
-
-      return await response.json();
-    } catch (error) {
-      console.error(`API Error [${method} ${endpoint}]:`, error);
-      throw error;
+    const response = await fetch(`${this.BASE_URL}${endpoint}`, config);
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({}));
+      throw new Error(error.error || `HTTP ${response.status}`);
     }
+    return response.json();
   },
 
-  // ========== CATEGORIES ==========
+  // Catégories
   categories: {
-    async getAll() {
-      return API.request('/categories');
-    },
-    async add(name) {
-      return API.request('/categories', 'POST', { name });
-    },
-    async delete(name) {
-      return API.request(`/categories/${name}`, 'DELETE');
-    }
+    getAll: () => API.request('/categories'),
+    add: (name) => API.request('/categories', 'POST', { name }),
+    delete: (name) => API.request(`/categories/${name}`, 'DELETE')
   },
 
-  // ========== USERS ==========
+  // Utilisateurs
   users: {
-    async register(email, password, name, company) {
-      return API.request('/users/register', 'POST', {
-        email, password, name, company
-      });
-    },
-    async login(email, password) {
-      return API.request('/users/login', 'POST', { email, password });
-    }
+    register: (email, password, name, company) => 
+      API.request('/users/register', 'POST', { email, password, name, company }),
+    login: (email, password) => 
+      API.request('/users/login', 'POST', { email, password })
   },
 
-  // ========== ONBOARDING ==========
+  // Onboarding
   onboarding: {
-    async get(email) {
-      return API.request(`/onboarding?email=${email}`);
-    },
-    async save(email, data) {
-      return API.request('/onboarding', 'POST', { email, data });
-    }
+    get: (email) => API.request(`/onboarding?email=${email}`),
+    save: (email, data) => API.request('/onboarding', 'POST', { email, data })
   },
 
-  // ========== DASHBOARD ==========
+  // Dashboard
   dashboard: {
-    async getData() {
-      return API.request('/dashboard');
-    }
+    getData: () => API.request('/dashboard')
   },
 
-  // ========== ZAHLUNGEN (PAIEMENTS) ==========
+  // Zahlungen (Paiements)
   zahlungen: {
-    async getAll() {
-      return API.request('/zahlungen');
-    },
-    async create(data) {
-      return API.request('/zahlungen', 'POST', data);
-    },
-    async update(id, data) {
-      return API.request(`/zahlungen/${id}`, 'PUT', data);
-    },
-    async delete(id) {
-      return API.request(`/zahlungen/${id}`, 'DELETE');
-    }
+    getAll: () => API.request('/zahlungen'),
+    create: (data) => API.request('/zahlungen', 'POST', data),
+    update: (id, data) => API.request(`/zahlungen/${id}`, 'PUT', data),
+    delete: (id) => API.request(`/zahlungen/${id}`, 'DELETE')
   },
 
-  // ========== CONTRACTS (VERTRÄGE) ==========
+  // Contracts (Verträge)
   contracts: {
-    async getAll() {
-      return API.request('/contracts');
-    },
-    async create(data) {
-      return API.request('/contracts', 'POST', data);
-    },
-    async update(id, data) {
-      return API.request(`/contracts/${id}`, 'PUT', data);
-    },
-    async delete(id) {
-      return API.request(`/contracts/${id}`, 'DELETE');
-    },
-    async upload(formData) {
-      // Spécial: envoyer FormData sans JSON header
-      const response = await fetch(`${this.BASE_URL}/contracts/upload`, {
-        method: 'POST',
-        body: formData
-      });
-      if (!response.ok) throw new Error('Upload failed');
-      return response.json();
-    }
+    getAll: () => API.request('/contracts'),
+    create: (data) => API.request('/contracts', 'POST', data),
+    update: (id, data) => API.request(`/contracts/${id}`, 'PUT', data),
+    delete: (id) => API.request(`/contracts/${id}`, 'DELETE')
   },
 
-  // ========== BANKKONTEN (COMPTES BANCAIRES) ==========
+  // Bankkonten
   bankkonten: {
-    async getAll() {
-      return API.request('/bankkonten');
-    },
-    async create(data) {
-      return API.request('/bankkonten', 'POST', data);
-    },
-    async update(id, data) {
-      return API.request(`/bankkonten/${id}`, 'PUT', data);
-    },
-    async delete(id) {
-      return API.request(`/bankkonten/${id}`, 'DELETE');
-    }
+    getAll: () => API.request('/bankkonten'),
+    create: (data) => API.request('/bankkonten', 'POST', data),
+    update: (id, data) => API.request(`/bankkonten/${id}`, 'PUT', data),
+    delete: (id) => API.request(`/bankkonten/${id}`, 'DELETE')
   },
 
-  // ========== KOSTEN (COÛTS) ==========
+  // Kosten
   kosten: {
-    async getAll() {
-      return API.request('/kosten');
-    },
-    async create(data) {
-      return API.request('/kosten', 'POST', data);
-    },
-    async update(id, data) {
-      return API.request(`/kosten/${id}`, 'PUT', data);
-    },
-    async delete(id) {
-      return API.request(`/kosten/${id}`, 'DELETE');
-    }
+    getAll: () => API.request('/kosten'),
+    create: (data) => API.request('/kosten', 'POST', data),
+    update: (id, data) => API.request(`/kosten/${id}`, 'PUT', data),
+    delete: (id) => API.request(`/kosten/${id}`, 'DELETE')
   },
 
-  // ========== FORDERUNGEN (CRÉANCES) ==========
+  // Forderungen
   forderungen: {
-    async getAll() {
-      return API.request('/forderungen');
-    },
-    async create(data) {
-      return API.request('/forderungen', 'POST', data);
-    },
-    async update(id, data) {
-      return API.request(`/forderungen/${id}`, 'PUT', data);
-    },
-    async delete(id) {
-      return API.request(`/forderungen/${id}`, 'DELETE');
-    }
+    getAll: () => API.request('/forderungen'),
+    create: (data) => API.request('/forderungen', 'POST', data),
+    update: (id, data) => API.request(`/forderungen/${id}`, 'PUT', data),
+    delete: (id) => API.request(`/forderungen/${id}`, 'DELETE')
   },
 
-  // ========== KPIs ==========
-  kpis: {
-    async getAll() {
-      return API.request('/kpis');
-    }
-  },
-
-  // ========== REPORTS (RAPPORTS) ==========
-  reports: {
-    async generate(filters) {
-      return API.request('/reports', 'POST', filters);
-    },
-    async export(format = 'pdf') {
-      return API.request(`/reports/export?format=${format}`);
-    }
-  },
-
-  // ========== EXPORT ==========
-  export: {
-    async toPdf(data) {
-      return API.request('/export/pdf', 'POST', data);
-    },
-    async toExcel(data) {
-      return API.request('/export/excel', 'POST', data);
-    }
-  },
-
-  // ========== CREDIT SIMULATOR ==========
-  simulator: {
-    async calculateCredit(amount, interest, term) {
-      return API.request('/credit-simulator', 'POST', {
-        amount, interest, term
-      });
-    }
-  },
-
-  // ========== ENTITÄTEN (ENTITÉS) ==========
+  // Entitäten
   entitaeten: {
-    async getAll() {
-      return API.request('/entitaeten');
-    },
-    async create(data) {
-      return API.request('/entitaeten', 'POST', data);
-    },
-    async update(id, data) {
-      return API.request(`/entitaeten/${id}`, 'PUT', data);
-    },
-    async delete(id) {
-      return API.request(`/entitaeten/${id}`, 'DELETE');
-    }
+    getAll: () => API.request('/entitaeten'),
+    create: (data) => API.request('/entitaeten', 'POST', data),
+    update: (id, data) => API.request(`/entitaeten/${id}`, 'PUT', data),
+    delete: (id) => API.request(`/entitaeten/${id}`, 'DELETE')
   },
 
-  // ========== ABONNEMENT ==========
+  // KPIs
+  kpis: {
+    getAll: () => API.request('/kpis')
+  },
+
+  // Reports
+  reports: {
+    generate: (filters) => API.request('/reports', 'POST', filters),
+    export: (format = 'pdf') => API.request(`/reports/export?format=${format}`)
+  },
+
+  // Export
+  export: {
+    toPdf: (data) => API.request('/export/pdf', 'POST', data),
+    toExcel: (data) => API.request('/export/excel', 'POST', data)
+  },
+
+  // Abonnement
   abonnement: {
-    async getStatus() {
-      return API.request('/abonnement');
-    },
-    async update(data) {
-      return API.request('/abonnement', 'PUT', data);
-    }
+    getStatus: () => API.request('/abonnement'),
+    update: (data) => API.request('/abonnement', 'PUT', data)
   },
 
-  // ========== EINSTELLUNGEN (PARAMÈTRES) ==========
+  // Einstellungen
   einstellungen: {
-    async get() {
-      return API.request('/einstellungen');
-    },
-    async update(data) {
-      return API.request('/einstellungen', 'PUT', data);
-    }
+    get: () => API.request('/einstellungen'),
+    update: (data) => API.request('/einstellungen', 'PUT', data)
   },
 
-  // ========== BOOKINGS (RÉSERVATIONS DE DÉMO) ==========
+  // Bookings
   bookings: {
-    async getAll() {
-      return API.request('/bookings');
-    },
-    async create(data) {
-      return API.request('/bookings', 'POST', data);
-    }
+    getAll: () => API.request('/bookings'),
+    create: (data) => API.request('/bookings', 'POST', data)
   }
 };

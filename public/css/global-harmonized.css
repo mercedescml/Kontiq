@@ -296,14 +296,13 @@ button.btn-danger:hover {
 }
 
 /* ============================================================================
-   MODALS - UNIFIED STYLES
+   MODALS - UNIFIED STYLES - OPTIMIZED FOR INSTANT DISPLAY
    ========================================================================== */
 
 .modal,
 .modal-overlay,
 .bank-modal-overlay,
 .entity-modal-overlay {
-  display: none;
   position: fixed;
   top: 0;
   left: 0;
@@ -311,7 +310,12 @@ button.btn-danger:hover {
   height: 100%;
   background: rgba(0, 0, 0, 0.5);
   z-index: 1000;
-  animation: fadeIn var(--transition-base);
+  /* Use opacity/visibility instead of display for smooth transitions */
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.12s ease, visibility 0.12s ease;
+  will-change: opacity, visibility;
+  backdrop-filter: blur(3px);
 }
 
 .modal.active,
@@ -321,6 +325,8 @@ button.btn-danger:hover {
   display: flex;
   align-items: center;
   justify-content: center;
+  opacity: 1;
+  visibility: visible;
 }
 
 .modal-content,
@@ -335,8 +341,24 @@ button.btn-danger:hover {
   max-height: 90vh;
   overflow-y: auto;
   box-shadow: var(--shadow-lg);
-  animation: slideUp var(--transition-base);
   position: relative;
+  /* Instant transform animation */
+  transform: scale(0.96);
+  opacity: 0;
+  transition: opacity 0.12s ease, transform 0.12s ease;
+  will-change: opacity, transform;
+}
+
+/* When parent is active, show modal content */
+.modal.active .modal-content,
+.modal-overlay.active .modal-content,
+.modal-overlay.active .bank-modal,
+.modal-overlay.active .entity-modal,
+.bank-modal-overlay.active .bank-modal,
+.entity-modal-overlay.active .entity-modal,
+.kpi-modal.active {
+  opacity: 1;
+  transform: scale(1);
 }
 
 /* Larger modals */
@@ -401,7 +423,7 @@ button.btn-danger:hover {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all var(--transition-base);
+  transition: color 0.1s ease, background-color 0.1s ease;
   border-radius: var(--radius-sm);
   width: 36px;
   height: 36px;
