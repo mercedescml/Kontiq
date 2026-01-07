@@ -549,8 +549,124 @@ app.post('/api/bookings', (req, res) => {
   res.status(201).json({ booking: item });
 });
 
-// KPIs, Reports, Export (stubs)
-app.get('/api/kpis', (req, res) => res.json({ kpis: { revenue: 0, expenses: 0, profit: 0 } }));
+// KPIs - Real calculations from actual data
+app.get('/api/kpis', (req, res) => {
+  try {
+    const { companyId } = req.query;
+
+    // Load all data
+    const bankkonten = readJSON(FILES.bankkonten).filter(b => !companyId || b.companyId === companyId);
+    const zahlungen = readJSON(FILES.zahlungen).filter(z => !companyId || z.companyId === companyId);
+    const kosten = readJSON(FILES.kosten).filter(k => !companyId || k.companyId === companyId);
+    const forderungen = readJSON(FILES.forderungen).filter(f => !companyId || f.companyId === companyId);
+
+    // Calculate total liquidity (cash on hand)
+    const totalLiquidity = bankkonten.reduce((sum, b) => sum + (parseFloat(b.balance) || 0), 0);
+
+    // Calculate revenue (from paid receivables)
+    const totalRevenue = forderungen
+      .filter(f => f.status === 'paid')
+      .reduce((sum, f) => sum + (parseFloat(f.amount) || 0), 0);
+
+    // Calculate expenses (costs + completed payments)
+    const totalCosts = kosten.reduce((sum, k) => sum + (parseFloat(k.amount) || 0), 0);
+    const completedPayments = zahlungen
+      .filter(z => z.status === 'completed')
+      .reduce((sum, z) => sum + (parseFloat(z.amount) || 0), 0);
+    const totalExpenses = totalCosts + completedPayments;
+
+    // Calculate profit and margin
+    const profit = totalRevenue - totalExpenses;
+    const profitMargin = totalRevenue > 0 ? (profit / totalRevenue * 100) : 0;
+
+    // Calculate open receivables
+    const openReceivables = forderungen
+      .filter(f => f.status === 'open')
+      .reduce((sum, f) => sum + (parseFloat(f.amount) || 0), 0);
+
+    // Calculate pending payments
+    const pendingPayments = zahlungen
+      .filter(z => z.status === 'pending')
+      .reduce((sum, z) => sum + (parseFloat(z.amount) || 0), 0);
+
+    // Calculate burn rate (average monthly expenses)
+    const now = new Date();
+    const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+
+    const recentCosts = kosten.filter(k => {
+      if (!k.date) return false;
+      const date = new Date(k.date);
+      return date >= thirtyDaysAgo && date <= now;
+    });
+
+    const recentPayments = zahlungen.filter(z => {
+      if (!z.date || z.status !== 'completed') return false;
+      const date = new Date(z.date);
+      return date >= thirtyDaysAgo && date <= now;
+    });
+
+    const monthlyExpenses = recentCosts.reduce((sum, k) => sum + (parseFloat(k.amount) || 0), 0) +
+                           recentPayments.reduce((sum, z) => sum + (parseFloat(z.amount) || 0), 0);
+
+    const dailyBurnRate = recentCosts.length > 0 || recentPayments.length > 0 ? monthlyExpenses / 30 : 0;
+    const monthlyBurnRate = dailyBurnRate * 30;
+
+    // Calculate runway (months until cash runs out)
+    const runwayMonths = dailyBurnRate > 0 ? (totalLiquidity / (dailyBurnRate * 30)) : Infinity;
+
+    // Calculate liquidity ratio (current assets / current liabilities)
+    const currentAssets = totalLiquidity + openReceivables;
+    const currentLiabilities = pendingPayments;
+    const liquidityRatio = currentLiabilities > 0 ? (currentAssets / currentLiabilities) : Infinity;
+
+    // Calculate average payment period (for paid receivables)
+    const paidForderungen = forderungen.filter(f => f.status === 'paid' && f.dueDate);
+    let avgPaymentDays = 0;
+    if (paidForderungen.length > 0) {
+      const totalDays = paidForderungen.reduce((sum, f) => {
+        const dueDate = new Date(f.dueDate);
+        const today = new Date();
+        const daysDiff = Math.floor((today - dueDate) / (1000 * 60 * 60 * 24));
+        return sum + Math.abs(daysDiff);
+      }, 0);
+      avgPaymentDays = totalDays / paidForderungen.length;
+    }
+
+    const kpis = {
+      // Financial Overview
+      'Gesamtliquidität': `CHF ${totalLiquidity.toFixed(2)}`,
+      'Umsatz (Bezahlt)': `CHF ${totalRevenue.toFixed(2)}`,
+      'Gesamtausgaben': `CHF ${totalExpenses.toFixed(2)}`,
+      'Gewinn': `CHF ${profit.toFixed(2)}`,
+      'Gewinnmarge': `${profitMargin.toFixed(1)}%`,
+
+      // Cashflow Metrics
+      'Offene Forderungen': `CHF ${openReceivables.toFixed(2)}`,
+      'Ausstehende Zahlungen': `CHF ${pendingPayments.toFixed(2)}`,
+      'Netto Cashflow': `CHF ${(openReceivables - pendingPayments).toFixed(2)}`,
+
+      // Burn Rate & Runway
+      'Tägliche Ausgaben Ø': `CHF ${dailyBurnRate.toFixed(2)}`,
+      'Monatliche Ausgaben': `CHF ${monthlyBurnRate.toFixed(2)}`,
+      'Runway': runwayMonths === Infinity ? '∞ Monate' : `${runwayMonths.toFixed(1)} Monate`,
+
+      // Liquidity & Efficiency
+      'Liquiditätsquote': liquidityRatio === Infinity ? '∞' : liquidityRatio.toFixed(2),
+      'Ø Zahlungsziel': `${avgPaymentDays.toFixed(0)} Tage`,
+
+      // Counts
+      'Anzahl Bankkonten': bankkonten.length,
+      'Anzahl Forderungen': forderungen.length,
+      'Anzahl Kosten': kosten.length,
+      'Anzahl Zahlungen': zahlungen.length
+    };
+
+    res.json({ kpis });
+  } catch (error) {
+    console.error('Error calculating KPIs:', error);
+    res.status(500).json({ error: 'Fehler beim Berechnen der KPIs', kpis: {} });
+  }
+});
 app.post('/api/reports', (req, res) => res.json({ report: { id: Date.now().toString(), ...req.body } }));
 app.post('/api/export/pdf', (req, res) => res.json({ url: '/export/report.pdf' }));
 app.post('/api/export/excel', (req, res) => res.json({ url: '/export/report.xlsx' }));
