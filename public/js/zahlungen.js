@@ -1,22 +1,34 @@
 /**
- * Sauvegarde un paiement depuis le formulaire
+ * Sauvegarde un paiement depuis le formulaire (create or update)
  */
 async function savePayment(event) {
   event.preventDefault();
+
+  const id = document.getElementById('paymentId')?.value;
   const recipient = document.getElementById('paymentRecipient').value.trim();
   const amount = parseFloat(document.getElementById('paymentAmount').value) || 0;
   const date = document.getElementById('paymentDate').value;
   const status = document.getElementById('paymentStatus').value || 'pending';
+  const description = document.getElementById('paymentDescription')?.value || '';
 
   if (!recipient || !date) {
     APP.notify('Alle Felder sind erforderlich', 'error');
     return;
   }
 
-  const data = { recipient, amount, date, status };
+  const data = { recipient, amount, date, status, description };
+
   try {
-    await addPayment(data);
-    APP.notify('Zahlung gespeichert', 'success');
+    if (id) {
+      // Update existing payment
+      await API.zahlungen.update(id, data);
+      APP.notify('Zahlung aktualisiert', 'success');
+    } else {
+      // Create new payment
+      await API.zahlungen.create(data);
+      APP.notify('Zahlung erstellt', 'success');
+    }
+
     closePaymentModal && closePaymentModal();
     loadPayments();
   } catch (error) {
@@ -99,14 +111,108 @@ function displayPayments(payments) {
 }
 
 /**
- * Édite un paiement
+ * Édite un paiement - opens modal with existing data
  */
 async function editPayment(id) {
   const payment = currentPayments.find(p => p.id === id);
-  if (!payment) return;
+  if (!payment) {
+    APP.notify('Zahlung nicht gefunden', 'error');
+    return;
+  }
 
-  APP.notify(`Zahlung ${id} wird bearbeitet...`, 'info');
-  // À implémenter: ouvrir une modal d'édition
+  // Find or create modal
+  let modal = document.getElementById('paymentModal');
+  if (!modal) {
+    console.warn('Payment modal not found, creating basic modal');
+    modal = createPaymentModal();
+  }
+
+  // Fill form with payment data
+  const idField = document.getElementById('paymentId');
+  const recipientField = document.getElementById('paymentRecipient');
+  const amountField = document.getElementById('paymentAmount');
+  const dateField = document.getElementById('paymentDate');
+  const statusField = document.getElementById('paymentStatus');
+  const descriptionField = document.getElementById('paymentDescription');
+
+  if (idField) idField.value = payment.id;
+  if (recipientField) recipientField.value = payment.recipient || '';
+  if (amountField) amountField.value = payment.amount || '';
+  if (dateField) dateField.value = payment.date || '';
+  if (statusField) statusField.value = payment.status || 'pending';
+  if (descriptionField) descriptionField.value = payment.description || '';
+
+  // Update modal title
+  const modalTitle = document.querySelector('#paymentModal .modal-title');
+  if (modalTitle) modalTitle.textContent = 'Zahlung bearbeiten';
+
+  // Show modal
+  modal.style.display = 'flex';
+  if (recipientField) recipientField.focus();
+}
+
+/**
+ * Creates payment modal if it doesn't exist
+ */
+function createPaymentModal() {
+  const modal = document.createElement('div');
+  modal.id = 'paymentModal';
+  modal.style.cssText = 'display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 9999; align-items: center; justify-content: center;';
+
+  modal.innerHTML = `
+    <div style="background: white; padding: 24px; border-radius: 12px; max-width: 500px; width: 90%;">
+      <h3 class="modal-title" style="margin: 0 0 20px 0;">Zahlung bearbeiten</h3>
+      <form onsubmit="savePayment(event)">
+        <input type="hidden" id="paymentId">
+        <div style="margin-bottom: 16px;">
+          <label style="display: block; margin-bottom: 8px; font-weight: 600;">Empfänger</label>
+          <input type="text" id="paymentRecipient" required style="width: 100%; padding: 10px; border: 1px solid #E5E7EB; border-radius: 8px;">
+        </div>
+        <div style="margin-bottom: 16px;">
+          <label style="display: block; margin-bottom: 8px; font-weight: 600;">Betrag</label>
+          <input type="number" id="paymentAmount" step="0.01" required style="width: 100%; padding: 10px; border: 1px solid #E5E7EB; border-radius: 8px;">
+        </div>
+        <div style="margin-bottom: 16px;">
+          <label style="display: block; margin-bottom: 8px; font-weight: 600;">Datum</label>
+          <input type="date" id="paymentDate" required style="width: 100%; padding: 10px; border: 1px solid #E5E7EB; border-radius: 8px;">
+        </div>
+        <div style="margin-bottom: 16px;">
+          <label style="display: block; margin-bottom: 8px; font-weight: 600;">Status</label>
+          <select id="paymentStatus" style="width: 100%; padding: 10px; border: 1px solid #E5E7EB; border-radius: 8px;">
+            <option value="pending">Ausstehend</option>
+            <option value="completed">Abgeschlossen</option>
+            <option value="failed">Fehlgeschlagen</option>
+          </select>
+        </div>
+        <div style="margin-bottom: 16px;">
+          <label style="display: block; margin-bottom: 8px; font-weight: 600;">Beschreibung</label>
+          <textarea id="paymentDescription" rows="3" style="width: 100%; padding: 10px; border: 1px solid #E5E7EB; border-radius: 8px;"></textarea>
+        </div>
+        <div style="display: flex; gap: 10px; justify-content: flex-end;">
+          <button type="button" onclick="closePaymentModal()" style="padding: 10px 20px; border: 1px solid #E5E7EB; background: white; border-radius: 8px; cursor: pointer;">Abbrechen</button>
+          <button type="submit" style="padding: 10px 20px; background: #0EB17A; color: white; border: none; border-radius: 8px; cursor: pointer;">Speichern</button>
+        </div>
+      </form>
+    </div>
+  `;
+
+  document.body.appendChild(modal);
+  return modal;
+}
+
+/**
+ * Closes payment modal
+ */
+function closePaymentModal() {
+  const modal = document.getElementById('paymentModal');
+  if (modal) modal.style.display = 'none';
+
+  // Reset form
+  const form = modal?.querySelector('form');
+  if (form) form.reset();
+
+  const idField = document.getElementById('paymentId');
+  if (idField) idField.value = '';
 }
 
 /**
