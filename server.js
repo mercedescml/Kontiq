@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const fs = require('fs');
-const crypto = require('crypto');
+const bcrypt = require('bcrypt');
 const Joi = require('joi');
 require('dotenv').config();
 
@@ -39,7 +39,8 @@ const FILES = {
   bookings: path.join(DATA_DIR, 'bookings.json')
 };
 
-const hashPassword = (pwd) => crypto.createHash('sha256').update(pwd || '').digest('hex');
+// ========== PASSWORD HASHING WITH BCRYPT ==========
+const SALT_ROUNDS = 10; // bcrypt salt rounds for password hashing
 
 // ========== VALIDATION SCHEMAS ==========
 const schemas = {
@@ -312,44 +313,62 @@ app.post('/api/onboarding', (req, res) => {
 });
 
 // Users
-app.post('/api/users/register', validate(schemas.user), (req, res) => {
-  const { email, password, name, company } = req.body;
-  const users = readJSON(FILES.users);
-  if (users.find(u => u.email === email)) return res.status(409).json({ error: 'Benutzer existiert bereits' });
-  const user = { email, name: name || '', company: company || '', passwordHash: hashPassword(password), created: new Date().toISOString() };
-  users.push(user);
-  writeJSON(FILES.users, users);
-  // Ajout du rôle geschaeftsfuehrer dans permissions.json
-  const perms = readJSON(FILES.permissions);
-  if (!perms.globalPermissions) perms.globalPermissions = {};
-  perms.globalPermissions[email] = {
-    role: 'geschaeftsfuehrer',
-    permissions: {
-      entitaeten: { view: true, edit: true, delete: true, manage: true },
-      bankkonten: { view: true, edit: true, delete: true },
-      kosten: { view: true, edit: true, delete: true },
-      forderungen: { view: true, edit: true, delete: true },
-      zahlungen: { view: true, edit: true, delete: true },
-      vertrage: { view: true, edit: true, delete: true },
-      liquiditat: { view: true, edit: true },
-      reports: { view: true, edit: true },
-      kpis: { view: true, edit: true },
-      einstellungen: { view: true, edit: true },
-      permissions: { view: true, edit: true }
-    }
-  };
-  writeJSON(FILES.permissions, perms);
-  console.log(`[INSCRIPTION] Nouvel utilisateur: ${user.email} | Nom: ${user.name} | Société: ${user.company} | Date: ${user.created}`);
-  res.status(201).json({ user: { email: user.email, name: user.name, company: user.company } });
+app.post('/api/users/register', validate(schemas.user), async (req, res) => {
+  try {
+    const { email, password, name, company } = req.body;
+    const users = readJSON(FILES.users);
+    if (users.find(u => u.email === email)) return res.status(409).json({ error: 'Benutzer existiert bereits' });
+
+    // Hash password with bcrypt (secure, salted hashing)
+    const passwordHash = await bcrypt.hash(password, SALT_ROUNDS);
+
+    const user = { email, name: name || '', company: company || '', passwordHash, created: new Date().toISOString() };
+    users.push(user);
+    writeJSON(FILES.users, users);
+    // Ajout du rôle geschaeftsfuehrer dans permissions.json
+    const perms = readJSON(FILES.permissions);
+    if (!perms.globalPermissions) perms.globalPermissions = {};
+    perms.globalPermissions[email] = {
+      role: 'geschaeftsfuehrer',
+      permissions: {
+        entitaeten: { view: true, edit: true, delete: true, manage: true },
+        bankkonten: { view: true, edit: true, delete: true },
+        kosten: { view: true, edit: true, delete: true },
+        forderungen: { view: true, edit: true, delete: true },
+        zahlungen: { view: true, edit: true, delete: true },
+        vertrage: { view: true, edit: true, delete: true },
+        liquiditat: { view: true, edit: true },
+        reports: { view: true, edit: true },
+        kpis: { view: true, edit: true },
+        einstellungen: { view: true, edit: true },
+        permissions: { view: true, edit: true }
+      }
+    };
+    writeJSON(FILES.permissions, perms);
+    console.log(`[INSCRIPTION] Nouvel utilisateur: ${user.email} | Nom: ${user.name} | Société: ${user.company} | Date: ${user.created}`);
+    res.status(201).json({ user: { email: user.email, name: user.name, company: user.company } });
+  } catch (error) {
+    console.error('Registration error:', error);
+    res.status(500).json({ error: 'Fehler bei der Registrierung' });
+  }
 });
-app.post('/api/users/login', (req, res) => {
-  const { email, password } = req.body;
-  if (!email || !password) return res.status(400).json({ error: 'E-Mail oder Passwort fehlt' });
-  const users = readJSON(FILES.users);
-  const user = users.find(u => u.email === email);
-  if (!user) return res.status(404).json({ error: 'Benutzer nicht gefunden' });
-  if (user.passwordHash !== hashPassword(password)) return res.status(401).json({ error: 'Falsches Passwort' });
-  res.json({ user: { email: user.email, name: user.name, company: user.company } });
+app.post('/api/users/login', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    if (!email || !password) return res.status(400).json({ error: 'E-Mail oder Passwort fehlt' });
+    const users = readJSON(FILES.users);
+    const user = users.find(u => u.email === email);
+    if (!user) return res.status(404).json({ error: 'Benutzer nicht gefunden' });
+
+    // Compare password with bcrypt (secure comparison with timing attack protection)
+    const isPasswordValid = await bcrypt.compare(password, user.passwordHash);
+    if (!isPasswordValid) return res.status(401).json({ error: 'Falsches Passwort' });
+
+    res.json({ user: { email: user.email, name: user.name, company: user.company } });
+  } catch (error) {
+    console.error('Login error:', error);
+    res.status(500).json({ error: 'Fehler beim Login' });
+  }
 });
 app.post('/api/users/invite', (req, res) => {
   const { adminEmail, targetEmail, firstName, lastName, permissions } = req.body;
