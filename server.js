@@ -3,6 +3,7 @@ const cors = require('cors');
 const path = require('path');
 const fs = require('fs');
 const crypto = require('crypto');
+const Joi = require('joi');
 require('dotenv').config();
 
 const app = express();
@@ -40,6 +41,85 @@ const FILES = {
 
 const hashPassword = (pwd) => crypto.createHash('sha256').update(pwd || '').digest('hex');
 
+// ========== VALIDATION SCHEMAS ==========
+const schemas = {
+  user: Joi.object({
+    email: Joi.string().email().max(255).required().messages({
+      'string.email': 'Ungültige E-Mail-Adresse',
+      'any.required': 'E-Mail ist erforderlich'
+    }),
+    password: Joi.string().min(8).max(128).required().messages({
+      'string.min': 'Passwort muss mindestens 8 Zeichen lang sein',
+      'any.required': 'Passwort ist erforderlich'
+    }),
+    name: Joi.string().max(255).optional().allow(''),
+    company: Joi.string().max(255).optional().allow('')
+  }),
+
+  transaction: Joi.object({
+    amount: Joi.number().positive().max(999999999).required().messages({
+      'number.positive': 'Betrag muss positiv sein',
+      'any.required': 'Betrag ist erforderlich'
+    }),
+    category: Joi.string().max(100).optional().allow(''),
+    description: Joi.string().max(500).optional().allow(''),
+    date: Joi.date().optional(),
+    status: Joi.string().max(50).optional().allow(''),
+    userId: Joi.string().optional().allow('')
+  }),
+
+  entity: Joi.object({
+    name: Joi.string().min(1).max(255).required().messages({
+      'any.required': 'Name ist erforderlich'
+    }),
+    type: Joi.string().max(100).optional().allow(''),
+    category: Joi.string().max(50).optional().allow(''),
+    manager: Joi.string().email().optional().allow(''),
+    managers: Joi.array().items(Joi.string().email()).optional(),
+    address: Joi.string().max(500).optional().allow(''),
+    taxId: Joi.string().max(100).optional().allow(''),
+    currency: Joi.string().length(3).optional().allow(''),
+    fiscalYear: Joi.string().max(50).optional().allow(''),
+    notes: Joi.string().max(1000).optional().allow('')
+  }),
+
+  contract: Joi.object({
+    name: Joi.string().min(1).max(255).required(),
+    partner: Joi.string().max(255).optional().allow(''),
+    startDate: Joi.date().optional(),
+    endDate: Joi.date().optional(),
+    amount: Joi.number().optional(),
+    status: Joi.string().max(50).optional().allow(''),
+    userId: Joi.string().optional().allow('')
+  }),
+
+  category: Joi.object({
+    name: Joi.string().min(1).max(100).required().messages({
+      'any.required': 'Kategoriename ist erforderlich'
+    })
+  })
+};
+
+// Validation middleware factory
+const validate = (schema) => (req, res, next) => {
+  const { error, value } = schema.validate(req.body, {
+    abortEarly: false, // Return all errors, not just first
+    stripUnknown: true // Remove unknown fields
+  });
+
+  if (error) {
+    const errors = error.details.map(detail => detail.message);
+    return res.status(400).json({
+      error: 'Validierung fehlgeschlagen',
+      details: errors
+    });
+  }
+
+  // Replace req.body with validated/sanitized value
+  req.body = value;
+  next();
+};
+
 const SAMPLE_CONTRACTS = [
   { id: 'sample-1', name: 'Mietvertrag Bürofläche', partner: 'Immobilien Schmidt GmbH', startDate: '2024-01-01', endDate: '2026-12-31', amount: 2500, status: 'active' },
   { id: 'sample-2', name: 'Software-Lizenz Microsoft 365', partner: 'Microsoft Deutschland GmbH', startDate: '2024-03-01', endDate: '2027-02-28', amount: 5400, status: 'active' }
@@ -71,7 +151,7 @@ app.get('/api/zahlungen', (req, res) => {
   const filtered = userId ? data.filter(x => x.userId === userId) : data;
   res.json({ zahlungen: filtered });
 });
-app.post('/api/zahlungen', (req, res) => {
+app.post('/api/zahlungen', validate(schemas.transaction), (req, res) => {
   const data = readJSON(FILES.zahlungen);
   const item = { id: Date.now().toString(), ...req.body, userId: req.body.userId, createdAt: new Date().toISOString() };
   data.push(item);
@@ -99,7 +179,7 @@ app.get('/api/contracts', (req, res) => {
   const filtered = userId ? data.filter(x => x.userId === userId) : data;
   res.json({ contracts: filtered });
 });
-app.post('/api/contracts', (req, res) => {
+app.post('/api/contracts', validate(schemas.contract), (req, res) => {
   const data = readJSON(FILES.contracts);
   const item = { id: Date.now().toString(), ...req.body, userId: req.body.userId, createdAt: new Date().toISOString() };
   data.push(item);
@@ -126,7 +206,7 @@ app.get('/api/kosten', (req, res) => {
   const filtered = userId ? data.filter(x => x.userId === userId) : data;
   res.json({ kosten: filtered });
 });
-app.post('/api/kosten', (req, res) => {
+app.post('/api/kosten', validate(schemas.transaction), (req, res) => {
   const data = readJSON(FILES.kosten);
   const item = { id: Date.now().toString(), ...req.body, userId: req.body.userId, createdAt: new Date().toISOString() };
   data.push(item);
@@ -153,7 +233,7 @@ app.get('/api/forderungen', (req, res) => {
   const filtered = userId ? data.filter(x => x.userId === userId) : data;
   res.json({ forderungen: filtered });
 });
-app.post('/api/forderungen', (req, res) => {
+app.post('/api/forderungen', validate(schemas.transaction), (req, res) => {
   const data = readJSON(FILES.forderungen);
   const item = { id: Date.now().toString(), ...req.body, userId: req.body.userId, createdAt: new Date().toISOString() };
   data.push(item);
@@ -202,9 +282,8 @@ app.delete('/api/bankkonten/:id', (req, res) => {
 
 // Categories
 app.get('/api/categories', (req, res) => res.json({ categories: readJSON(FILES.categories) }));
-app.post('/api/categories', (req, res) => {
+app.post('/api/categories', validate(schemas.category), (req, res) => {
   const { name } = req.body;
-  if (!name) return res.status(400).json({ error: 'Name fehlt' });
   const data = readJSON(FILES.categories);
   if (data.includes(name)) return res.status(409).json({ error: 'Existiert bereits' });
   data.push(name);
@@ -233,9 +312,8 @@ app.post('/api/onboarding', (req, res) => {
 });
 
 // Users
-app.post('/api/users/register', (req, res) => {
+app.post('/api/users/register', validate(schemas.user), (req, res) => {
   const { email, password, name, company } = req.body;
-  if (!email || !password) return res.status(400).json({ error: 'E-Mail oder Passwort fehlt' });
   const users = readJSON(FILES.users);
   if (users.find(u => u.email === email)) return res.status(409).json({ error: 'Benutzer existiert bereits' });
   const user = { email, name: name || '', company: company || '', passwordHash: hashPassword(password), created: new Date().toISOString() };
@@ -317,7 +395,7 @@ app.get('/api/entitaeten', (req, res) => {
   });
   res.json({ entitaeten: userEntities });
 });
-app.post('/api/entitaeten', (req, res) => {
+app.post('/api/entitaeten', validate(schemas.entity), (req, res) => {
   const { name, manager, managers, type } = req.body;
   if (!name) return res.status(400).json({ error: 'Name fehlt' });
   const entityManagers = managers && Array.isArray(managers) ? managers : (manager ? [manager] : []);
