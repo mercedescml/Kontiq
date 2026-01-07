@@ -1,1 +1,10 @@
 node_modules/
+
+# Test coverage and artifacts
+coverage/
+*.coverage
+.nyc_output/
+data-test/
+
+# Jest cache
+.jest/

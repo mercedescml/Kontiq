@@ -1,8 +1,10 @@
 /**
- * Sauvegarde un coût depuis le formulaire
+ * Sauvegarde un coût depuis le formulaire (create or update)
  */
 async function saveKosten(event) {
   event.preventDefault();
+
+  const id = document.getElementById('kostenId')?.value;
   const category = document.getElementById('kostenCategory').value.trim();
   const description = document.getElementById('kostenDescription').value.trim();
   const amount = parseFloat(document.getElementById('kostenAmount').value) || 0;
@@ -14,9 +16,18 @@ async function saveKosten(event) {
   }
 
   const data = { category, description, amount, date };
+
   try {
-    await addKosten(data);
-    APP.notify('Kosten gespeichert', 'success');
+    if (id) {
+      // Update existing cost
+      await API.kosten.update(id, data);
+      APP.notify('Kosten aktualisiert', 'success');
+    } else {
+      // Create new cost
+      await API.kosten.create(data);
+      APP.notify('Kosten erstellt', 'success');
+    }
+
     closePlanModal && closePlanModal();
     loadKosten();
   } catch (error) {
@@ -82,6 +93,7 @@ function displayKosten(kosten) {
         <td style="padding: 10px;">CHF ${k.amount?.toFixed(2) || '0.00'}</td>
         <td style="padding: 10px;">${k.date || '-'}</td>
         <td style="padding: 10px;">
+          <button class="btn btn-secondary" onclick="editKosten('${k.id}')" style="padding: 5px 10px; font-size: 12px; margin-right: 5px;">Bearbeiten</button>
           <button class="btn btn-secondary" onclick="deleteKosten('${k.id}')" style="padding: 5px 10px; font-size: 12px; background: #EF4444; color: white;">Löschen</button>
         </td>
       </tr>
@@ -90,6 +102,101 @@ function displayKosten(kosten) {
 
   html += '</tbody></table>';
   container.innerHTML = html;
+}
+
+/**
+ * Edit existing cost - opens modal with data
+ */
+async function editKosten(id) {
+  const kosten = currentKosten.find(k => k.id === id);
+  if (!kosten) {
+    APP.notify('Kosten nicht gefunden', 'error');
+    return;
+  }
+
+  // Find or create modal
+  let modal = document.getElementById('kostenModal') || document.getElementById('planModal');
+  if (!modal) {
+    console.warn('Kosten modal not found, creating basic modal');
+    modal = createKostenModal();
+  }
+
+  // Fill form with kosten data
+  const idField = document.getElementById('kostenId');
+  const categoryField = document.getElementById('kostenCategory');
+  const descriptionField = document.getElementById('kostenDescription');
+  const amountField = document.getElementById('kostenAmount');
+  const dateField = document.getElementById('kostenDate');
+
+  if (idField) idField.value = kosten.id;
+  if (categoryField) categoryField.value = kosten.category || '';
+  if (descriptionField) descriptionField.value = kosten.description || '';
+  if (amountField) amountField.value = kosten.amount || '';
+  if (dateField) dateField.value = kosten.date || '';
+
+  // Update modal title
+  const modalTitle = modal.querySelector('.modal-title') || modal.querySelector('h3');
+  if (modalTitle) modalTitle.textContent = 'Kosten bearbeiten';
+
+  // Show modal
+  modal.style.display = 'flex';
+  if (categoryField) categoryField.focus();
+}
+
+/**
+ * Creates kosten modal if it doesn't exist
+ */
+function createKostenModal() {
+  const modal = document.createElement('div');
+  modal.id = 'kostenModal';
+  modal.style.cssText = 'display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 9999; align-items: center; justify-content: center;';
+
+  modal.innerHTML = `
+    <div style="background: white; padding: 24px; border-radius: 12px; max-width: 500px; width: 90%;">
+      <h3 class="modal-title" style="margin: 0 0 20px 0;">Kosten bearbeiten</h3>
+      <form onsubmit="saveKosten(event)">
+        <input type="hidden" id="kostenId">
+        <div style="margin-bottom: 16px;">
+          <label style="display: block; margin-bottom: 8px; font-weight: 600;">Kategorie</label>
+          <input type="text" id="kostenCategory" required style="width: 100%; padding: 10px; border: 1px solid #E5E7EB; border-radius: 8px;">
+        </div>
+        <div style="margin-bottom: 16px;">
+          <label style="display: block; margin-bottom: 8px; font-weight: 600;">Beschreibung</label>
+          <input type="text" id="kostenDescription" required style="width: 100%; padding: 10px; border: 1px solid #E5E7EB; border-radius: 8px;">
+        </div>
+        <div style="margin-bottom: 16px;">
+          <label style="display: block; margin-bottom: 8px; font-weight: 600;">Betrag</label>
+          <input type="number" id="kostenAmount" step="0.01" required style="width: 100%; padding: 10px; border: 1px solid #E5E7EB; border-radius: 8px;">
+        </div>
+        <div style="margin-bottom: 16px;">
+          <label style="display: block; margin-bottom: 8px; font-weight: 600;">Datum</label>
+          <input type="date" id="kostenDate" required style="width: 100%; padding: 10px; border: 1px solid #E5E7EB; border-radius: 8px;">
+        </div>
+        <div style="display: flex; gap: 10px; justify-content: flex-end;">
+          <button type="button" onclick="closePlanModal()" style="padding: 10px 20px; border: 1px solid #E5E7EB; background: white; border-radius: 8px; cursor: pointer;">Abbrechen</button>
+          <button type="submit" style="padding: 10px 20px; background: #0EB17A; color: white; border: none; border-radius: 8px; cursor: pointer;">Speichern</button>
+        </div>
+      </form>
+    </div>
+  `;
+
+  document.body.appendChild(modal);
+  return modal;
+}
+
+/**
+ * Closes kosten modal
+ */
+function closePlanModal() {
+  const modal = document.getElementById('kostenModal') || document.getElementById('planModal');
+  if (modal) modal.style.display = 'none';
+
+  // Reset form
+  const form = modal?.querySelector('form');
+  if (form) form.reset();
+
+  const idField = document.getElementById('kostenId');
+  if (idField) idField.value = '';
 }
 
 /**
