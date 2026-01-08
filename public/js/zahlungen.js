@@ -30,7 +30,7 @@ async function savePayment(event) {
     }
 
     closePaymentModal && closePaymentModal();
-    loadPayments();
+    loadZahlungen();
   } catch (error) {
     APP.notify('Fehler beim Speichern der Zahlung', 'error');
     console.error(error);
@@ -46,7 +46,7 @@ let currentPayments = [];
 /**
  * Charge tous les paiements - avec cache
  */
-async function loadPayments() {
+async function loadZahlungen() {
   try {
     // Utiliser le cache si disponible pour affichage instantané
     let data;
@@ -222,7 +222,7 @@ async function addPayment(paymentData) {
   try {
     const result = await API.zahlungen.create(paymentData);
     APP.notify('Zahlung erstellt', 'success');
-    loadPayments();
+    loadZahlungen();
   } catch (error) {
     APP.notify('Fehler beim Erstellen der Zahlung', 'error');
     console.error(error);
@@ -239,7 +239,7 @@ async function deletePayment(id) {
   try {
     await API.zahlungen.delete(id);
     APP.notify('Zahlung gelöscht', 'success');
-    loadPayments();
+    loadZahlungen();
   } catch (error) {
     APP.notify('Fehler beim Löschen der Zahlung', 'error');
     console.error(error);

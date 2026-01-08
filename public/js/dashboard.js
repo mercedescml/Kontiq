@@ -473,6 +473,13 @@ function releasePaymentsDueToday() {
 }
 
 /**
+ * Alias for app.js compatibility
+ */
+function loadDashboard() {
+  return initDashboard();
+}
+
+/**
  * Initialize dashboard on page load
  */
 document.addEventListener('DOMContentLoaded', () => {

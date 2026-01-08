@@ -7,8 +7,9 @@ const DataPreloader = {
   cache: new Map(),
   cacheExpiry: new Map(),
   pendingRequests: new Map(),
-  CACHE_DURATION: 120000, // 2 minutes
+  CACHE_DURATION: 60000, // 1 minute (reduced for fresher data)
   initialized: false,
+  loadingIndicators: new Map(),
 
   /**
    * Initialise le pré-chargement immédiatement
@@ -39,41 +40,58 @@ const DataPreloader = {
       { key: 'kpis', url: '/api/kpis' }
     ];
 
-    // Charger en parallèle avec Promise.all pour max de vitesse
+    const startTime = performance.now();
+
+    // Charger en parallèle avec Promise.allSettled (non-bloquant si une API échoue)
     const results = await Promise.allSettled(
       endpoints.map(ep => this.fetchAndCache(ep.key, ep.url))
     );
-    
+
     const loaded = results.filter(r => r.status === 'fulfilled').length;
-    console.log(`✓ Data preloaded: ${loaded}/${endpoints.length}`);
+    const failed = results.filter(r => r.status === 'rejected').length;
+    const duration = (performance.now() - startTime).toFixed(0);
+
+    console.log(`✓ Data preloaded: ${loaded}/${endpoints.length} (${failed} failed) in ${duration}ms`);
   },
 
   /**
-   * Fetch et met en cache - avec déduplication des requêtes
+   * Fetch et met en cache - avec déduplication des requêtes et timeout
    */
-  async fetchAndCache(key, url) {
-    // Si une requête est déjà en cours, la réutiliser
+  async fetchAndCache(key, url, timeout = 5000) {
+    // Si une requête est déjà en cours, la réutiliser (évite duplications)
     if (this.pendingRequests.has(key)) {
       return this.pendingRequests.get(key);
     }
-    
+
     const fetchPromise = (async () => {
       try {
-        const response = await fetch(url);
+        // Ajout d'un timeout pour éviter les requêtes bloquantes
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), timeout);
+
+        const response = await fetch(url, { signal: controller.signal });
+        clearTimeout(timeoutId);
+
         if (response.ok) {
           const data = await response.json();
           this.cache.set(key, data);
           this.cacheExpiry.set(key, Date.now() + this.CACHE_DURATION);
           return data;
+        } else {
+          console.warn(`Preload ${key} failed: HTTP ${response.status}`);
         }
       } catch (e) {
-        console.warn(`Preload ${key} failed:`, e.message);
+        if (e.name === 'AbortError') {
+          console.warn(`Preload ${key} timeout after ${timeout}ms`);
+        } else {
+          console.warn(`Preload ${key} failed:`, e.message);
+        }
       } finally {
         this.pendingRequests.delete(key);
       }
       return null;
     })();
-    
+
     this.pendingRequests.set(key, fetchPromise);
     return fetchPromise;
   },
