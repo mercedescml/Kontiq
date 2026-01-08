@@ -1010,7 +1010,48 @@ if (!user) {
                     document.body.appendChild(newScript);
                     document.body.removeChild(newScript);
                 });
-                
+
+                // Load external module script if exists
+                const moduleScript = document.getElementById(`script-${viewName}`);
+                if (!moduleScript) {
+                    const script = document.createElement('script');
+                    script.id = `script-${viewName}`;
+                    script.src = `/js/${viewName}.js?t=${Date.now()}`;
+                    script.onload = () => {
+                        // Call initialization function if it exists
+                        const initFunctions = {
+                            'dashboard': 'loadDashboard',
+                            'zahlungen': 'loadZahlungen',
+                            'kosten': 'loadKosten',
+                            'forderungen': 'loadForderungen',
+                            'bankkonten': 'loadBankkonten',
+                            'entitaeten': 'loadEntitaeten',
+                            'vertrage': 'loadContracts'
+                        };
+                        const initFn = initFunctions[viewName];
+                        if (initFn && typeof window[initFn] === 'function') {
+                            window[initFn]();
+                        }
+                    };
+                    script.onerror = () => console.log(`No script for ${viewName}`);
+                    document.head.appendChild(script);
+                } else {
+                    // Script already loaded, just call init function
+                    const initFunctions = {
+                        'dashboard': 'loadDashboard',
+                        'zahlungen': 'loadZahlungen',
+                        'kosten': 'loadKosten',
+                        'forderungen': 'loadForderungen',
+                        'bankkonten': 'loadBankkonten',
+                        'entitaeten': 'loadEntitaeten',
+                        'vertrage': 'loadContracts'
+                    };
+                    const initFn = initFunctions[viewName];
+                    if (initFn && typeof window[initFn] === 'function') {
+                        setTimeout(() => window[initFn](), 100);
+                    }
+                }
+
                 // Ensure header data stays visible
                 updateHeader();
                 
