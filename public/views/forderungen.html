@@ -749,6 +749,65 @@
     .history-item:last-child {
         border-bottom: none;
     }
+
+    /* Page Header Styles */
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 32px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid var(--light-gray);
+    }
+
+    .page-title {
+        font-size: 28px;
+        font-weight: 700;
+        color: var(--navy);
+        letter-spacing: -0.5px;
+        margin: 0;
+    }
+
+    .header-actions {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+    }
+
+    /* Button Styles */
+    .btn {
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        border: none;
+        font-family: inherit;
+    }
+
+    .btn-primary {
+        background: var(--teal);
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background: #059669;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(14, 177, 122, 0.3);
+    }
+
+    .btn-secondary {
+        background: white;
+        color: var(--navy);
+        border: 1.5px solid var(--light-gray);
+    }
+
+    .btn-secondary:hover {
+        border-color: var(--navy);
+        background: var(--light-bg);
+    }
+
 /* Masquer header/menu sur mobile */
 @media (max-width: 768px) {
     .sidebar,
