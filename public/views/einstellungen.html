@@ -278,65 +278,41 @@ Sicherheit
 <div class="content-section" id="users-section">
 <div class="content-header">
 <h2>Benutzerverwaltung & Zugriffsrechte</h2>
-<p>Der Geschäftsführer definiert individuell, welche Module jeder Benutzer sehen und bearbeiten darf</p>
+<p>Verwalten Sie Benutzer und deren Zugriffsrechte auf Entitäten und Module</p>
 </div>
 
 <div class="alert alert-info" style="margin-bottom:24px">
 <div>
-<div class="alert-title">💡 Berechtigungssystem</div>
-<div class="alert-message">Sie als Geschäftsführer legen fest, was jeder Benutzer sehen und bearbeiten kann. Manager einer Entität können zusätzlich Zugriffsrechte für ihre eigene Entität vergeben.</div>
+<div class="alert-title">💡 Hierarchisches Berechtigungssystem</div>
+<div class="alert-message"><strong>Geschäftsführer:</strong> Hat vollen Zugriff und kann alle Benutzer verwalten.<br>
+<strong>Manager:</strong> Kann Benutzer für seine Entitäten einladen und Rechte vergeben.<br>
+<strong>Mitarbeiter:</strong> Sieht nur die Daten, für die er berechtigt wurde.</div>
 </div>
 </div>
 
-<div class="stats-grid" id="stats-grid">
-<div class="stat-card">
-<div class="stat-value" id="stat-users">-</div>
-<div class="stat-label">Aktive Benutzer</div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:32px">
+<div style="background:white;padding:20px;border-radius:12px;border:1px solid #E5E7EB">
+<div style="font-size:32px;font-weight:700;color:#0A2540" id="stat-users">-</div>
+<div style="font-size:14px;color:#6B7280">Aktive Benutzer</div>
 </div>
-<div class="stat-card">
-<div class="stat-value" id="stat-entities">-</div>
-<div class="stat-label">Entitäten</div>
+<div style="background:white;padding:20px;border-radius:12px;border:1px solid #E5E7EB">
+<div style="font-size:32px;font-weight:700;color:#0EB17A" id="stat-managers">-</div>
+<div style="font-size:14px;color:#6B7280">Manager</div>
 </div>
+<div style="background:white;padding:20px;border-radius:12px;border:1px solid #E5E7EB">
+<div style="font-size:32px;font-weight:700;color:#3B82F6" id="stat-entities">-</div>
+<div style="font-size:14px;color:#6B7280">Entitäten</div>
 </div>
-
-<!-- Tabs for Global vs Entity permissions -->
-<div style="display:flex;gap:8px;margin-bottom:24px;border-bottom:2px solid #E5E7EB">
-<div class="perm-tab active" onclick="switchPermTab('global')" id="tab-global" style="padding:12px 24px;cursor:pointer;font-weight:600;font-size:15px;color:#0A2540;border-bottom:2px solid #0EB17A;margin-bottom:-2px">Benutzer & Module</div>
-<div class="perm-tab" onclick="switchPermTab('entities')" id="tab-entities" style="padding:12px 24px;cursor:pointer;font-weight:600;font-size:15px;color:#6B7280;border-bottom:2px solid transparent;margin-bottom:-2px">Zugriff auf Entitäten</div>
 </div>
 
-<!-- Global Permissions Tab -->
-<div id="global-perm-tab">
 <div class="section">
 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
-<div class="section-title">Benutzer & Modulzugriff</div>
-<button class="btn btn-success" onclick="openInviteModal()">Benutzer einladen</button>
+<div class="section-title">Benutzer</div>
+<button class="btn btn-success" onclick="openInviteModal()">+ Benutzer einladen</button>
 </div>
 
-<table class="table" id="users-table">
-<thead>
-<tr>
-<th>Benutzer</th>
-<th>Module-Zugriff</th>
-<th>Entitäten</th>
-<th>Aktionen</th>
-</tr>
-</thead>
-<tbody id="users-tbody">
-<tr><td colspan="4" style="text-align:center;color:#6B7280;padding:40px">Lade Benutzer...</td></tr>
-</tbody>
-</table>
-</div>
-</div>
-
-<!-- Entity Access Tab -->
-<div id="entities-perm-tab" style="display:none">
-<div class="section">
-<div class="section-title" style="margin-bottom:20px">Zugriff auf Entitäten verwalten</div>
-
-<div id="entities-access-container">
-<div style="text-align:center;color:#6B7280;padding:40px">Lade Entitäten...</div>
-</div>
+<div id="users-list-container">
+<div style="text-align:center;color:#6B7280;padding:40px">Lade Benutzer...</div>
 </div>
 </div>
 </div>
@@ -875,53 +851,65 @@ Automatische Abmeldung
 
 <!-- Modal: Benutzer einladen -->
 <div class="modal" id="invite-modal">
-<div class="modal-content">
+<div class="modal-content" style="max-width:700px">
 <div class="modal-header">
 <div>
 <h3>Benutzer einladen</h3>
-<p>Laden Sie ein neues Teammitglied zu Kontiq ein. Der Benutzer erhält eine E-Mail mit einem Link zur Kontoerstellung.</p>
+<p>Laden Sie einen neuen Benutzer ein und definieren Sie seine Zugriffsrechte</p>
 </div>
 <button class="close-modal" onclick="closeInviteModal()">×</button>
 </div>
 
+<form onsubmit="sendInvite(event)">
 <div class="form-group">
-<label class="label">E-Mail-Adresse</label>
-<input type="email" class="input" placeholder="name@firma.de" id="invite-email">
+<label class="label">E-Mail-Adresse *</label>
+<input type="email" class="input" placeholder="benutzer@firma.de" id="invite-email" required>
 </div>
 
 <div class="grid-2">
 <div class="form-group">
-<label class="label">Vorname</label>
-<input type="text" class="input" placeholder="Max" id="invite-firstname">
+<label class="label">Vorname *</label>
+<input type="text" class="input" placeholder="Max" id="invite-firstname" required>
 </div>
 <div class="form-group">
-<label class="label">Nachname</label>
-<input type="text" class="input" placeholder="Mustermann" id="invite-lastname">
+<label class="label">Nachname *</label>
+<input type="text" class="input" placeholder="Mustermann" id="invite-lastname" required>
 </div>
 </div>
 
 <div class="form-group">
-<label class="label">Rolle zuweisen</label>
-<select class="select" id="invite-role">
-<option value="">Rolle auswählen...</option>
-<option value="manager">Manager</option>
-<option value="accountant">Buchhalter</option>
-<option value="readonly">Nur-Lesen</option>
+<label class="label">Rolle *</label>
+<select class="select" id="invite-role" onchange="updateInvitePermissions()" required>
+<option value="">Bitte wählen...</option>
+<option value="manager">Manager - Kann eine oder mehrere Entitäten verwalten</option>
+<option value="employee">Mitarbeiter - Nur Lese-/Bearbeitungsrechte</option>
 </select>
+<div class="label-desc" id="role-description"></div>
 </div>
 
-<div class="form-group">
-<label class="label">Zugriff auf Module</label>
-<div class="label-desc">Wählen Sie die Module aus, auf die dieser Benutzer Zugriff haben soll</div>
-<div class="checkbox-group" id="invite-modules-container">
-<!-- Module checkboxes will be generated dynamically -->
+<!-- Entitäten Zugriff (nur für Manager und Mitarbeiter) -->
+<div class="form-group" id="entities-access-group" style="display:none">
+<label class="label">Zugriff auf Entitäten *</label>
+<div class="label-desc">Wählen Sie die Entitäten aus, auf die der Benutzer Zugriff haben soll</div>
+<div id="invite-entities-container" style="margin-top:12px">
+<!-- Dynamisch generiert -->
+</div>
+</div>
+
+<!-- Module Rechte -->
+<div class="form-group" id="modules-access-group" style="display:none">
+<label class="label">Zugriffsrechte auf Module</label>
+<div class="label-desc">Definieren Sie für jedes Modul, ob der Benutzer es sehen und/oder bearbeiten kann</div>
+<div id="invite-modules-container" style="margin-top:12px">
+<!-- Dynamisch generiert -->
 </div>
 </div>
 
 <div class="modal-footer">
-<button class="btn btn-secondary" onclick="closeInviteModal()">Abbrechen</button>
-<button class="btn btn-success" onclick="sendInvite()">Einladung senden</button>
+<button type="button" class="btn btn-secondary" onclick="closeInviteModal()">Abbrechen</button>
+<button type="submit" class="btn btn-success">Einladung senden</button>
 </div>
+</form>
 </div>
 </div>
 
@@ -1129,6 +1117,10 @@ async function changePassword(event) {
     alert(`❌ ${error.message}`);
   }
 }
+
+// ==================================================
+// HIERARCHISCHES PERMISSIONS SYSTEM
+// ==================================================
 
 // Module definitions - corresponds to actual app modules (only business modules)
 const MODULES = {
