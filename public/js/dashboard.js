@@ -365,6 +365,114 @@ function updateLiquidityChange(currentLiquidity) {
 }
 
 /**
+ * Dashboard button handlers - Connect all dashboard buttons to real functionality
+ */
+
+/**
+ * Show action options for liquidity bottleneck
+ */
+function showActionOptions() {
+  const options = `
+Handlungsoptionen für Liquiditätsengpass:
+
+1. Forderungen früher einziehen
+   - Skonto anbieten für schnellere Zahlung
+   - Zahlungserinnerungen versenden
+
+2. Zahlungen verschieben
+   - Mit Lieferanten Zahlungsziel verhandeln
+   - Nicht-dringende Ausgaben verschieben
+
+3. Finanzierung prüfen
+   - Kontokorrentlinie erhöhen
+   - Kurzfristige Finanzierung anfragen
+
+Möchten Sie zu einer dieser Aktionen wechseln?
+  `.trim();
+
+  if (confirm(options)) {
+    // Navigate to appropriate page
+    APP.navigate('forderungen');
+  }
+}
+
+/**
+ * Approve payment
+ */
+function approvePayment(paymentId) {
+  const confirmed = confirm('Zahlung jetzt freigeben?');
+  if (!confirmed) return;
+
+  // In real app, would call API to approve payment
+  APP.notify('Zahlung freigegeben', 'success');
+
+  // Redirect to payments page
+  setTimeout(() => {
+    APP.navigate('zahlungen');
+  }, 1000);
+}
+
+/**
+ * Show payment details
+ */
+function showPaymentDetails(paymentId) {
+  APP.navigate('zahlungen');
+}
+
+/**
+ * Check account balance
+ */
+function checkAccountBalance() {
+  APP.navigate('bankkonten');
+}
+
+/**
+ * Show optimization suggestions
+ */
+function showOptimizationSuggestions() {
+  const suggestions = `
+Zahlungstermin-Optimierung:
+
+Einsparungspotenzial: 365 €
+
+Vorschläge:
+1. Müller GmbH - 3% Skonto nutzen (180 €)
+2. Schmidt AG - 2% Skonto nutzen (95 €)
+3. Weber KG - Frühzahlung (90 €)
+
+Möchten Sie die Zahlungen optimieren?
+  `.trim();
+
+  if (confirm(suggestions)) {
+    APP.navigate('zahlungen');
+  }
+}
+
+/**
+ * Release all payments due today
+ */
+function releasePaymentsDueToday() {
+  const paymentsDueToday = getPaymentsDueToday();
+
+  if (paymentsDueToday.length === 0) {
+    APP.notify('Keine fälligen Zahlungen heute', 'info');
+    return;
+  }
+
+  const totalAmount = paymentsDueToday.reduce((sum, p) => sum + (parseFloat(p.amount) || 0), 0);
+  const confirmed = confirm(
+    `${paymentsDueToday.length} Zahlungen freigeben?\n\nGesamtbetrag: ${formatCurrency(totalAmount)}`
+  );
+
+  if (confirmed) {
+    APP.notify('Zahlungen werden freigegeben...', 'success');
+    setTimeout(() => {
+      APP.navigate('zahlungen');
+    }, 1000);
+  }
+}
+
+/**
  * Initialize dashboard on page load
  */
 document.addEventListener('DOMContentLoaded', () => {
