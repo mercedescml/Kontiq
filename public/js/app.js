@@ -419,6 +419,13 @@ const APP = {
         resolve(false);
       });
     });
+  },
+
+  /**
+   * Alias for navigateTo (for backward compatibility)
+   */
+  navigate(view) {
+    return this.navigateTo(view);
   }
 };
 
