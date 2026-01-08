@@ -210,6 +210,128 @@ function filterForderungen(status) {
 }
 
 /**
+ * Forderungen page modal handlers - for forderungen.html buttons
+ */
+
+// Create Invoice Modal
+function openCreateInvoice() {
+  const modal = document.getElementById('createInvoiceModal');
+  if (modal) {
+    modal.classList.add('active');
+  } else {
+    APP.notify('Modal nicht gefunden', 'warning');
+  }
+}
+
+function closeCreateInvoice() {
+  const modal = document.getElementById('createInvoiceModal');
+  if (modal) {
+    modal.classList.remove('active');
+    const form = modal.querySelector('form');
+    if (form) form.reset();
+  }
+}
+
+// Edit Invoice Modal
+function editInvoice(invoiceId) {
+  const modal = document.getElementById('editInvoiceModal');
+  if (modal) {
+    modal.classList.add('active');
+    // In real app, would load invoice data here
+    console.log('Editing invoice:', invoiceId);
+  } else {
+    APP.notify('Modal nicht gefunden', 'warning');
+  }
+}
+
+function closeEditInvoice() {
+  const modal = document.getElementById('editInvoiceModal');
+  if (modal) {
+    modal.classList.remove('active');
+  }
+}
+
+// Reminder/Mahnung Modal
+function openReminder(client) {
+  const modal = document.getElementById('reminderModal');
+  if (modal) {
+    modal.classList.add('active');
+    console.log('Opening reminder for:', client);
+  } else {
+    APP.notify('Modal nicht gefunden', 'warning');
+  }
+}
+
+function closeReminder() {
+  const modal = document.getElementById('reminderModal');
+  if (modal) {
+    modal.classList.remove('active');
+  }
+}
+
+// Import Modal
+function openImport() {
+  const modal = document.getElementById('importModal');
+  if (modal) {
+    modal.classList.add('active');
+  } else {
+    APP.notify('Modal nicht gefunden', 'warning');
+  }
+}
+
+function closeImport() {
+  const modal = document.getElementById('importModal');
+  if (modal) {
+    modal.classList.remove('active');
+  }
+}
+
+// Import type selection
+function selectImport(type) {
+  // Remove active class from all import methods
+  document.querySelectorAll('.import-method').forEach(el => el.classList.remove('active'));
+
+  // Add active to clicked one
+  if (event && event.target) {
+    const method = event.target.closest('.import-method');
+    if (method) method.classList.add('active');
+  }
+
+  // Show/hide appropriate import sections
+  const pdfImport = document.getElementById('pdfImport');
+  const excelImport = document.getElementById('excelImport');
+  const datevImport = document.getElementById('datevImport');
+
+  if (pdfImport) pdfImport.style.display = type === 'pdf' ? 'block' : 'none';
+  if (excelImport) excelImport.style.display = type === 'excel' ? 'block' : 'none';
+  if (datevImport) datevImport.style.display = type === 'datev' ? 'block' : 'none';
+}
+
+// Mahnung calculation update
+function updateMahnungCalculation() {
+  const type = document.getElementById('reminderType')?.value || '';
+  const calc = document.getElementById('mahnungCalc');
+
+  if (calc) {
+    if (type.includes('Mahnung')) {
+      calc.style.display = 'block';
+    } else {
+      calc.style.display = 'none';
+    }
+  }
+}
+
+// Save invoice changes
+function saveInvoiceChanges() {
+  // In real app, would save via API
+  APP.notify('Änderungen gespeichert', 'success');
+  closeEditInvoice();
+
+  // Reload data
+  loadForderungen();
+}
+
+/**
  * Initialisation
  */
 document.addEventListener('DOMContentLoaded', () => {
