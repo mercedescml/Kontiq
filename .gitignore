@@ -8,3 +8,4 @@ data-test/
 
 # Jest cache
 .jest/
+public/views/einstellungen.html.backup
