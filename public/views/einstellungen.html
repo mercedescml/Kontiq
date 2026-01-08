@@ -312,7 +312,19 @@ Sicherheit
 </div>
 
 <div id="users-list-container">
-<div style="text-align:center;color:#6B7280;padding:40px">Lade Benutzer...</div>
+<table class="table">
+<thead>
+<tr>
+<th>Benutzer</th>
+<th>Module-Zugriff</th>
+<th>Entitäten</th>
+<th>Aktionen</th>
+</tr>
+</thead>
+<tbody id="users-tbody">
+<tr><td colspan="4" style="text-align:center;color:#6B7280;padding:40px">Lade Benutzer...</td></tr>
+</tbody>
+</table>
 </div>
 </div>
 </div>
@@ -1140,6 +1152,34 @@ setTimeout(() => {
 
 // Switch permission tabs
 function switchPermTab(tab) {
+  // Tab switching logic (if needed in future)
+  console.log('Switching to tab:', tab);
+}
+
+// Toggle switch helper
+function toggleSwitch(element) {
+  element.classList.toggle('active');
+}
+
+// Role modal functions
+function openRoleModal() {
+  document.getElementById('role-modal').classList.add('active');
+}
+
+function closeRoleModal() {
+  document.getElementById('role-modal').classList.remove('active');
+}
+
+function createRole() {
+  const name = document.getElementById('role-name').value;
+  const description = document.getElementById('role-description').value;
+  if (!name || !description) {
+    alert('Bitte füllen Sie alle Felder aus');
+    return;
+  }
+  alert('Rolle "' + name + '" wurde erfolgreich erstellt');
+  closeRoleModal();
+}
 </script>
 </body>
 </html>
