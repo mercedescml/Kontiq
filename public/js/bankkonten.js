@@ -7,13 +7,30 @@ async function saveAccount(event) {
   const bank = document.getElementById('accountBank').value.trim();
   const iban = document.getElementById('accountIban').value.trim();
   const balance = parseFloat(document.getElementById('accountBalance').value) || 0;
+  const type = document.getElementById('accountType')?.value || 'primary';
 
   if (!bank || !iban) {
     APP.notify('Bank und IBAN sind erforderlich', 'error');
     return;
   }
 
-  const data = { bank, iban, balance };
+  // Get entity IDs
+  const isAllEntities = document.getElementById('allEntities')?.checked;
+  let entityIds = [];
+
+  if (isAllEntities) {
+    entityIds = ['all'];
+  } else {
+    document.querySelectorAll('.entity-checkbox:checked').forEach(cb => {
+      entityIds.push(cb.value);
+    });
+    if (entityIds.length === 0) {
+      APP.notify('Bitte wählen Sie mindestens eine Entität aus', 'error');
+      return;
+    }
+  }
+
+  const data = { bank, iban, balance, type, entityIds };
 
   try {
     if (id) {
@@ -37,9 +54,37 @@ async function saveAccount(event) {
  */
 
 let currentBankkonten = [];
+let currentUser = null;
+let currentEntities = [];
 
 /**
- * Charge tous les comptes - avec cache
+ * Initialize - load user and entities
+ */
+async function initBankkonten() {
+  // Load current user
+  try {
+    const userJson = localStorage.getItem('kontiq_user');
+    if (userJson) {
+      currentUser = JSON.parse(userJson);
+    }
+  } catch (e) {
+    console.error('Failed to load user:', e);
+  }
+
+  // Load entities
+  try {
+    const entitiesData = await API.entitaeten.getAll();
+    currentEntities = entitiesData.entitaeten || [];
+  } catch (e) {
+    console.error('Failed to load entities:', e);
+  }
+
+  // Load bank accounts
+  loadBankkonten();
+}
+
+/**
+ * Charge tous les comptes - avec cache et filtrage par entité
  */
 async function loadBankkonten() {
   try {
@@ -50,7 +95,32 @@ async function loadBankkonten() {
     } else {
       data = await API.bankkonten.getAll();
     }
-    currentBankkonten = data.bankkonten || [];
+
+    let allBankkonten = data.bankkonten || [];
+
+    // Filter based on user role
+    if (currentUser) {
+      const isGeschaeftsfuehrer = currentUser.role === 'geschaeftsfuehrer';
+
+      if (!isGeschaeftsfuehrer) {
+        // Manager only sees accounts for their entities
+        const userEntities = currentEntities.filter(e =>
+          e.manager === currentUser.email ||
+          (e.managers && e.managers.includes(currentUser.email))
+        );
+        const userEntityIds = userEntities.map(e => e.id);
+
+        allBankkonten = allBankkonten.filter(k =>
+          k.entityIds && (
+            k.entityIds.includes('all') ||
+            k.entityIds.some(id => userEntityIds.includes(id))
+          )
+        );
+      }
+      // Geschäftsführer sees all accounts
+    }
+
+    currentBankkonten = allBankkonten;
     displayBankkonten(currentBankkonten);
   } catch (error) {
     APP.notify('Fehler beim Laden der Bankkonten', 'error');
@@ -139,6 +209,119 @@ async function editBankkonto(id) {
 
   modal.style.display = 'flex';
   if (bankField) bankField.focus();
+}
+
+/**
+ * Open bank modal for creating/editing
+ */
+function openBankModal(id = null) {
+  const modal = document.getElementById('bankModal');
+  const overlay = document.getElementById('bankOverlay');
+  const title = document.getElementById('bankModalTitle');
+
+  if (!modal) {
+    console.error('Bank modal not found');
+    return;
+  }
+
+  // Render entity checkboxes
+  renderEntityCheckboxes();
+
+  if (id) {
+    // Edit mode
+    const konto = currentBankkonten.find(k => k.id === id);
+    if (!konto) {
+      APP.notify('Bankkonto nicht gefunden', 'error');
+      return;
+    }
+
+    title.textContent = 'Konto bearbeiten';
+    document.getElementById('accountId').value = konto.id;
+    document.getElementById('accountBank').value = konto.bank || '';
+    document.getElementById('accountIban').value = konto.iban || '';
+    document.getElementById('accountBalance').value = konto.balance || 0;
+    document.getElementById('accountType').value = konto.type || 'primary';
+
+    // Set entity checkboxes
+    const isAllEntities = konto.entityIds && konto.entityIds.includes('all');
+    if (document.getElementById('allEntities')) {
+      document.getElementById('allEntities').checked = isAllEntities;
+      toggleAllEntities();
+
+      if (!isAllEntities && konto.entityIds) {
+        konto.entityIds.forEach(entityId => {
+          const cb = document.getElementById(`entity_${entityId}`);
+          if (cb) cb.checked = true;
+        });
+      }
+    }
+  } else {
+    // Create mode
+    title.textContent = 'Neues Konto';
+    document.getElementById('accountId').value = '';
+    const form = document.querySelector('#bankModal form');
+    if (form) form.reset();
+    if (document.getElementById('allEntities')) {
+      document.getElementById('allEntities').checked = true;
+      toggleAllEntities();
+    }
+  }
+
+  overlay.classList.add('active');
+  modal.classList.add('active');
+}
+
+/**
+ * Close bank modal
+ */
+function closeBankModal() {
+  const modal = document.getElementById('bankModal');
+  const overlay = document.getElementById('bankOverlay');
+  if (modal) modal.classList.remove('active');
+  if (overlay) overlay.classList.remove('active');
+}
+
+/**
+ * Render entity checkboxes in the modal
+ */
+function renderEntityCheckboxes() {
+  const container = document.getElementById('entityCheckboxList');
+  if (!container) return;
+
+  if (currentEntities.length === 0) {
+    container.innerHTML = '<p style="color: #6B7280; font-size: 13px;">Keine Entitäten gefunden</p>';
+    return;
+  }
+
+  const html = currentEntities.map(entity => `
+    <div style="padding: 8px 0;">
+      <label style="display: flex; align-items: center; cursor: pointer;">
+        <input type="checkbox" class="entity-checkbox" value="${entity.id}" id="entity_${entity.id}" style="margin-right: 8px;">
+        <span style="font-size: 14px;">${entity.name}</span>
+      </label>
+    </div>
+  `).join('');
+
+  container.innerHTML = html;
+}
+
+/**
+ * Toggle all entities checkbox
+ */
+function toggleAllEntities() {
+  const allEntitiesChecked = document.getElementById('allEntities')?.checked;
+  const entityCheckboxes = document.querySelectorAll('.entity-checkbox');
+  const container = document.getElementById('entityCheckboxList');
+
+  entityCheckboxes.forEach(cb => {
+    cb.disabled = allEntitiesChecked;
+    if (allEntitiesChecked) cb.checked = false;
+  });
+
+  if (container) {
+    container.style.opacity = allEntitiesChecked ? '0.5' : '1';
+    container.style.pointerEvents = allEntitiesChecked ? 'none' : 'auto';
+  }
 }
 
 function createBankModal() {

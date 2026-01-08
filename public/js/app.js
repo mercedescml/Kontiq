@@ -271,7 +271,7 @@ const APP = {
       'zahlungen': 'loadZahlungen',
       'kosten': 'loadKosten',
       'forderungen': 'loadForderungen',
-      'bankkonten': 'loadBankkonten',
+      'bankkonten': 'initBankkonten',
       'entitaeten': 'loadEntitaeten',
       'dashboard': 'loadDashboard'
     };
