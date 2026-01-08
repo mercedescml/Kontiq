@@ -1,8 +1,10 @@
 /**
- * Sauvegarde une créance depuis le formulaire
+ * Sauvegarde une créance depuis le formulaire (create or update)
  */
 async function saveForderung(event) {
   event.preventDefault();
+
+  const id = document.getElementById('forderungId')?.value;
   const customer = document.getElementById('forderungCustomer').value.trim();
   const amount = parseFloat(document.getElementById('forderungAmount').value) || 0;
   const dueDate = document.getElementById('forderungDueDate').value;
@@ -14,9 +16,16 @@ async function saveForderung(event) {
   }
 
   const data = { customer, amount, dueDate, status };
+
   try {
-    await addForderung(data);
-    APP.notify('Forderung gespeichert', 'success');
+    if (id) {
+      await API.forderungen.update(id, data);
+      APP.notify('Forderung aktualisiert', 'success');
+    } else {
+      await API.forderungen.create(data);
+      APP.notify('Forderung erstellt', 'success');
+    }
+
     closeForderungModal && closeForderungModal();
     loadForderungen();
   } catch (error) {
@@ -90,14 +99,88 @@ function displayForderungen(forderungen) {
 }
 
 /**
- * Édite un créance
+ * Edit forderung - opens modal with data
  */
 async function editForderung(id) {
   const forderung = currentForderungen.find(f => f.id === id);
-  if (!forderung) return;
+  if (!forderung) {
+    APP.notify('Forderung nicht gefunden', 'error');
+    return;
+  }
 
-  APP.notify(`Forderung ${id} wird bearbeitet...`, 'info');
-  // À implémenter
+  let modal = document.getElementById('forderungModal');
+  if (!modal) {
+    modal = createForderungModal();
+  }
+
+  const idField = document.getElementById('forderungId');
+  const customerField = document.getElementById('forderungCustomer');
+  const amountField = document.getElementById('forderungAmount');
+  const dueDateField = document.getElementById('forderungDueDate');
+  const statusField = document.getElementById('forderungStatus');
+
+  if (idField) idField.value = forderung.id;
+  if (customerField) customerField.value = forderung.customer || '';
+  if (amountField) amountField.value = forderung.amount || '';
+  if (dueDateField) dueDateField.value = forderung.dueDate || '';
+  if (statusField) statusField.value = forderung.status || 'open';
+
+  const modalTitle = modal.querySelector('.modal-title');
+  if (modalTitle) modalTitle.textContent = 'Forderung bearbeiten';
+
+  modal.style.display = 'flex';
+  if (customerField) customerField.focus();
+}
+
+function createForderungModal() {
+  const modal = document.createElement('div');
+  modal.id = 'forderungModal';
+  modal.style.cssText = 'display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 9999; align-items: center; justify-content: center;';
+
+  modal.innerHTML = `
+    <div style="background: white; padding: 24px; border-radius: 12px; max-width: 500px; width: 90%;">
+      <h3 class="modal-title">Forderung bearbeiten</h3>
+      <form onsubmit="saveForderung(event)">
+        <input type="hidden" id="forderungId">
+        <div style="margin-bottom: 16px;">
+          <label style="display: block; margin-bottom: 8px; font-weight: 600;">Kunde</label>
+          <input type="text" id="forderungCustomer" required style="width: 100%; padding: 10px; border: 1px solid #E5E7EB; border-radius: 8px;">
+        </div>
+        <div style="margin-bottom: 16px;">
+          <label style="display: block; margin-bottom: 8px; font-weight: 600;">Betrag</label>
+          <input type="number" id="forderungAmount" step="0.01" required style="width: 100%; padding: 10px; border: 1px solid #E5E7EB; border-radius: 8px;">
+        </div>
+        <div style="margin-bottom: 16px;">
+          <label style="display: block; margin-bottom: 8px; font-weight: 600;">Fälligkeitsdatum</label>
+          <input type="date" id="forderungDueDate" required style="width: 100%; padding: 10px; border: 1px solid #E5E7EB; border-radius: 8px;">
+        </div>
+        <div style="margin-bottom: 16px;">
+          <label style="display: block; margin-bottom: 8px; font-weight: 600;">Status</label>
+          <select id="forderungStatus" style="width: 100%; padding: 10px; border: 1px solid #E5E7EB; border-radius: 8px;">
+            <option value="open">Offen</option>
+            <option value="paid">Bezahlt</option>
+            <option value="overdue">Überfällig</option>
+          </select>
+        </div>
+        <div style="display: flex; gap: 10px; justify-content: flex-end;">
+          <button type="button" onclick="closeForderungModal()" style="padding: 10px 20px; border: 1px solid #E5E7EB; background: white; border-radius: 8px; cursor: pointer;">Abbrechen</button>
+          <button type="submit" style="padding: 10px 20px; background: #0EB17A; color: white; border: none; border-radius: 8px; cursor: pointer;">Speichern</button>
+        </div>
+      </form>
+    </div>
+  `;
+
+  document.body.appendChild(modal);
+  return modal;
+}
+
+function closeForderungModal() {
+  const modal = document.getElementById('forderungModal');
+  if (modal) modal.style.display = 'none';
+  const form = modal?.querySelector('form');
+  if (form) form.reset();
+  const idField = document.getElementById('forderungId');
+  if (idField) idField.value = '';
 }
 
 /**
