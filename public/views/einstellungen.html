@@ -1072,6 +1072,178 @@ function getEntityManagers(entity) {
 function isManagerOf(entity, email) {
   return getEntityManagers(entity).includes(email);
 }
+
+// Load permissions data
+async function loadPermissionsData() {
+  try {
+    console.log('Loading permissions data...');
+
+    // Fetch users from API
+    const usersResponse = await fetch('/api/users');
+    const usersData = await usersResponse.json();
+    allUsers = usersData.users || [];
+
+    // Fetch entities from API
+    const entitiesResponse = await fetch('/api/entitaeten');
+    const entitiesData = await entitiesResponse.json();
+    allEntities = entitiesData.entitaeten || [];
+
+    // Fetch permissions from API
+    try {
+      const permissionsResponse = await fetch('/api/permissions');
+      allPermissions = await permissionsResponse.json();
+    } catch (e) {
+      console.warn('Could not load permissions:', e);
+      allPermissions = {};
+    }
+
+    console.log('Loaded users:', allUsers.length);
+    console.log('Loaded entities:', allEntities.length);
+    console.log('Loaded permissions:', allPermissions);
+
+    // Check if current user is Geschäftsführer
+    isGeschaeftsfuehrer = currentUser.role === 'geschäftsfuehrer' || currentUser.role === 'admin';
+
+    // Get managed entities
+    if (isGeschaeftsfuehrer) {
+      managedEntities = allEntities;
+    } else {
+      managedEntities = allEntities.filter(e => isManagerOf(e, currentUser.email));
+    }
+
+    // Render users table
+    renderUsersTable();
+
+    // Show invite button if user can manage users
+    const inviteBtn = document.getElementById('invite-user-btn');
+    if (inviteBtn && (isGeschaeftsfuehrer || managedEntities.length > 0)) {
+      inviteBtn.style.display = 'inline-flex';
+    }
+
+  } catch (error) {
+    console.error('Error loading permissions data:', error);
+    document.getElementById('users-tbody').innerHTML = `<tr><td colspan="4" style="text-align:center;color:#DC2626;padding:40px">Fehler beim Laden: ${error.message}</td></tr>`;
+  }
+}
+
+// Render users table
+function renderUsersTable() {
+  const tbody = document.getElementById('users-tbody');
+  if (!tbody) return;
+
+  if (allUsers.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#6B7280;padding:40px">Keine Benutzer gefunden</td></tr>';
+    return;
+  }
+
+  let html = '';
+  allUsers.forEach(user => {
+    const userPerms = allPermissions.globalPermissions?.[user.email] || {};
+    const role = userPerms.role || user.role || 'employee';
+    const permissions = userPerms.permissions || {};
+    const managedEntityIds = userPerms.managedEntityIds || [];
+    const accessibleEntityIds = userPerms.accessibleEntityIds || [];
+
+    // Count accessible modules
+    const moduleCount = Object.keys(permissions).filter(m => permissions[m]?.read).length;
+
+    // Get entity names
+    const entityNames = [...new Set([...managedEntityIds, ...accessibleEntityIds])]
+      .map(id => {
+        const entity = allEntities.find(e => e.id === id);
+        return entity ? entity.name : id;
+      })
+      .slice(0, 3)
+      .join(', ');
+
+    const roleLabel = role === 'geschäftsfuehrer' ? 'Geschäftsführer' :
+                      role === 'manager' ? 'Manager' :
+                      role === 'employee' ? 'Mitarbeiter' :
+                      role === 'readonly' ? 'Nur-Lesen' : role;
+
+    const roleBadgeClass = role === 'geschäftsfuehrer' ? 'badge-admin' :
+                            role === 'manager' ? 'badge-manager' :
+                            role === 'employee' ? 'badge-user' :
+                            'badge-readonly';
+
+    html += `
+      <tr>
+        <td>
+          <div class="user-row">
+            <div class="user-avatar">${user.name ? user.name.charAt(0).toUpperCase() : user.email.charAt(0).toUpperCase()}</div>
+            <div class="user-info">
+              <div class="user-name">${user.name || user.email.split('@')[0]}</div>
+              <div class="user-email">${user.email}</div>
+            </div>
+          </div>
+        </td>
+        <td>
+          <span class="badge ${roleBadgeClass}">${roleLabel}</span>
+          <div style="font-size:12px;color:#6B7280;margin-top:4px">${moduleCount} Module</div>
+        </td>
+        <td>
+          <div style="font-size:14px">${entityNames || 'Keine'}</div>
+          <div style="font-size:12px;color:#6B7280;margin-top:4px">${managedEntityIds.length + accessibleEntityIds.length} Entitäten</div>
+        </td>
+        <td>
+          <div class="actions">
+            ${(isGeschaeftsfuehrer || managedEntityIds.some(id => managedEntities.find(e => e.id === id))) ? `
+              <button class="btn btn-sm btn-secondary" onclick="editUserPermissions('${user.email}')">Rechte bearbeiten</button>
+            ` : ''}
+          </div>
+        </td>
+      </tr>
+    `;
+  });
+
+  tbody.innerHTML = html;
+}
+
+// Edit user permissions (placeholder)
+function editUserPermissions(email) {
+  alert(`Bearbeiten der Rechte für ${email} - Wird implementiert`);
+}
+
+// Load user profile
+function loadUserProfile() {
+  if (!currentUser) return;
+
+  const firstName = currentUser.name?.split(' ')[0] || '';
+  const lastName = currentUser.name?.split(' ')[1] || '';
+
+  document.getElementById('profileFirstName').value = firstName;
+  document.getElementById('profileLastName').value = lastName;
+  document.getElementById('profileEmail').value = currentUser.email || '';
+  document.getElementById('profileCompany').value = currentUser.company || '';
+
+  const roleLabel = currentUser.role === 'geschäftsfuehrer' ? 'Geschäftsführer' :
+                    currentUser.role === 'manager' ? 'Manager' :
+                    currentUser.role === 'employee' ? 'Mitarbeiter' :
+                    currentUser.role === 'readonly' ? 'Nur-Lesen' : currentUser.role || 'Mitarbeiter';
+
+  document.getElementById('profileRole').value = roleLabel;
+}
+
+// Save profile (placeholder)
+function saveProfile(event) {
+  event.preventDefault();
+  alert('Profil speichern - Wird implementiert');
+}
+
+// Invite modal functions
+function openInviteModal() {
+  document.getElementById('invite-modal').classList.add('active');
+}
+
+function closeInviteModal() {
+  document.getElementById('invite-modal').classList.remove('active');
+}
+
+function updateInvitePermissions() {
+  // Placeholder for updating permissions based on role
+  console.log('Updating invite permissions...');
+}
+
 // Initialize - execute immediately since we're loaded dynamically
 (async function init() {
   console.log('=== Einstellungen page loaded ===');
