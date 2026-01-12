@@ -27,6 +27,7 @@ const writeJSON = (file, data) => {
 
 const FILES = {
   categories: path.join(DATA_DIR, 'categories.json'),
+  forderungenKategorien: path.join(DATA_DIR, 'forderungen_kategorien.json'),
   users: path.join(DATA_DIR, 'users.json'),
   onboarding: path.join(DATA_DIR, 'onboarding.json'),
   permissions: path.join(DATA_DIR, 'permissions.json'),
@@ -674,6 +675,330 @@ app.get('/api/abonnement', (req, res) => res.json({ abonnement: { status: 'activ
 app.put('/api/abonnement', (req, res) => res.json({ ok: true }));
 app.get('/api/einstellungen', (req, res) => res.json({ settings: {} }));
 app.put('/api/einstellungen', (req, res) => res.json({ ok: true }));
+
+// ========== FORDERUNGEN KATEGORIEN API ==========
+// GET - Alle Forderungskategorien abrufen
+app.get('/api/forderungen-kategorien', (req, res) => {
+  try {
+    const kategorien = readJSON(FILES.forderungenKategorien);
+    res.json(kategorien);
+  } catch (error) {
+    console.error('Error reading forderungen kategorien:', error);
+    res.status(500).json({ error: 'Fehler beim Laden der Kategorien' });
+  }
+});
+
+// POST - Neue Forderungskategorie erstellen
+app.post('/api/forderungen-kategorien', (req, res) => {
+  try {
+    const kategorien = readJSON(FILES.forderungenKategorien);
+    const { name, description, color, icon } = req.body;
+
+    if (!name || name.trim() === '') {
+      return res.status(400).json({ error: 'Kategoriename ist erforderlich' });
+    }
+
+    // Check if category name already exists
+    const existingCategory = kategorien.find(k => k.name.toLowerCase() === name.toLowerCase());
+    if (existingCategory) {
+      return res.status(400).json({ error: 'Eine Kategorie mit diesem Namen existiert bereits' });
+    }
+
+    const neueKategorie = {
+      id: `CAT-${Date.now()}`,
+      name: name.trim(),
+      description: description || '',
+      color: color || '#607d8b',
+      icon: icon || 'folder',
+      isDefault: false,
+      created: new Date().toISOString()
+    };
+
+    kategorien.push(neueKategorie);
+    writeJSON(FILES.forderungenKategorien, kategorien);
+
+    res.status(201).json(neueKategorie);
+  } catch (error) {
+    console.error('Error creating kategorie:', error);
+    res.status(500).json({ error: 'Fehler beim Erstellen der Kategorie' });
+  }
+});
+
+// PUT - Forderungskategorie aktualisieren
+app.put('/api/forderungen-kategorien/:id', (req, res) => {
+  try {
+    const kategorien = readJSON(FILES.forderungenKategorien);
+    const { id } = req.params;
+    const { name, description, color, icon } = req.body;
+
+    const index = kategorien.findIndex(k => k.id === id);
+    if (index === -1) {
+      return res.status(404).json({ error: 'Kategorie nicht gefunden' });
+    }
+
+    // Check if new name conflicts with existing category
+    if (name) {
+      const existingCategory = kategorien.find(k => k.id !== id && k.name.toLowerCase() === name.toLowerCase());
+      if (existingCategory) {
+        return res.status(400).json({ error: 'Eine Kategorie mit diesem Namen existiert bereits' });
+      }
+    }
+
+    // Update category
+    kategorien[index] = {
+      ...kategorien[index],
+      ...(name && { name: name.trim() }),
+      ...(description !== undefined && { description }),
+      ...(color && { color }),
+      ...(icon && { icon }),
+      updated: new Date().toISOString()
+    };
+
+    writeJSON(FILES.forderungenKategorien, kategorien);
+    res.json(kategorien[index]);
+  } catch (error) {
+    console.error('Error updating kategorie:', error);
+    res.status(500).json({ error: 'Fehler beim Aktualisieren der Kategorie' });
+  }
+});
+
+// DELETE - Forderungskategorie löschen
+app.delete('/api/forderungen-kategorien/:id', (req, res) => {
+  try {
+    const kategorien = readJSON(FILES.forderungenKategorien);
+    const forderungen = readJSON(FILES.forderungen);
+    const { id } = req.params;
+
+    const kategorie = kategorien.find(k => k.id === id);
+    if (!kategorie) {
+      return res.status(404).json({ error: 'Kategorie nicht gefunden' });
+    }
+
+    // Prevent deleting default categories
+    if (kategorie.isDefault) {
+      return res.status(400).json({ error: 'Standard-Kategorien können nicht gelöscht werden' });
+    }
+
+    // Check if category is in use
+    const inUse = forderungen.some(f => f.kategorie === id);
+    if (inUse) {
+      return res.status(400).json({
+        error: 'Diese Kategorie wird noch verwendet und kann nicht gelöscht werden',
+        inUse: true
+      });
+    }
+
+    const filtered = kategorien.filter(k => k.id !== id);
+    writeJSON(FILES.forderungenKategorien, filtered);
+
+    res.json({ ok: true, message: 'Kategorie erfolgreich gelöscht' });
+  } catch (error) {
+    console.error('Error deleting kategorie:', error);
+    res.status(500).json({ error: 'Fehler beim Löschen der Kategorie' });
+  }
+});
+
+// ========== LIQUIDITÄTSANALYSE NACH KATEGORIEN ==========
+app.get('/api/liquiditaet/kategorien-analyse', (req, res) => {
+  try {
+    const forderungen = readJSON(FILES.forderungen);
+    const kategorien = readJSON(FILES.forderungenKategorien);
+    const { startDate, endDate, status } = req.query;
+
+    // Filter forderungen by date range if provided
+    let filteredForderungen = forderungen;
+    if (startDate || endDate) {
+      filteredForderungen = forderungen.filter(f => {
+        const dueDate = new Date(f.dueDate);
+        if (startDate && dueDate < new Date(startDate)) return false;
+        if (endDate && dueDate > new Date(endDate)) return false;
+        return true;
+      });
+    }
+
+    // Filter by status if provided
+    if (status && status !== 'all') {
+      filteredForderungen = filteredForderungen.filter(f => f.status === status);
+    }
+
+    // Calculate statistics per category
+    const kategorieStats = {};
+    const kategorieMap = {};
+
+    // Create map of categories for quick lookup
+    kategorien.forEach(k => {
+      kategorieMap[k.id] = k;
+      kategorieStats[k.id] = {
+        id: k.id,
+        name: k.name,
+        color: k.color,
+        icon: k.icon,
+        totalAmount: 0,
+        openAmount: 0,
+        paidAmount: 0,
+        overdueAmount: 0,
+        count: 0,
+        openCount: 0,
+        paidCount: 0,
+        overdueCount: 0,
+        avgAmount: 0,
+        avgPaymentDays: 0,
+        paymentDaysSum: 0,
+        paymentDaysCount: 0,
+        skontoAvailable: 0,
+        skontoCaptured: 0,
+        skontoMissed: 0
+      };
+    });
+
+    // Uncategorized
+    kategorieStats['uncategorized'] = {
+      id: 'uncategorized',
+      name: 'Nicht kategorisiert',
+      color: '#9e9e9e',
+      icon: 'help',
+      totalAmount: 0,
+      openAmount: 0,
+      paidAmount: 0,
+      overdueAmount: 0,
+      count: 0,
+      openCount: 0,
+      paidCount: 0,
+      overdueCount: 0,
+      avgAmount: 0,
+      avgPaymentDays: 0,
+      paymentDaysSum: 0,
+      paymentDaysCount: 0,
+      skontoAvailable: 0,
+      skontoCaptured: 0,
+      skontoMissed: 0
+    };
+
+    const today = new Date();
+
+    // Aggregate data
+    filteredForderungen.forEach(forderung => {
+      const kategorieId = forderung.kategorie || 'uncategorized';
+      const stats = kategorieStats[kategorieId];
+
+      if (!stats) return; // Skip if category doesn't exist
+
+      const amount = parseFloat(forderung.amount) || 0;
+      stats.totalAmount += amount;
+      stats.count++;
+
+      // Status breakdown
+      if (forderung.status === 'open') {
+        stats.openAmount += amount;
+        stats.openCount++;
+
+        // Check if overdue
+        const dueDate = new Date(forderung.dueDate);
+        if (dueDate < today) {
+          stats.overdueAmount += amount;
+          stats.overdueCount++;
+        }
+      } else if (forderung.status === 'paid') {
+        stats.paidAmount += amount;
+        stats.paidCount++;
+
+        // Calculate payment days (from due date to paid date)
+        if (forderung.dueDate && forderung.paidDate) {
+          const dueDate = new Date(forderung.dueDate);
+          const paidDate = new Date(forderung.paidDate);
+          const daysDiff = Math.floor((paidDate - dueDate) / (1000 * 60 * 60 * 24));
+          stats.paymentDaysSum += daysDiff;
+          stats.paymentDaysCount++;
+        }
+      }
+
+      // Skonto analysis
+      if (forderung.skonto && forderung.skonto > 0) {
+        const skontoAmount = (amount * forderung.skonto) / 100;
+        stats.skontoAvailable += skontoAmount;
+
+        if (forderung.skontoStatus === 'captured') {
+          stats.skontoCaptured += skontoAmount;
+        } else if (forderung.skontoStatus === 'missed' || forderung.skontoStatus === 'expired') {
+          stats.skontoMissed += skontoAmount;
+        }
+      }
+    });
+
+    // Calculate averages and percentages
+    const resultStats = Object.values(kategorieStats).map(stats => {
+      if (stats.count > 0) {
+        stats.avgAmount = stats.totalAmount / stats.count;
+      }
+      if (stats.paymentDaysCount > 0) {
+        stats.avgPaymentDays = stats.paymentDaysSum / stats.paymentDaysCount;
+      }
+      // Clean up temporary fields
+      delete stats.paymentDaysSum;
+      delete stats.paymentDaysCount;
+      return stats;
+    }).filter(stats => stats.count > 0); // Only return categories with data
+
+    // Sort by total amount (highest first)
+    resultStats.sort((a, b) => b.totalAmount - a.totalAmount);
+
+    // Calculate totals
+    const totals = {
+      totalAmount: resultStats.reduce((sum, s) => sum + s.totalAmount, 0),
+      openAmount: resultStats.reduce((sum, s) => sum + s.openAmount, 0),
+      paidAmount: resultStats.reduce((sum, s) => sum + s.paidAmount, 0),
+      overdueAmount: resultStats.reduce((sum, s) => sum + s.overdueAmount, 0),
+      count: resultStats.reduce((sum, s) => sum + s.count, 0),
+      skontoAvailable: resultStats.reduce((sum, s) => sum + s.skontoAvailable, 0),
+      skontoCaptured: resultStats.reduce((sum, s) => sum + s.skontoCaptured, 0),
+      skontoMissed: resultStats.reduce((sum, s) => sum + s.skontoMissed, 0)
+    };
+
+    // Add percentage of total for each category
+    resultStats.forEach(stats => {
+      stats.percentOfTotal = totals.totalAmount > 0
+        ? (stats.totalAmount / totals.totalAmount) * 100
+        : 0;
+    });
+
+    // Top performers
+    const topByRevenue = [...resultStats].sort((a, b) => b.totalAmount - a.totalAmount).slice(0, 5);
+    const topByCount = [...resultStats].sort((a, b) => b.count - a.count).slice(0, 5);
+    const topBySkonto = [...resultStats].filter(s => s.skontoAvailable > 0).sort((a, b) => b.skontoCaptured - a.skontoCaptured).slice(0, 5);
+
+    // Payment behavior insights
+    const paymentBehavior = resultStats.map(stats => ({
+      kategorie: stats.name,
+      avgPaymentDays: stats.avgPaymentDays,
+      behavior: stats.avgPaymentDays < -5 ? 'Sehr pünktlich' :
+                stats.avgPaymentDays < 0 ? 'Pünktlich' :
+                stats.avgPaymentDays < 7 ? 'Leicht verspätet' :
+                stats.avgPaymentDays < 30 ? 'Verspätet' : 'Sehr verspätet'
+    })).filter(b => b.avgPaymentDays !== 0);
+
+    res.json({
+      kategorien: resultStats,
+      totals,
+      insights: {
+        topByRevenue,
+        topByCount,
+        topBySkonto,
+        paymentBehavior,
+        uncategorizedCount: kategorieStats['uncategorized'].count,
+        uncategorizedAmount: kategorieStats['uncategorized'].totalAmount
+      },
+      filters: {
+        startDate: startDate || null,
+        endDate: endDate || null,
+        status: status || 'all'
+      }
+    });
+
+  } catch (error) {
+    console.error('Error calculating kategorie analyse:', error);
+    res.status(500).json({ error: 'Fehler bei der Kategorieanalyse' });
+  }
+});
 
 // SPA fallback
 app.get(/^\/(?!api|landing).*/, (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));

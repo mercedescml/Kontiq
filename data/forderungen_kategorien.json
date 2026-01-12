@@ -1,0 +1,56 @@
+[
+  {
+    "id": "CAT-001",
+    "name": "Projektarbeit",
+    "description": "Einnahmen aus abgeschlossenen Projekten",
+    "color": "#1976d2",
+    "icon": "briefcase",
+    "isDefault": true,
+    "created": "2024-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "CAT-002",
+    "name": "Wartung & Service",
+    "description": "Wartungsverträge und Servicearbeiten",
+    "color": "#388e3c",
+    "icon": "wrench",
+    "isDefault": true,
+    "created": "2024-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "CAT-003",
+    "name": "Beratung",
+    "description": "Beratungsleistungen und Consulting",
+    "color": "#f57c00",
+    "icon": "lightbulb",
+    "isDefault": true,
+    "created": "2024-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "CAT-004",
+    "name": "Materialverkauf",
+    "description": "Verkauf von Materialien und Produkten",
+    "color": "#7b1fa2",
+    "icon": "shopping-cart",
+    "isDefault": true,
+    "created": "2024-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "CAT-005",
+    "name": "Miete & Leasing",
+    "description": "Vermietung und Leasing-Einnahmen",
+    "color": "#c2185b",
+    "icon": "home",
+    "isDefault": true,
+    "created": "2024-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "CAT-006",
+    "name": "Lizenzgebühren",
+    "description": "Software-Lizenzen und Nutzungsgebühren",
+    "color": "#0097a7",
+    "icon": "key",
+    "isDefault": true,
+    "created": "2024-01-01T00:00:00.000Z"
+  }
+]
