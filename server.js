@@ -28,6 +28,7 @@ const writeJSON = (file, data) => {
 const FILES = {
   categories: path.join(DATA_DIR, 'categories.json'),
   forderungenKategorien: path.join(DATA_DIR, 'forderungen_kategorien.json'),
+  zahlungenKategorien: path.join(DATA_DIR, 'zahlungen_kategorien.json'),
   users: path.join(DATA_DIR, 'users.json'),
   onboarding: path.join(DATA_DIR, 'onboarding.json'),
   permissions: path.join(DATA_DIR, 'permissions.json'),
@@ -794,6 +795,130 @@ app.delete('/api/forderungen-kategorien/:id', (req, res) => {
     res.json({ ok: true, message: 'Kategorie erfolgreich gelöscht' });
   } catch (error) {
     console.error('Error deleting kategorie:', error);
+    res.status(500).json({ error: 'Fehler beim Löschen der Kategorie' });
+  }
+});
+
+// ========== ZAHLUNGEN KATEGORIEN API ==========
+// GET - Alle Zahlungskategorien abrufen
+app.get('/api/zahlungen-kategorien', (req, res) => {
+  try {
+    const kategorien = readJSON(FILES.zahlungenKategorien);
+    res.json(kategorien);
+  } catch (error) {
+    console.error('Error reading zahlungen kategorien:', error);
+    res.status(500).json({ error: 'Fehler beim Laden der Kategorien' });
+  }
+});
+
+// POST - Neue Zahlungskategorie erstellen
+app.post('/api/zahlungen-kategorien', (req, res) => {
+  try {
+    const kategorien = readJSON(FILES.zahlungenKategorien);
+    const { name, description, color, icon, priority } = req.body;
+
+    if (!name || name.trim() === '') {
+      return res.status(400).json({ error: 'Kategoriename ist erforderlich' });
+    }
+
+    // Check if category name already exists
+    const existingCategory = kategorien.find(k => k.name.toLowerCase() === name.toLowerCase());
+    if (existingCategory) {
+      return res.status(400).json({ error: 'Eine Kategorie mit diesem Namen existiert bereits' });
+    }
+
+    const neueKategorie = {
+      id: `ZKAT-${Date.now()}`,
+      name: name.trim(),
+      description: description || '',
+      color: color || '#607d8b',
+      icon: icon || 'folder',
+      priority: priority || 'medium',
+      isDefault: false,
+      created: new Date().toISOString()
+    };
+
+    kategorien.push(neueKategorie);
+    writeJSON(FILES.zahlungenKategorien, kategorien);
+
+    res.status(201).json(neueKategorie);
+  } catch (error) {
+    console.error('Error creating zahlungen kategorie:', error);
+    res.status(500).json({ error: 'Fehler beim Erstellen der Kategorie' });
+  }
+});
+
+// PUT - Zahlungskategorie aktualisieren
+app.put('/api/zahlungen-kategorien/:id', (req, res) => {
+  try {
+    const kategorien = readJSON(FILES.zahlungenKategorien);
+    const { id } = req.params;
+    const { name, description, color, icon, priority } = req.body;
+
+    const index = kategorien.findIndex(k => k.id === id);
+    if (index === -1) {
+      return res.status(404).json({ error: 'Kategorie nicht gefunden' });
+    }
+
+    // Check if new name conflicts with existing category
+    if (name) {
+      const existingCategory = kategorien.find(k => k.id !== id && k.name.toLowerCase() === name.toLowerCase());
+      if (existingCategory) {
+        return res.status(400).json({ error: 'Eine Kategorie mit diesem Namen existiert bereits' });
+      }
+    }
+
+    // Update category
+    kategorien[index] = {
+      ...kategorien[index],
+      ...(name && { name: name.trim() }),
+      ...(description !== undefined && { description }),
+      ...(color && { color }),
+      ...(icon && { icon }),
+      ...(priority && { priority }),
+      updated: new Date().toISOString()
+    };
+
+    writeJSON(FILES.zahlungenKategorien, kategorien);
+    res.json(kategorien[index]);
+  } catch (error) {
+    console.error('Error updating zahlungen kategorie:', error);
+    res.status(500).json({ error: 'Fehler beim Aktualisieren der Kategorie' });
+  }
+});
+
+// DELETE - Zahlungskategorie löschen
+app.delete('/api/zahlungen-kategorien/:id', (req, res) => {
+  try {
+    const kategorien = readJSON(FILES.zahlungenKategorien);
+    const zahlungen = readJSON(FILES.zahlungen);
+    const { id } = req.params;
+
+    const kategorie = kategorien.find(k => k.id === id);
+    if (!kategorie) {
+      return res.status(404).json({ error: 'Kategorie nicht gefunden' });
+    }
+
+    // Prevent deleting default categories
+    if (kategorie.isDefault) {
+      return res.status(400).json({ error: 'Standard-Kategorien können nicht gelöscht werden' });
+    }
+
+    // Check if category is in use
+    const inUse = zahlungen.some(z => z.category === id);
+    if (inUse) {
+      return res.status(400).json({
+        error: 'Diese Kategorie wird noch verwendet und kann nicht gelöscht werden',
+        inUse: true
+      });
+    }
+
+    const filtered = kategorien.filter(k => k.id !== id);
+    writeJSON(FILES.zahlungenKategorien, filtered);
+
+    res.json({ ok: true, message: 'Kategorie erfolgreich gelöscht' });
+  } catch (error) {
+    console.error('Error deleting zahlungen kategorie:', error);
     res.status(500).json({ error: 'Fehler beim Löschen der Kategorie' });
   }
 });
