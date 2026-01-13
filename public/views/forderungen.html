@@ -108,7 +108,7 @@
 
     .table-header {
         display: grid;
-        grid-template-columns: 40px 180px 120px 110px 110px 110px 120px 100px 140px;
+        grid-template-columns: 40px 180px 120px 110px 110px 110px 100px 140px 100px 140px;
         column-gap: 10px;
         padding: 15px 20px;
         background: #F9FAFB;
@@ -122,7 +122,7 @@
 
     .invoice-row {
         display: grid;
-        grid-template-columns: 40px 180px 120px 110px 110px 110px 120px 100px 140px;
+        grid-template-columns: 40px 180px 120px 110px 110px 110px 100px 140px 100px 140px;
         column-gap: 10px;
         padding: 16px 20px;
         border-bottom: 1px solid #F3F4F6;
@@ -919,125 +919,13 @@
         <div>Erstellt</div>
         <div>Fällig</div>
         <div>Status</div>
+        <div>Kategorie</div>
         <div>Zahlungsart</div>
         <div>Aktionen</div>
     </div>
 
-    <div class="invoice-row overdue">
-        <div><input type="checkbox"></div>
-        <div class="client-info">
-            <div class="client-name">Firma ABC GmbH</div>
-            <div class="client-warning">Häufig verspätet</div>
-        </div>
-        <div class="invoice-number">#RE-2025-001</div>
-        <div class="amount">4.850€</div>
-        <div class="date-info">
-            <div class="date-main">15.11.2025</div>
-        </div>
-        <div class="date-info date-overdue">
-            <div class="date-main">05.12.2025</div>
-            <div class="date-sub">3 Tage überfällig</div>
-        </div>
-        <div>
-            <span class="badge badge-uberfällig">Überfällig</span>
-            <span class="badge badge-mahnung">1. Mahnung</span>
-        </div>
-        <div><span class="badge badge-uberweisung">Überw.</span></div>
-        <div class="action-buttons">
-            <button class="btn-icon warning" onclick="openReminder('ABC')">Mahn.</button>
-            <button class="btn-icon" onclick="editInvoice('RE-2025-001')">Bearb.</button>
-        </div>
-    </div>
-
-    <div class="invoice-row">
-        <div><input type="checkbox"></div>
-        <div class="client-info">
-            <div class="client-name">Tech Solutions AG</div>
-        </div>
-        <div class="invoice-number">#RE-2025-002</div>
-        <div class="amount">12.400€</div>
-        <div class="date-info">
-            <div class="date-main">20.11.2025</div>
-        </div>
-        <div class="date-info date-warning">
-            <div class="date-main">15.12.2025</div>
-            <div class="date-sub">In 7 Tagen</div>
-        </div>
-        <div><span class="badge badge-offen">Offen</span></div>
-        <div><span class="badge badge-lastschrift">Lastschr.</span></div>
-        <div class="action-buttons">
-            <button class="btn-icon" onclick="openReminder('Tech')">Erinner.</button>
-            <button class="btn-icon" onclick="editInvoice('RE-2025-002')">Bearb.</button>
-        </div>
-    </div>
-
-    <div class="invoice-row paid">
-        <div><input type="checkbox"></div>
-        <div class="client-info">
-            <div class="client-name">Handels Partner KG</div>
-        </div>
-        <div class="invoice-number">#RE-2025-003</div>
-        <div class="amount">3.200€</div>
-        <div class="date-info">
-            <div class="date-main">25.11.2025</div>
-        </div>
-        <div class="date-info date-success">
-            <div class="date-main">28.11.2025</div>
-            <div class="date-sub">Bezahlt: 27.11.</div>
-        </div>
-        <div><span class="badge badge-bezahlt">Bezahlt</span></div>
-        <div><span class="badge badge-uberweisung">Überw.</span></div>
-        <div class="action-buttons">
-            <button class="btn-icon" onclick="editInvoice('RE-2025-003')">Bearb.</button>
-        </div>
-    </div>
-
-    <div class="invoice-row overdue">
-        <div><input type="checkbox"></div>
-        <div class="client-info">
-            <div class="client-name">Bau Service GmbH</div>
-            <div class="client-warning">Lastschrift fehlgeschlagen</div>
-        </div>
-        <div class="invoice-number">#RE-2025-004</div>
-        <div class="amount">3.350€</div>
-        <div class="date-info">
-            <div class="date-main">28.11.2025</div>
-        </div>
-        <div class="date-info date-overdue">
-            <div class="date-main">01.12.2025</div>
-            <div class="date-sub">7 Tage überfällig</div>
-        </div>
-        <div>
-            <span class="badge badge-uberfällig">Überfällig</span>
-            <span class="badge badge-mahnung">2. Mahnung</span>
-        </div>
-        <div><span class="badge badge-lastschrift">Lastschr.</span></div>
-        <div class="action-buttons">
-            <button class="btn-icon warning" onclick="openReminder('Bau')">Mahn.</button>
-            <button class="btn-icon" onclick="editInvoice('RE-2025-004')">Bearb.</button>
-        </div>
-    </div>
-
-    <div class="invoice-row">
-        <div><input type="checkbox"></div>
-        <div class="client-info">
-            <div class="client-name">Retail Express KG</div>
-        </div>
-        <div class="invoice-number">#RE-2025-005</div>
-        <div class="amount">8.900€</div>
-        <div class="date-info">
-            <div class="date-main">01.12.2025</div>
-        </div>
-        <div class="date-info">
-            <div class="date-main">22.12.2025</div>
-            <div class="date-sub">In 14 Tagen</div>
-        </div>
-        <div><span class="badge badge-offen">Offen</span></div>
-        <div><span class="badge badge-bar">Bar</span></div>
-        <div class="action-buttons">
-            <button class="btn-icon" onclick="editInvoice('RE-2025-005')">Bearb.</button>
-        </div>
-    </div>
+    <!-- Invoice rows will be dynamically loaded here -->
+    <div id="forderungen-table-body"></div>
 </div>
 
 <!-- ANALYSIS SECTION -->
@@ -1665,5 +1553,138 @@ Mit freundlichen Grüßen</textarea>
     const savedInvoices = localStorage.getItem('kontiq_invoices');
     if (savedInvoices) {
         Object.assign(invoiceDatabase, JSON.parse(savedInvoices));
+    }
+
+    // ======================
+    // DYNAMIC FORDERUNGEN LOADING WITH KATEGORIEN
+    // ======================
+
+    async function loadForderungen() {
+        try {
+            const response = await fetch('/api/forderungen');
+            if (!response.ok) throw new Error('Fehler beim Laden der Forderungen');
+
+            const forderungen = await response.json();
+            renderForderungenTable(forderungen);
+        } catch (error) {
+            console.error('Error loading forderungen:', error);
+            document.getElementById('forderungen-table-body').innerHTML = `
+                <div style="padding: 2rem; text-align: center; color: #999;">
+                    <p>Fehler beim Laden der Forderungen</p>
+                    <button onclick="loadForderungen()" class="btn btn-secondary" style="margin-top: 1rem;">Erneut versuchen</button>
+                </div>
+            `;
+        }
+    }
+
+    function renderForderungenTable(forderungen) {
+        const container = document.getElementById('forderungen-table-body');
+
+        if (!forderungen || forderungen.length === 0) {
+            container.innerHTML = `
+                <div style="padding: 2rem; text-align: center; color: #999;">
+                    <p>Keine Forderungen vorhanden</p>
+                </div>
+            `;
+            return;
+        }
+
+        container.innerHTML = forderungen.map(forderung => {
+            const isOverdue = new Date(forderung.due_date) < new Date() && forderung.status !== 'paid';
+            const isPaid = forderung.status === 'paid';
+            const rowClass = isOverdue ? 'invoice-row overdue' : isPaid ? 'invoice-row paid' : 'invoice-row';
+
+            // Format dates
+            const createdDate = new Date(forderung.invoice_date).toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' });
+            const dueDate = new Date(forderung.due_date).toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' });
+
+            // Calculate days overdue/remaining
+            const today = new Date();
+            const due = new Date(forderung.due_date);
+            const diffDays = Math.ceil((due - today) / (1000 * 60 * 60 * 24));
+            let dueDateInfo = '';
+            if (isPaid && forderung.paid_date) {
+                const paidDate = new Date(forderung.paid_date).toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit' });
+                dueDateInfo = `<div class="date-sub">Bezahlt: ${paidDate}</div>`;
+            } else if (isOverdue) {
+                dueDateInfo = `<div class="date-sub">${Math.abs(diffDays)} Tage überfällig</div>`;
+            } else if (diffDays <= 7) {
+                dueDateInfo = `<div class="date-sub">In ${diffDays} Tagen</div>`;
+            }
+
+            // Status badge
+            let statusBadge = '';
+            if (isPaid) {
+                statusBadge = '<span class="badge badge-bezahlt">Bezahlt</span>';
+            } else if (isOverdue) {
+                statusBadge = '<span class="badge badge-uberfällig">Überfällig</span>';
+            } else {
+                statusBadge = '<span class="badge badge-offen">Offen</span>';
+            }
+
+            // Payment method badge
+            const paymentMethodMap = {
+                'bank_transfer': 'Überw.',
+                'direct_debit': 'Lastschr.',
+                'cash': 'Bar',
+                'paypal': 'PayPal',
+                'credit_card': 'Karte'
+            };
+            const paymentBadgeClass = {
+                'bank_transfer': 'badge-uberweisung',
+                'direct_debit': 'badge-lastschrift',
+                'cash': 'badge-bar',
+                'paypal': 'badge-paypal',
+                'credit_card': 'badge-karte'
+            };
+            const paymentMethod = paymentMethodMap[forderung.payment_method] || forderung.payment_method || 'N/A';
+            const paymentClass = paymentBadgeClass[forderung.payment_method] || 'badge-uberweisung';
+
+            // Get category badge
+            const kategorieBadge = typeof getKategorieBadge === 'function'
+                ? getKategorieBadge(forderung.kategorie)
+                : '<span class="kategorie-badge uncategorized">Nicht kategorisiert</span>';
+
+            return `
+                <div class="${rowClass}">
+                    <div><input type="checkbox"></div>
+                    <div class="client-info">
+                        <div class="client-name">${forderung.client_name || 'N/A'}</div>
+                    </div>
+                    <div class="invoice-number">${forderung.invoice_number || 'N/A'}</div>
+                    <div class="amount">${formatCurrency(forderung.amount)}</div>
+                    <div class="date-info">
+                        <div class="date-main">${createdDate}</div>
+                    </div>
+                    <div class="date-info ${isOverdue ? 'date-overdue' : isPaid ? 'date-success' : diffDays <= 7 ? 'date-warning' : ''}">
+                        <div class="date-main">${dueDate}</div>
+                        ${dueDateInfo}
+                    </div>
+                    <div>${statusBadge}</div>
+                    <div onclick="openKategorieAssignModal('${forderung.id}', '${forderung.kategorie || ''}')" style="cursor: pointer;">
+                        ${kategorieBadge}
+                    </div>
+                    <div><span class="badge ${paymentClass}">${paymentMethod}</span></div>
+                    <div class="action-buttons">
+                        ${!isPaid ? `<button class="btn-icon" onclick="openReminder('${forderung.client_name}')">Erinner.</button>` : ''}
+                        <button class="btn-icon" onclick="editInvoice('${forderung.invoice_number}')">Bearb.</button>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    function formatCurrency(amount) {
+        return new Intl.NumberFormat('de-DE', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        }).format(amount) + '€';
+    }
+
+    // Load forderungen on page load
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', loadForderungen);
+    } else {
+        loadForderungen();
     }
 </script>
