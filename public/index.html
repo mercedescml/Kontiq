@@ -1061,12 +1061,6 @@ if (!user) {
                 console.error('Navigation error:', error);
             }
         }
-
-        // On page load, restore last view or default to dashboard
-        const savedView = localStorage.getItem('kontiq_current_view') || 'dashboard';
-        const hashView = window.location.hash.substring(1);
-        const initialView = hashView || savedView;
-        navigateTo(initialView);
     </script>
     
     <!-- Einstellungen Modal -->
@@ -1507,10 +1501,16 @@ if (!user) {
         }
 
         // initial header update
-        document.addEventListener('DOMContentLoaded', function(){ 
-            updateHeader(); 
+        document.addEventListener('DOMContentLoaded', function(){
+            updateHeader();
             initializeEntitySelector();
-            
+
+            // Load initial view
+            const savedView = localStorage.getItem('kontiq_current_view') || 'dashboard';
+            const hashView = window.location.hash.substring(1);
+            const initialView = hashView || savedView;
+            navigateTo(initialView);
+
             // Periodic check to ensure header stays visible
             setInterval(updateHeader, 5000);
         });
