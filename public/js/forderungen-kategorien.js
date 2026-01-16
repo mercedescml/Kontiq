@@ -35,24 +35,8 @@ function getKategorieBadge(kategorieId) {
         return '<span class="kategorie-badge uncategorized">Nicht kategorisiert</span>';
     }
 
-    const iconMap = {
-        'folder': '📁',
-        'briefcase': '💼',
-        'wrench': '🔧',
-        'lightbulb': '💡',
-        'shopping-cart': '🛒',
-        'home': '🏠',
-        'key': '🔑',
-        'chart': '📊',
-        'settings': '⚙️',
-        'calendar': '📅',
-        'phone': '📞',
-        'star': '⭐',
-        'help': '❓'
-    };
-
     return `<span class="kategorie-badge" style="background-color: ${kategorie.color};">
-        ${iconMap[kategorie.icon] || '📁'} ${kategorie.name}
+        ${kategorie.name}
     </span>`;
 }
 
@@ -89,9 +73,7 @@ function openKategorieAssignModal(forderungId, currentKategorieId = null) {
                             <div class="kategorie-option ${kat.id === currentKategorieId ? 'selected' : ''}"
                                  data-kategorie-id="${kat.id}"
                                  onclick="selectKategorie('${kat.id}', '${forderungId}')">
-                                <div class="kategorie-option-icon" style="background-color: ${kat.color};">
-                                    ${getIconEmoji(kat.icon)}
-                                </div>
+                                <div class="kategorie-option-icon" style="background-color: ${kat.color};"></div>
                                 <div class="kategorie-option-info">
                                     <div class="kategorie-option-name">${kat.name}</div>
                                     <div class="kategorie-option-description">${kat.description || ''}</div>
@@ -102,9 +84,7 @@ function openKategorieAssignModal(forderungId, currentKategorieId = null) {
                             <div class="kategorie-option"
                                  data-kategorie-id=""
                                  onclick="selectKategorie('', '${forderungId}')">
-                                <div class="kategorie-option-icon" style="background-color: #9e9e9e;">
-                                    ❓
-                                </div>
+                                <div class="kategorie-option-icon" style="background-color: #9e9e9e;"></div>
                                 <div class="kategorie-option-info">
                                     <div class="kategorie-option-name">Kategorie entfernen</div>
                                     <div class="kategorie-option-description">Forderung nicht kategorisieren</div>
@@ -122,25 +102,6 @@ function openKategorieAssignModal(forderungId, currentKategorieId = null) {
     if (existing) existing.remove();
 
     document.body.insertAdjacentHTML('beforeend', modalHTML);
-}
-
-function getIconEmoji(icon) {
-    const iconMap = {
-        'folder': '📁',
-        'briefcase': '💼',
-        'wrench': '🔧',
-        'lightbulb': '💡',
-        'shopping-cart': '🛒',
-        'home': '🏠',
-        'key': '🔑',
-        'chart': '📊',
-        'settings': '⚙️',
-        'calendar': '📅',
-        'phone': '📞',
-        'star': '⭐',
-        'help': '❓'
-    };
-    return iconMap[icon] || '📁';
 }
 
 async function selectKategorie(kategorieId, forderungId) {

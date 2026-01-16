@@ -1242,7 +1242,14 @@ if (!user) {
         function openModule(name) {
             const dd = document.getElementById('profileDropdown'); if (dd) dd.style.display = 'none';
             const ed = document.getElementById('entityDropdown'); if (ed) ed.classList.remove('active');
-            // Use SPA navigation function
+
+            // Einstellungen is a full HTML page, open it directly
+            if (name === 'einstellungen') {
+                window.location.href = '/views/einstellungen.html';
+                return;
+            }
+
+            // Use SPA navigation function for other views
             navigateTo(name);
         }
 

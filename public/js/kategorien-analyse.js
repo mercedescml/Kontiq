@@ -120,57 +120,31 @@ class KategorienAnalyse {
                     </div>
                 </div>
 
-                <!-- Chart Container -->
-                <div class="chart-section">
-                    <h3>Umsatzverteilung</h3>
-                    <canvas id="kategorien-chart" style="max-height: 300px;"></canvas>
-                </div>
-
-                <!-- Detailed Table -->
-                <div class="table-section">
-                    <h3>Kategorien im Detail</h3>
-                    <div class="table-responsive">
-                        <table class="kategorien-table">
-                            <thead>
-                                <tr>
-                                    <th>Kategorie</th>
-                                    <th>Gesamt</th>
-                                    <th>Offen</th>
-                                    <th>Bezahlt</th>
-                                    <th>Überfällig</th>
-                                    <th>Anzahl</th>
-                                    <th>Ø Betrag</th>
-                                    <th>Ø Zahlungsdauer</th>
-                                    <th>Anteil</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                ${this.data.kategorien.map(kat => `
-                                    <tr>
-                                        <td>
-                                            <span class="kategorie-indicator" style="background-color: ${kat.color};"></span>
-                                            ${kat.name}
-                                        </td>
-                                        <td>€${this.formatNumber(kat.totalAmount)}</td>
-                                        <td>€${this.formatNumber(kat.openAmount)}</td>
-                                        <td>€${this.formatNumber(kat.paidAmount)}</td>
-                                        <td style="color: ${kat.overdueAmount > 0 ? '#d32f2f' : 'inherit'};">
-                                            €${this.formatNumber(kat.overdueAmount)}
-                                        </td>
-                                        <td>${kat.count}</td>
-                                        <td>€${this.formatNumber(kat.avgAmount)}</td>
-                                        <td>${this.formatPaymentDays(kat.avgPaymentDays)}</td>
-                                        <td>
-                                            <div class="percentage-bar">
-                                                <div class="percentage-fill" style="width: ${kat.percentOfTotal}%; background-color: ${kat.color};"></div>
-                                                <span>${kat.percentOfTotal.toFixed(1)}%</span>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                `).join('')}
-                            </tbody>
-                        </table>
-                    </div>
+                <!-- Kategorien Cards -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; margin-top: 24px;">
+                    ${this.data.kategorien.map(kat => `
+                        <div class="cashflow-card" style="border-left: 3px solid ${kat.color};">
+                            <div class="cashflow-header">
+                                <div class="cashflow-title">${kat.name}</div>
+                            </div>
+                            <div class="cashflow-amount" style="color: var(--navy); font-size: 20px;">€${this.formatNumber(kat.totalAmount)}</div>
+                            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 12px; font-size: 12px; color: var(--gray);">
+                                <div>
+                                    <div style="font-weight: 600; color: var(--navy); font-size: 14px;">${kat.count}</div>
+                                    <div>Forderungen</div>
+                                </div>
+                                <div>
+                                    <div style="font-weight: 600; color: var(--teal); font-size: 14px;">€${this.formatNumber(kat.avgAmount)}</div>
+                                    <div>Ø Betrag</div>
+                                </div>
+                            </div>
+                            ${kat.overdueAmount > 0 ? `
+                                <div style="margin-top: 12px; padding: 8px; background: #fef3c7; border-radius: 6px; font-size: 12px; color: var(--navy);">
+                                    <strong>€${this.formatNumber(kat.overdueAmount)}</strong> überfällig
+                                </div>
+                            ` : ''}
+                        </div>
+                    `).join('')}
                 </div>
 
                 <!-- Insights -->
@@ -210,9 +184,6 @@ class KategorienAnalyse {
                 ` : ''}
             </div>
         `;
-
-        // Render chart
-        this.renderChart();
     }
 
     renderChart() {
