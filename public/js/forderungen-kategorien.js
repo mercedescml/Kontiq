@@ -35,7 +35,7 @@ function getKategorieBadge(kategorieId) {
         return '<span class="kategorie-badge uncategorized">Nicht kategorisiert</span>';
     }
 
-    return `<span class="kategorie-badge" style="background-color: ${kategorie.color};">
+    return `<span class="kategorie-badge">
         ${kategorie.name}
     </span>`;
 }
@@ -73,7 +73,7 @@ function openKategorieAssignModal(forderungId, currentKategorieId = null) {
                             <div class="kategorie-option ${kat.id === currentKategorieId ? 'selected' : ''}"
                                  data-kategorie-id="${kat.id}"
                                  onclick="selectKategorie('${kat.id}', '${forderungId}')">
-                                <div class="kategorie-option-icon" style="background-color: ${kat.color};"></div>
+                                <div class="kategorie-option-icon"></div>
                                 <div class="kategorie-option-info">
                                     <div class="kategorie-option-name">${kat.name}</div>
                                     <div class="kategorie-option-description">${kat.description || ''}</div>
@@ -181,15 +181,19 @@ kategorienCSS.textContent = `
     .kategorie-badge {
         display: inline-block;
         padding: 0.25rem 0.75rem;
-        border-radius: 16px;
-        font-size: 0.875rem;
-        font-weight: 500;
-        color: white;
+        border-radius: 6px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: var(--gray);
+        background: var(--light-gray);
+        border: 1px solid var(--border-gray);
         white-space: nowrap;
+        letter-spacing: 0.3px;
     }
 
     .kategorie-badge.uncategorized {
-        background: #9e9e9e;
+        color: #9CA3AF;
+        background: #F9FAFB;
     }
 
     .kategorie-select {
@@ -229,15 +233,12 @@ kategorienCSS.textContent = `
     }
 
     .kategorie-option-icon {
-        width: 48px;
-        height: 48px;
+        width: 8px;
+        height: 8px;
         border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.5rem;
-        color: white;
+        background: var(--gray);
         flex-shrink: 0;
+        margin-top: 6px;
     }
 
     .kategorie-option-info {

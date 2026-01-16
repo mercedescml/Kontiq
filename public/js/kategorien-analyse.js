@@ -121,26 +121,26 @@ class KategorienAnalyse {
                 </div>
 
                 <!-- Kategorien Cards -->
-                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; margin-top: 24px;">
+                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; margin-top: 24px;">
                     ${this.data.kategorien.map(kat => `
-                        <div class="cashflow-card" style="border-left: 3px solid ${kat.color};">
+                        <div class="cashflow-card">
                             <div class="cashflow-header">
-                                <div class="cashflow-title">${kat.name}</div>
+                                <div class="cashflow-title" style="font-size: 13px; font-weight: 600;">${kat.name}</div>
                             </div>
-                            <div class="cashflow-amount" style="color: var(--navy); font-size: 20px;">€${this.formatNumber(kat.totalAmount)}</div>
-                            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 12px; font-size: 12px; color: var(--gray);">
+                            <div class="cashflow-amount" style="color: var(--navy); font-size: 18px; font-weight: 700; font-family: 'Inter', sans-serif;">€${this.formatNumber(kat.totalAmount)}</div>
+                            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 12px; font-size: 11px; color: var(--gray);">
                                 <div>
-                                    <div style="font-weight: 600; color: var(--navy); font-size: 14px;">${kat.count}</div>
-                                    <div>Forderungen</div>
+                                    <div style="font-weight: 600; color: var(--navy); font-size: 13px; font-family: 'Inter', sans-serif;">${kat.count}</div>
+                                    <div style="font-size: 11px; font-family: 'Inter', sans-serif;">Forderungen</div>
                                 </div>
                                 <div>
-                                    <div style="font-weight: 600; color: var(--teal); font-size: 14px;">€${this.formatNumber(kat.avgAmount)}</div>
-                                    <div>Ø Betrag</div>
+                                    <div style="font-weight: 600; color: var(--navy); font-size: 13px; font-family: 'Inter', sans-serif;">€${this.formatNumber(kat.avgAmount)}</div>
+                                    <div style="font-size: 11px; font-family: 'Inter', sans-serif;">Ø Betrag</div>
                                 </div>
                             </div>
                             ${kat.overdueAmount > 0 ? `
-                                <div style="margin-top: 12px; padding: 8px; background: #fef3c7; border-radius: 6px; font-size: 12px; color: var(--navy);">
-                                    <strong>€${this.formatNumber(kat.overdueAmount)}</strong> überfällig
+                                <div style="margin-top: 12px; padding: 6px 10px; background: var(--light-gray); border: 1px solid var(--border-gray); border-radius: 6px; font-size: 11px; color: var(--gray); font-weight: 500; font-family: 'Inter', sans-serif;">
+                                    <strong style="color: var(--navy);">€${this.formatNumber(kat.overdueAmount)}</strong> überfällig
                                 </div>
                             ` : ''}
                         </div>

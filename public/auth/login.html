@@ -358,7 +358,7 @@
                         const o = await r2.json();
                         if (o && o.data) {
                             localStorage.setItem('kontiq_onboarding_complete', 'true');
-                            window.location.href = '/views/dashboard.html';
+                            window.location.href = '/app';
                         } else {
                             localStorage.setItem('kontiq_onboarding_complete', 'false');
                             window.location.href = '/onboarding.html';
@@ -391,7 +391,7 @@
         if (user) {
             const userData = JSON.parse(user);
             if (userData.loggedIn) {
-                window.location.href = '/views/dashboard.html';
+                window.location.href = '/app';
             }
         }
     </script>
