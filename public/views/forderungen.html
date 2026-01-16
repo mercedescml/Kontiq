@@ -867,44 +867,41 @@
     <div class="filter-grid">
         <div class="filter-group">
             <label class="filter-label">Status</label>
-            <select>
-                <option>Alle</option>
-                <option>Offen</option>
-                <option>Bezahlt</option>
-                <option>Überfällig</option>
-                <option>Mahnung versendet</option>
+            <select id="filter-status" onchange="applyFilters()">
+                <option value="">Alle</option>
+                <option value="open">Offen</option>
+                <option value="paid">Bezahlt</option>
+                <option value="overdue">Überfällig</option>
             </select>
         </div>
         <div class="filter-group">
-            <label class="filter-label">Kunde</label>
-            <select>
-                <option>Alle Kunden</option>
-                <option>Firma ABC GmbH</option>
-                <option>Tech Solutions AG</option>
-                <option>Handels Partner KG</option>
+            <label class="filter-label">Kategorie</label>
+            <select id="filter-kategorie" onchange="applyFilters()">
+                <option value="">Alle Kategorien</option>
             </select>
         </div>
         <div class="filter-group">
             <label class="filter-label">Zeitraum</label>
-            <select>
-                <option>Alle</option>
-                <option>Diese Woche</option>
-                <option>Dieser Monat</option>
-                <option>Dieses Quartal</option>
+            <select id="filter-period" onchange="applyFilters()">
+                <option value="">Alle</option>
+                <option value="week">Diese Woche</option>
+                <option value="month">Dieser Monat</option>
+                <option value="quarter">Dieses Quartal</option>
             </select>
         </div>
         <div class="filter-group">
             <label class="filter-label">Zahlungsart</label>
-            <select>
-                <option>Alle</option>
-                <option>Überweisung</option>
-                <option>Lastschrift</option>
-                <option>Bar</option>
+            <select id="filter-payment" onchange="applyFilters()">
+                <option value="">Alle</option>
+                <option value="bank_transfer">Überweisung</option>
+                <option value="direct_debit">Lastschrift</option>
+                <option value="cash">Bar</option>
+                <option value="paypal">PayPal</option>
             </select>
         </div>
         <div class="filter-group">
             <label class="filter-label">Suche</label>
-            <input type="text" placeholder="Kunde, Rechnung...">
+            <input type="text" id="filter-search" placeholder="Kunde, Rechnung..." oninput="applyFilters()">
         </div>
     </div>
 </div>
@@ -1559,13 +1556,21 @@ Mit freundlichen Grüßen</textarea>
     // DYNAMIC FORDERUNGEN LOADING WITH KATEGORIEN
     // ======================
 
+    let allForderungen = []; // Store all forderungen for filtering
+
     async function loadForderungen() {
         try {
             const response = await fetch('/api/forderungen');
             if (!response.ok) throw new Error('Fehler beim Laden der Forderungen');
 
-            const forderungen = await response.json();
-            renderForderungenTable(forderungen);
+            const data = await response.json();
+            allForderungen = data.forderungen || data;
+
+            // Load category filter options
+            await loadKategorienFilter();
+
+            // Apply filters and render
+            applyFilters();
         } catch (error) {
             console.error('Error loading forderungen:', error);
             document.getElementById('forderungen-table-body').innerHTML = `
@@ -1575,6 +1580,86 @@ Mit freundlichen Grüßen</textarea>
                 </div>
             `;
         }
+    }
+
+    async function loadKategorienFilter() {
+        try {
+            if (!forderungenKategorien || forderungenKategorien.length === 0) {
+                await loadForderungenKategorien();
+            }
+
+            const select = document.getElementById('filter-kategorie');
+            select.innerHTML = '<option value="">Alle Kategorien</option>';
+
+            forderungenKategorien.forEach(kat => {
+                const option = document.createElement('option');
+                option.value = kat.id;
+                option.textContent = kat.name;
+                select.appendChild(option);
+            });
+        } catch (error) {
+            console.error('Error loading category filter:', error);
+        }
+    }
+
+    function applyFilters() {
+        const statusFilter = document.getElementById('filter-status')?.value || '';
+        const kategorieFilter = document.getElementById('filter-kategorie')?.value || '';
+        const periodFilter = document.getElementById('filter-period')?.value || '';
+        const paymentFilter = document.getElementById('filter-payment')?.value || '';
+        const searchFilter = document.getElementById('filter-search')?.value.toLowerCase() || '';
+
+        let filtered = [...allForderungen];
+
+        // Status filter
+        if (statusFilter) {
+            filtered = filtered.filter(f => f.status === statusFilter);
+        }
+
+        // Category filter
+        if (kategorieFilter) {
+            filtered = filtered.filter(f => f.kategorie === kategorieFilter);
+        }
+
+        // Payment method filter
+        if (paymentFilter) {
+            filtered = filtered.filter(f => f.payment_method === paymentFilter);
+        }
+
+        // Search filter
+        if (searchFilter) {
+            filtered = filtered.filter(f =>
+                (f.client_name || '').toLowerCase().includes(searchFilter) ||
+                (f.invoice_number || '').toLowerCase().includes(searchFilter)
+            );
+        }
+
+        // Period filter
+        if (periodFilter) {
+            const today = new Date();
+            let startDate;
+
+            switch (periodFilter) {
+                case 'week':
+                    startDate = new Date(today);
+                    startDate.setDate(today.getDate() - 7);
+                    break;
+                case 'month':
+                    startDate = new Date(today);
+                    startDate.setMonth(today.getMonth() - 1);
+                    break;
+                case 'quarter':
+                    startDate = new Date(today);
+                    startDate.setMonth(today.getMonth() - 3);
+                    break;
+            }
+
+            if (startDate) {
+                filtered = filtered.filter(f => new Date(f.invoice_date) >= startDate);
+            }
+        }
+
+        renderForderungenTable(filtered);
     }
 
     function renderForderungenTable(forderungen) {

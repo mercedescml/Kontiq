@@ -88,53 +88,35 @@ class KategorienAnalyse {
 
         container.innerHTML = `
             <div class="kategorien-analyse-detail">
-                <div class="analyse-header">
-                    <h2>💼 Detaillierte Kategorieanalyse</h2>
-                    <div class="analyse-filters">
-                        <select id="status-filter" onchange="filterKategorienAnalyse()">
-                            <option value="all">Alle Status</option>
-                            <option value="open">Offen</option>
-                            <option value="paid">Bezahlt</option>
-                            <option value="overdue">Überfällig</option>
-                        </select>
-                        <input type="date" id="start-date-filter" onchange="filterKategorienAnalyse()" placeholder="Von">
-                        <input type="date" id="end-date-filter" onchange="filterKategorienAnalyse()" placeholder="Bis">
-                    </div>
-                </div>
-
-                <!-- Overview Cards -->
-                <div class="overview-cards">
-                    <div class="overview-card">
-                        <div class="card-icon">💰</div>
-                        <div class="card-content">
-                            <div class="card-label">Gesamtumsatz</div>
-                            <div class="card-value">€${this.formatNumber(this.data.totals.totalAmount)}</div>
-                            <div class="card-detail">${this.data.totals.count} Forderungen</div>
+                <!-- Overview Stats -->
+                <div class="cashflow-grid" style="margin-bottom: 24px;">
+                    <div class="cashflow-card">
+                        <div class="cashflow-header">
+                            <div class="cashflow-title">Gesamtumsatz</div>
                         </div>
+                        <div class="cashflow-amount" style="color: var(--navy);">€${this.formatNumber(this.data.totals.totalAmount)}</div>
+                        <div style="font-size: 13px; color: var(--gray); margin-top: 8px;">${this.data.totals.count} Forderungen</div>
                     </div>
-                    <div class="overview-card">
-                        <div class="card-icon">📈</div>
-                        <div class="card-content">
-                            <div class="card-label">Top Kategorie</div>
-                            <div class="card-value">${this.data.insights.topByRevenue[0]?.name || 'N/A'}</div>
-                            <div class="card-detail">€${this.formatNumber(this.data.insights.topByRevenue[0]?.totalAmount || 0)}</div>
+                    <div class="cashflow-card">
+                        <div class="cashflow-header">
+                            <div class="cashflow-title">Top Kategorie</div>
                         </div>
+                        <div class="cashflow-amount" style="color: var(--teal); font-size: 16px; font-weight: 700;">${this.data.insights.topByRevenue[0]?.name || 'N/A'}</div>
+                        <div style="font-size: 13px; color: var(--gray); margin-top: 8px;">€${this.formatNumber(this.data.insights.topByRevenue[0]?.totalAmount || 0)}</div>
                     </div>
-                    <div class="overview-card">
-                        <div class="card-icon">⚠️</div>
-                        <div class="card-content">
-                            <div class="card-label">Überfällig</div>
-                            <div class="card-value">€${this.formatNumber(this.data.totals.overdueAmount)}</div>
-                            <div class="card-detail">${this.data.totals.overdueAmount > 0 ? 'Maßnahmen erforderlich' : 'Alles aktuell'}</div>
+                    <div class="cashflow-card">
+                        <div class="cashflow-header">
+                            <div class="cashflow-title">Überfällig</div>
                         </div>
+                        <div class="cashflow-amount" style="color: ${this.data.totals.overdueAmount > 0 ? '#dc2626' : 'var(--navy)'};">€${this.formatNumber(this.data.totals.overdueAmount)}</div>
+                        <div style="font-size: 13px; color: var(--gray); margin-top: 8px;">${this.data.totals.overdueAmount > 0 ? 'Maßnahmen erforderlich' : 'Alles aktuell'}</div>
                     </div>
-                    <div class="overview-card">
-                        <div class="card-icon">🎯</div>
-                        <div class="card-content">
-                            <div class="card-label">Skonto erfasst</div>
-                            <div class="card-value">€${this.formatNumber(this.data.totals.skontoCaptured)}</div>
-                            <div class="card-detail">von €${this.formatNumber(this.data.totals.skontoAvailable)}</div>
+                    <div class="cashflow-card">
+                        <div class="cashflow-header">
+                            <div class="cashflow-title">Skonto erfasst</div>
                         </div>
+                        <div class="cashflow-amount" style="color: var(--teal);">€${this.formatNumber(this.data.totals.skontoCaptured)}</div>
+                        <div style="font-size: 13px; color: var(--gray); margin-top: 8px;">von €${this.formatNumber(this.data.totals.skontoAvailable)}</div>
                     </div>
                 </div>
 
@@ -192,53 +174,40 @@ class KategorienAnalyse {
                 </div>
 
                 <!-- Insights -->
-                <div class="insights-section">
-                    <div class="insight-card">
-                        <h4>💡 Top Performers (Umsatz)</h4>
-                        <ol>
-                            ${this.data.insights.topByRevenue.map(kat => `
-                                <li>${kat.name}: <strong>€${this.formatNumber(kat.totalAmount)}</strong> (${kat.count} Forderungen)</li>
-                            `).join('')}
-                        </ol>
-                    </div>
-
-                    <div class="insight-card">
-                        <h4>📊 Top Performers (Anzahl)</h4>
-                        <ol>
-                            ${this.data.insights.topByCount.map(kat => `
-                                <li>${kat.name}: <strong>${kat.count}</strong> Forderungen (Ø €${this.formatNumber(kat.avgAmount)})</li>
-                            `).join('')}
-                        </ol>
-                    </div>
-
-                    <div class="insight-card">
-                        <h4>⚡ Zahlungsverhalten</h4>
-                        <ul>
-                            ${this.data.insights.paymentBehavior.map(behavior => `
-                                <li>
-                                    <span class="behavior-label ${this.getBehaviorClass(behavior.avgPaymentDays)}">
-                                        ${behavior.behavior}
-                                    </span>
-                                    ${behavior.kategorie}: ${this.formatPaymentDays(behavior.avgPaymentDays)}
-                                </li>
-                            `).join('')}
-                        </ul>
-                    </div>
-
-                    ${this.data.insights.uncategorizedCount > 0 ? `
-                        <div class="insight-card warning">
-                            <h4>⚠️ Nicht kategorisierte Forderungen</h4>
-                            <p>
-                                <strong>${this.data.insights.uncategorizedCount}</strong> Forderungen
-                                im Wert von <strong>€${this.formatNumber(this.data.insights.uncategorizedAmount)}</strong>
-                                sind noch nicht kategorisiert.
-                            </p>
-                            <a href="#" onclick="navigateTo('/forderungen'); return false;" class="btn-link">
-                                Kategorien zuweisen →
-                            </a>
+                <div class="cashflow-grid" style="margin-top: 24px;">
+                    <div class="cashflow-card">
+                        <div class="cashflow-header">
+                            <div class="cashflow-title">Top Kategorien (Umsatz)</div>
                         </div>
-                    ` : ''}
+                        <ol style="padding-left: 1.2rem; margin: 0; font-size: 13px; line-height: 1.8;">
+                            ${this.data.insights.topByRevenue.map(kat => `
+                                <li>${kat.name}: <strong>€${this.formatNumber(kat.totalAmount)}</strong></li>
+                            `).join('')}
+                        </ol>
+                    </div>
+
+                    <div class="cashflow-card">
+                        <div class="cashflow-header">
+                            <div class="cashflow-title">Top Kategorien (Anzahl)</div>
+                        </div>
+                        <ol style="padding-left: 1.2rem; margin: 0; font-size: 13px; line-height: 1.8;">
+                            ${this.data.insights.topByCount.map(kat => `
+                                <li>${kat.name}: <strong>${kat.count}</strong> Forderungen</li>
+                            `).join('')}
+                        </ol>
+                    </div>
                 </div>
+
+                ${this.data.insights.uncategorizedCount > 0 ? `
+                    <div style="background: #fff3cd; border: 1px solid #ffc107; border-radius: 8px; padding: 16px; margin-top: 20px;">
+                        <div style="font-size: 14px; font-weight: 600; color: var(--navy); margin-bottom: 8px;">Nicht kategorisierte Forderungen</div>
+                        <div style="font-size: 13px; color: var(--gray);">
+                            <strong>${this.data.insights.uncategorizedCount}</strong> Forderungen
+                            im Wert von <strong>€${this.formatNumber(this.data.insights.uncategorizedAmount)}</strong>
+                            sind noch nicht kategorisiert.
+                        </div>
+                    </div>
+                ` : ''}
             </div>
         `;
 
