@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forderungskategorien - Kontiq</title>
+    <style>
+        .kategorien-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .kategorien-header h1 {
+            margin: 0;
+            font-size: 1.8rem;
+            color: #1a1a1a;
+        }
+
+        .btn-add-kategorie {
+            background: #1976d2;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s;
+        }
+
+        .btn-add-kategorie:hover {
+            background: #1565c0;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(25, 118, 210, 0.3);
+        }
+
+        .kategorien-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .kategorie-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            border-left: 4px solid;
+            position: relative;
+        }
+
+        .kategorie-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+        }
+
+        .kategorie-card.default {
+            opacity: 0.85;
+        }
+
+        .kategorie-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .kategorie-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .kategorie-info {
+            flex: 1;
+        }
+
+        .kategorie-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            color: #1a1a1a;
+        }
+
+        .kategorie-description {
+            font-size: 0.875rem;
+            color: #666;
+            line-height: 1.4;
+        }
+
+        .kategorie-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #eee;
+        }
+
+        .btn-edit, .btn-delete {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            flex: 1;
+        }
+
+        .btn-edit {
+            background: #f5f5f5;
+            color: #333;
+        }
+
+        .btn-edit:hover {
+            background: #e0e0e0;
+        }
+
+        .btn-delete {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .btn-delete:hover {
+            background: #ffcdd2;
+        }
+
+        .btn-delete:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .kategorie-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: #4caf50;
+            color: white;
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            font-size: 1.5rem;
+            color: #1a1a1a;
+        }
+
+        .btn-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+            padding: 0;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.2s;
+        }
+
+        .btn-close:hover {
+            background: #f5f5f5;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #1976d2;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .color-picker-group {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .color-preview {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            border: 2px solid #ddd;
+        }
+
+        .color-picker-group input[type="color"] {
+            width: 100px;
+        }
+
+        .icon-selector {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .icon-option {
+            padding: 0.75rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 1.5rem;
+        }
+
+        .icon-option:hover {
+            border-color: #1976d2;
+            background: #f5f5f5;
+        }
+
+        .icon-option.selected {
+            border-color: #1976d2;
+            background: #e3f2fd;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn-primary, .btn-secondary {
+            flex: 1;
+            padding: 0.875rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: #1976d2;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1565c0;
+        }
+
+        .btn-secondary {
+            background: #f5f5f5;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: #666;
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.3;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: #666;
+        }
+
+        .error-message {
+            background: #ffebee;
+            color: #c62828;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="kategorien-header">
+        <h1>📂 Forderungskategorien</h1>
+        <button class="btn-add-kategorie" onclick="openAddModal()">
+            <span>➕</span>
+            <span>Neue Kategorie</span>
+        </button>
+    </div>
+
+    <div id="error-container"></div>
+    <div id="kategorien-container" class="loading">Kategorien werden geladen...</div>
+
+    <!-- Add/Edit Modal -->
+    <div id="kategorie-modal" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 id="modal-title">Neue Kategorie</h2>
+                <button class="btn-close" onclick="closeModal()">×</button>
+            </div>
+
+            <form id="kategorie-form" onsubmit="saveKategorie(event)">
+                <div class="form-group">
+                    <label for="kategorie-name">Name *</label>
+                    <input
+                        type="text"
+                        id="kategorie-name"
+                        name="name"
+                        required
+                        placeholder="z.B. Projektarbeit"
+                        maxlength="100"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="kategorie-description">Beschreibung</label>
+                    <textarea
+                        id="kategorie-description"
+                        name="description"
+                        placeholder="Beschreiben Sie diese Kategorie..."
+                        maxlength="500"
+                    ></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Farbe</label>
+                    <div class="color-picker-group">
+                        <div class="color-preview" id="color-preview" style="background-color: #607d8b;"></div>
+                        <input
+                            type="color"
+                            id="kategorie-color"
+                            name="color"
+                            value="#607d8b"
+                            onchange="updateColorPreview()"
+                        >
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Icon</label>
+                    <div class="icon-selector" id="icon-selector">
+                        <div class="icon-option selected" data-icon="folder" onclick="selectIcon('folder')">📁</div>
+                        <div class="icon-option" data-icon="briefcase" onclick="selectIcon('briefcase')">💼</div>
+                        <div class="icon-option" data-icon="wrench" onclick="selectIcon('wrench')">🔧</div>
+                        <div class="icon-option" data-icon="lightbulb" onclick="selectIcon('lightbulb')">💡</div>
+                        <div class="icon-option" data-icon="shopping-cart" onclick="selectIcon('shopping-cart')">🛒</div>
+                        <div class="icon-option" data-icon="home" onclick="selectIcon('home')">🏠</div>
+                        <div class="icon-option" data-icon="key" onclick="selectIcon('key')">🔑</div>
+                        <div class="icon-option" data-icon="chart" onclick="selectIcon('chart')">📊</div>
+                        <div class="icon-option" data-icon="settings" onclick="selectIcon('settings')">⚙️</div>
+                        <div class="icon-option" data-icon="calendar" onclick="selectIcon('calendar')">📅</div>
+                        <div class="icon-option" data-icon="phone" onclick="selectIcon('phone')">📞</div>
+                        <div class="icon-option" data-icon="star" onclick="selectIcon('star')">⭐</div>
+                    </div>
+                    <input type="hidden" id="kategorie-icon" name="icon" value="folder">
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" class="btn-secondary" onclick="closeModal()">Abbrechen</button>
+                    <button type="submit" class="btn-primary">Speichern</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let kategorien = [];
+        let editingKategorieId = null;
+
+        const iconMap = {
+            'folder': '📁',
+            'briefcase': '💼',
+            'wrench': '🔧',
+            'lightbulb': '💡',
+            'shopping-cart': '🛒',
+            'home': '🏠',
+            'key': '🔑',
+            'chart': '📊',
+            'settings': '⚙️',
+            'calendar': '📅',
+            'phone': '📞',
+            'star': '⭐',
+            'help': '❓'
+        };
+
+        async function loadKategorien() {
+            try {
+                const response = await fetch('/api/forderungen-kategorien');
+                if (!response.ok) throw new Error('Fehler beim Laden der Kategorien');
+
+                kategorien = await response.json();
+                renderKategorien();
+            } catch (error) {
+                console.error('Error loading kategorien:', error);
+                showError('Fehler beim Laden der Kategorien: ' + error.message);
+            }
+        }
+
+        function renderKategorien() {
+            const container = document.getElementById('kategorien-container');
+
+            if (kategorien.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📂</div>
+                        <h3>Keine Kategorien vorhanden</h3>
+                        <p>Erstellen Sie Ihre erste Kategorie, um Forderungen zu organisieren.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.className = 'kategorien-grid';
+            container.innerHTML = kategorien.map(kat => `
+                <div class="kategorie-card ${kat.isDefault ? 'default' : ''}" style="border-left-color: ${kat.color};">
+                    ${kat.isDefault ? '<div class="kategorie-badge">Standard</div>' : ''}
+                    <div class="kategorie-header">
+                        <div class="kategorie-icon" style="background-color: ${kat.color};">
+                            ${iconMap[kat.icon] || '📁'}
+                        </div>
+                        <div class="kategorie-info">
+                            <div class="kategorie-name">${kat.name}</div>
+                            <div class="kategorie-description">${kat.description || 'Keine Beschreibung'}</div>
+                        </div>
+                    </div>
+                    <div class="kategorie-actions">
+                        <button class="btn-edit" onclick="editKategorie('${kat.id}')">Bearbeiten</button>
+                        <button class="btn-delete" onclick="deleteKategorie('${kat.id}')" ${kat.isDefault ? 'disabled' : ''}>
+                            Löschen
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function openAddModal() {
+            editingKategorieId = null;
+            document.getElementById('modal-title').textContent = 'Neue Kategorie';
+            document.getElementById('kategorie-form').reset();
+            document.getElementById('kategorie-color').value = '#607d8b';
+            updateColorPreview();
+            selectIcon('folder');
+            document.getElementById('kategorie-modal').classList.add('active');
+        }
+
+        function editKategorie(id) {
+            const kategorie = kategorien.find(k => k.id === id);
+            if (!kategorie) return;
+
+            editingKategorieId = id;
+            document.getElementById('modal-title').textContent = 'Kategorie bearbeiten';
+            document.getElementById('kategorie-name').value = kategorie.name;
+            document.getElementById('kategorie-description').value = kategorie.description || '';
+            document.getElementById('kategorie-color').value = kategorie.color;
+            updateColorPreview();
+            selectIcon(kategorie.icon);
+            document.getElementById('kategorie-modal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('kategorie-modal').classList.remove('active');
+            editingKategorieId = null;
+        }
+
+        function updateColorPreview() {
+            const color = document.getElementById('kategorie-color').value;
+            document.getElementById('color-preview').style.backgroundColor = color;
+        }
+
+        function selectIcon(icon) {
+            document.querySelectorAll('.icon-option').forEach(el => {
+                el.classList.remove('selected');
+            });
+            const selected = document.querySelector(`[data-icon="${icon}"]`);
+            if (selected) {
+                selected.classList.add('selected');
+            }
+            document.getElementById('kategorie-icon').value = icon;
+        }
+
+        async function saveKategorie(event) {
+            event.preventDefault();
+
+            const formData = {
+                name: document.getElementById('kategorie-name').value,
+                description: document.getElementById('kategorie-description').value,
+                color: document.getElementById('kategorie-color').value,
+                icon: document.getElementById('kategorie-icon').value
+            };
+
+            try {
+                let response;
+                if (editingKategorieId) {
+                    // Update existing
+                    response = await fetch(`/api/forderungen-kategorien/${editingKategorieId}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(formData)
+                    });
+                } else {
+                    // Create new
+                    response = await fetch('/api/forderungen-kategorien', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(formData)
+                    });
+                }
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || 'Fehler beim Speichern');
+                }
+
+                closeModal();
+                await loadKategorien();
+                showSuccess(editingKategorieId ? 'Kategorie aktualisiert' : 'Kategorie erstellt');
+            } catch (error) {
+                console.error('Error saving kategorie:', error);
+                showError(error.message);
+            }
+        }
+
+        async function deleteKategorie(id) {
+            const kategorie = kategorien.find(k => k.id === id);
+            if (!kategorie) return;
+
+            if (!confirm(`Möchten Sie die Kategorie "${kategorie.name}" wirklich löschen?`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/forderungen-kategorien/${id}`, {
+                    method: 'DELETE'
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || 'Fehler beim Löschen');
+                }
+
+                await loadKategorien();
+                showSuccess('Kategorie gelöscht');
+            } catch (error) {
+                console.error('Error deleting kategorie:', error);
+                showError(error.message);
+            }
+        }
+
+        function showError(message) {
+            const container = document.getElementById('error-container');
+            container.innerHTML = `<div class="error-message">${message}</div>`;
+            setTimeout(() => container.innerHTML = '', 5000);
+        }
+
+        function showSuccess(message) {
+            const container = document.getElementById('error-container');
+            container.innerHTML = `<div class="error-message" style="background: #e8f5e9; color: #2e7d32;">${message}</div>`;
+            setTimeout(() => container.innerHTML = '', 3000);
+        }
+
+        // Close modal on outside click
+        document.getElementById('kategorie-modal').addEventListener('click', (e) => {
+            if (e.target.id === 'kategorie-modal') {
+                closeModal();
+            }
+        });
+
+        // Load kategorien on page load
+        loadKategorien();
+    </script>
+</body>
+</html>

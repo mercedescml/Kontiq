@@ -649,7 +649,7 @@
             <li>Versicherung: 2.400 € fällig</li>
         </ul>
         <div style="padding-left: 32px; margin-top: 16px;">
-            <button class="btn btn-primary">Handlungsoptionen anzeigen</button>
+            <button class="btn btn-primary" onclick="showActionOptions()">Handlungsoptionen anzeigen</button>
         </div>
     </div>
 </div>
@@ -667,8 +667,8 @@
             <div class="action-description">Müller GmbH – 3% Skonto (180 €) bei Zahlung bis 23:59 Uhr</div>
         </div>
         <div class="action-buttons">
-            <button class="btn btn-primary">Zahlung freigeben</button>
-            <button class="btn btn-secondary">Details</button>
+            <button class="btn btn-primary" onclick="approvePayment('muller-001')">Zahlung freigeben</button>
+            <button class="btn btn-secondary" onclick="showPaymentDetails('muller-001')">Details</button>
         </div>
     </div>
 
@@ -679,7 +679,7 @@
             <div class="action-description">Telekom Lastschrift (89 €) morgen fällig</div>
         </div>
         <div class="action-buttons">
-            <button class="btn btn-primary">Kontostand prüfen</button>
+            <button class="btn btn-primary" onclick="checkAccountBalance()">Kontostand prüfen</button>
         </div>
     </div>
 
@@ -690,7 +690,7 @@
             <div class="action-description">Einsparungspotenzial 365 € durch Skontonutzung</div>
         </div>
         <div class="action-buttons">
-            <button class="btn btn-primary">Vorschläge anzeigen</button>
+            <button class="btn btn-primary" onclick="showOptimizationSuggestions()">Vorschläge anzeigen</button>
         </div>
     </div>
 </div>
@@ -712,7 +712,7 @@
                 <span class="amount-positive">73€</span>
             </li>
         </ul>
-        <button class="btn btn-primary" style="width: 100%; margin-top: 12px;">Freigeben</button>
+        <button class="btn btn-primary" style="width: 100%; margin-top: 12px;" onclick="releasePaymentsDueToday()">Freigeben</button>
     </div>
 
     <div class="widget">

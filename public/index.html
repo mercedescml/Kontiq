@@ -9,6 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Global Harmonized Styles -->
     <link rel="stylesheet" href="/css/global-harmonized.css">
+    <link rel="stylesheet" href="/css/kategorien-analyse.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         * {
@@ -1010,7 +1011,48 @@ if (!user) {
                     document.body.appendChild(newScript);
                     document.body.removeChild(newScript);
                 });
-                
+
+                // Load external module script if exists
+                const moduleScript = document.getElementById(`script-${viewName}`);
+                if (!moduleScript) {
+                    const script = document.createElement('script');
+                    script.id = `script-${viewName}`;
+                    script.src = `/js/${viewName}.js?t=${Date.now()}`;
+                    script.onload = () => {
+                        // Call initialization function if it exists
+                        const initFunctions = {
+                            'dashboard': 'loadDashboard',
+                            'zahlungen': 'loadZahlungen',
+                            'kosten': 'loadKosten',
+                            'forderungen': 'loadForderungen',
+                            'bankkonten': 'initBankkonten',
+                            'entitaeten': 'loadEntitaeten',
+                            'vertrage': 'loadContracts'
+                        };
+                        const initFn = initFunctions[viewName];
+                        if (initFn && typeof window[initFn] === 'function') {
+                            window[initFn]();
+                        }
+                    };
+                    script.onerror = () => console.log(`No script for ${viewName}`);
+                    document.head.appendChild(script);
+                } else {
+                    // Script already loaded, just call init function
+                    const initFunctions = {
+                        'dashboard': 'loadDashboard',
+                        'zahlungen': 'loadZahlungen',
+                        'kosten': 'loadKosten',
+                        'forderungen': 'loadForderungen',
+                        'bankkonten': 'initBankkonten',
+                        'entitaeten': 'loadEntitaeten',
+                        'vertrage': 'loadContracts'
+                    };
+                    const initFn = initFunctions[viewName];
+                    if (initFn && typeof window[initFn] === 'function') {
+                        setTimeout(() => window[initFn](), 100);
+                    }
+                }
+
                 // Ensure header data stays visible
                 updateHeader();
                 
@@ -1019,12 +1061,6 @@ if (!user) {
                 console.error('Navigation error:', error);
             }
         }
-
-        // On page load, restore last view or default to dashboard
-        const savedView = localStorage.getItem('kontiq_current_view') || 'dashboard';
-        const hashView = window.location.hash.substring(1);
-        const initialView = hashView || savedView;
-        navigateTo(initialView);
     </script>
     
     <!-- Einstellungen Modal -->
@@ -1200,7 +1236,14 @@ if (!user) {
         function openModule(name) {
             const dd = document.getElementById('profileDropdown'); if (dd) dd.style.display = 'none';
             const ed = document.getElementById('entityDropdown'); if (ed) ed.classList.remove('active');
-            // Use SPA navigation function
+
+            // Einstellungen is a full HTML page, open it directly
+            if (name === 'einstellungen') {
+                window.location.href = '/views/einstellungen.html';
+                return;
+            }
+
+            // Use SPA navigation function for other views
             navigateTo(name);
         }
 
@@ -1458,10 +1501,16 @@ if (!user) {
         }
 
         // initial header update
-        document.addEventListener('DOMContentLoaded', function(){ 
-            updateHeader(); 
+        document.addEventListener('DOMContentLoaded', function(){
+            updateHeader();
             initializeEntitySelector();
-            
+
+            // Load initial view
+            const savedView = localStorage.getItem('kontiq_current_view') || 'dashboard';
+            const hashView = window.location.hash.substring(1);
+            const initialView = hashView || savedView;
+            navigateTo(initialView);
+
             // Periodic check to ensure header stays visible
             setInterval(updateHeader, 5000);
         });
@@ -2147,6 +2196,11 @@ if (!user) {
     </script>
     <!-- API Client and App Core -->
     <script src="/js/api-client.js"></script>
+    <script src="/js/permissions-manager.js"></script>
+    <!-- Einstellungen (Settings) Module Scripts -->
+    <script src="/js/einstellungen-profile.js"></script>
+    <script src="/js/einstellungen-users.js"></script>
+    <script src="/js/einstellungen-entities.js"></script>
     <script src="/js/app.js"></script>
     <!-- Data Preloader for instant data display -->
     <script src="/js/data-preloader.js"></script>
@@ -2160,5 +2214,8 @@ if (!user) {
     <script src="/js/form-harmonizer.js"></script>
     <!-- Clickability Fixer -->
     <script src="/js/clickability-fixer.js"></script>
+    <!-- Kategorien System -->
+    <script src="/js/forderungen-kategorien.js"></script>
+    <script src="/js/kategorien-analyse.js"></script>
 </body>
 </html>

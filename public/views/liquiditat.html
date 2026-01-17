@@ -662,6 +662,16 @@
     </div>
 </div>
 
+<!-- KATEGORIEN ANALYSE -->
+<div class="section">
+    <div class="section-title">Umsatzanalyse nach Kategorien</div>
+    <div id="kategorien-analyse-container">
+        <div style="text-align: center; padding: 2rem; color: #999;">
+            <p>Lade Kategorieanalyse...</p>
+        </div>
+    </div>
+</div>
+
 <!-- LIQUIDITY FORECAST CHART -->
 <div class="section">
     <div class="section-title">Liquiditätsprognose (90 Tage)</div>
@@ -672,7 +682,7 @@
 
 <!-- CREDIT VS SKONTO SIMULATOR -->
 <div class="section">
-    <div class="section-title">💡 Szenario: Kredit aufnehmen vs. Skonto nutzen</div>
+    <div class="section-title">Szenario: Kredit aufnehmen vs. Skonto nutzen</div>
     
     <div class="form-inline">
         <div class="form-group">
@@ -989,4 +999,33 @@
 
     // Initialize calculator on load
     updateCalculator();
+
+    // ======================
+    // KATEGORIEN ANALYSE
+    // ======================
+
+    async function loadKategorienAnalyse() {
+        try {
+            // Load category analysis
+            await kategorienAnalyse.load();
+
+            // Render detailed analysis
+            kategorienAnalyse.renderDetailedAnalysis('kategorien-analyse-container');
+        } catch (error) {
+            console.error('Error loading kategorien analyse:', error);
+            document.getElementById('kategorien-analyse-container').innerHTML = `
+                <div style="text-align: center; padding: 2rem; color: #999;">
+                    <p>Fehler beim Laden der Kategorieanalyse</p>
+                    <button onclick="loadKategorienAnalyse()" class="btn btn-secondary" style="margin-top: 1rem;">Erneut versuchen</button>
+                </div>
+            `;
+        }
+    }
+
+    // Load category analysis on page load
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', loadKategorienAnalyse);
+    } else {
+        loadKategorienAnalyse();
+    }
 </script>

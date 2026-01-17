@@ -153,8 +153,16 @@ textarea{resize:vertical;min-height:100px}
 <div class="layout">
 <div class="sidebar">
 <div class="nav-group">
+<div class="nav-group-title">Persönlich</div>
+<div class="nav-item active" data-section="profile">
+<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+Mein Profil
+</div>
+</div>
+
+<div class="nav-group">
 <div class="nav-group-title">Verwaltung</div>
-<div class="nav-item active" data-section="users">
+<div class="nav-item" data-section="users">
 <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
 Benutzer & Rechte
 </div>
@@ -190,46 +198,121 @@ Sicherheit
 </div>
 
 <div class="content">
+<!-- Profil Section -->
+<div class="content-section active" id="profile-section">
+<div class="content-header">
+<h2>Mein Profil</h2>
+<p>Verwalten Sie Ihre persönlichen Informationen und Einstellungen</p>
+</div>
+
+<div class="section">
+<div class="section-title">Persönliche Daten</div>
+<form id="profileForm" onsubmit="saveProfile(event)">
+<div class="grid-2">
+<div class="form-group">
+<label class="label">Vorname</label>
+<input type="text" class="input" id="profileFirstName" placeholder="Max" required>
+</div>
+<div class="form-group">
+<label class="label">Nachname</label>
+<input type="text" class="input" id="profileLastName" placeholder="Mustermann" required>
+</div>
+</div>
+
+<div class="form-group">
+<label class="label">E-Mail-Adresse</label>
+<input type="email" class="input" id="profileEmail" disabled>
+<div class="label-desc">Die E-Mail-Adresse kann nicht geändert werden</div>
+</div>
+
+<div class="form-group">
+<label class="label">Telefonnummer (optional)</label>
+<input type="tel" class="input" id="profilePhone" placeholder="+49 123 456789">
+</div>
+
+<div class="form-group">
+<label class="label">Firma</label>
+<input type="text" class="input" id="profileCompany" disabled>
+</div>
+
+<div class="form-group">
+<label class="label">Rolle</label>
+<input type="text" class="input" id="profileRole" disabled>
+<div class="label-desc">Ihre Rolle wird vom Geschäftsführer festgelegt</div>
+</div>
+
+<div class="modal-footer" style="margin-top:32px;padding:0;border:none">
+<button type="submit" class="btn btn-primary">Profil speichern</button>
+</div>
+</form>
+</div>
+
+<div class="section">
+<div class="section-title">Passwort ändern</div>
+<form id="passwordForm" onsubmit="changePassword(event)">
+<div class="form-group">
+<label class="label">Aktuelles Passwort</label>
+<input type="password" class="input" id="currentPassword" required>
+</div>
+
+<div class="grid-2">
+<div class="form-group">
+<label class="label">Neues Passwort</label>
+<input type="password" class="input" id="newPassword" required minlength="8">
+<div class="label-desc">Mindestens 8 Zeichen</div>
+</div>
+<div class="form-group">
+<label class="label">Passwort bestätigen</label>
+<input type="password" class="input" id="confirmNewPassword" required minlength="8">
+</div>
+</div>
+
+<div class="modal-footer" style="margin-top:24px;padding:0;border:none">
+<button type="submit" class="btn btn-success">Passwort ändern</button>
+</div>
+</form>
+</div>
+</div>
+
 <!-- Benutzer & Rechte Section -->
-<div class="content-section active" id="users-section">
+<div class="content-section" id="users-section">
 <div class="content-header">
 <h2>Benutzerverwaltung & Zugriffsrechte</h2>
-<p>Der Geschäftsführer definiert individuell, welche Module jeder Benutzer sehen und bearbeiten darf</p>
+<p>Verwalten Sie Benutzer und deren Zugriffsrechte auf Entitäten und Module</p>
 </div>
 
 <div class="alert alert-info" style="margin-bottom:24px">
 <div>
-<div class="alert-title">💡 Berechtigungssystem</div>
-<div class="alert-message">Sie als Geschäftsführer legen fest, was jeder Benutzer sehen und bearbeiten kann. Manager einer Entität können zusätzlich Zugriffsrechte für ihre eigene Entität vergeben.</div>
+<div class="alert-title">💡 Hierarchisches Berechtigungssystem</div>
+<div class="alert-message"><strong>Geschäftsführer:</strong> Hat vollen Zugriff und kann alle Benutzer verwalten.<br>
+<strong>Manager:</strong> Kann Benutzer für seine Entitäten einladen und Rechte vergeben.<br>
+<strong>Mitarbeiter:</strong> Sieht nur die Daten, für die er berechtigt wurde.</div>
 </div>
 </div>
 
-<div class="stats-grid" id="stats-grid">
-<div class="stat-card">
-<div class="stat-value" id="stat-users">-</div>
-<div class="stat-label">Aktive Benutzer</div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:32px">
+<div style="background:white;padding:20px;border-radius:12px;border:1px solid #E5E7EB">
+<div style="font-size:32px;font-weight:700;color:#0A2540" id="stat-users">-</div>
+<div style="font-size:14px;color:#6B7280">Aktive Benutzer</div>
 </div>
-<div class="stat-card">
-<div class="stat-value" id="stat-entities">-</div>
-<div class="stat-label">Entitäten</div>
+<div style="background:white;padding:20px;border-radius:12px;border:1px solid #E5E7EB">
+<div style="font-size:32px;font-weight:700;color:#0EB17A" id="stat-managers">-</div>
+<div style="font-size:14px;color:#6B7280">Manager</div>
 </div>
+<div style="background:white;padding:20px;border-radius:12px;border:1px solid #E5E7EB">
+<div style="font-size:32px;font-weight:700;color:#3B82F6" id="stat-entities">-</div>
+<div style="font-size:14px;color:#6B7280">Entitäten</div>
 </div>
-
-<!-- Tabs for Global vs Entity permissions -->
-<div style="display:flex;gap:8px;margin-bottom:24px;border-bottom:2px solid #E5E7EB">
-<div class="perm-tab active" onclick="switchPermTab('global')" id="tab-global" style="padding:12px 24px;cursor:pointer;font-weight:600;font-size:15px;color:#0A2540;border-bottom:2px solid #0EB17A;margin-bottom:-2px">Benutzer & Module</div>
-<div class="perm-tab" onclick="switchPermTab('entities')" id="tab-entities" style="padding:12px 24px;cursor:pointer;font-weight:600;font-size:15px;color:#6B7280;border-bottom:2px solid transparent;margin-bottom:-2px">Zugriff auf Entitäten</div>
 </div>
 
-<!-- Global Permissions Tab -->
-<div id="global-perm-tab">
 <div class="section">
 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
-<div class="section-title">Benutzer & Modulzugriff</div>
-<button class="btn btn-success" onclick="openInviteModal()">Benutzer einladen</button>
+<div class="section-title">Benutzer</div>
+<button class="btn btn-success" id="invite-user-btn" onclick="openInviteModal()" style="display:none">+ Benutzer einladen</button>
 </div>
 
-<table class="table" id="users-table">
+<div id="users-list-container">
+<table class="table">
 <thead>
 <tr>
 <th>Benutzer</th>
@@ -242,17 +325,6 @@ Sicherheit
 <tr><td colspan="4" style="text-align:center;color:#6B7280;padding:40px">Lade Benutzer...</td></tr>
 </tbody>
 </table>
-</div>
-</div>
-
-<!-- Entity Access Tab -->
-<div id="entities-perm-tab" style="display:none">
-<div class="section">
-<div class="section-title" style="margin-bottom:20px">Zugriff auf Entitäten verwalten</div>
-
-<div id="entities-access-container">
-<div style="text-align:center;color:#6B7280;padding:40px">Lade Entitäten...</div>
-</div>
 </div>
 </div>
 </div>
@@ -791,53 +863,65 @@ Automatische Abmeldung
 
 <!-- Modal: Benutzer einladen -->
 <div class="modal" id="invite-modal">
-<div class="modal-content">
+<div class="modal-content" style="max-width:700px">
 <div class="modal-header">
 <div>
 <h3>Benutzer einladen</h3>
-<p>Laden Sie ein neues Teammitglied zu Kontiq ein. Der Benutzer erhält eine E-Mail mit einem Link zur Kontoerstellung.</p>
+<p>Laden Sie einen neuen Benutzer ein und definieren Sie seine Zugriffsrechte</p>
 </div>
 <button class="close-modal" onclick="closeInviteModal()">×</button>
 </div>
 
+<form onsubmit="sendInvite(event)">
 <div class="form-group">
-<label class="label">E-Mail-Adresse</label>
-<input type="email" class="input" placeholder="name@firma.de" id="invite-email">
+<label class="label">E-Mail-Adresse *</label>
+<input type="email" class="input" placeholder="benutzer@firma.de" id="invite-email" required>
 </div>
 
 <div class="grid-2">
 <div class="form-group">
-<label class="label">Vorname</label>
-<input type="text" class="input" placeholder="Max" id="invite-firstname">
+<label class="label">Vorname *</label>
+<input type="text" class="input" placeholder="Max" id="invite-firstname" required>
 </div>
 <div class="form-group">
-<label class="label">Nachname</label>
-<input type="text" class="input" placeholder="Mustermann" id="invite-lastname">
+<label class="label">Nachname *</label>
+<input type="text" class="input" placeholder="Mustermann" id="invite-lastname" required>
 </div>
 </div>
 
 <div class="form-group">
-<label class="label">Rolle zuweisen</label>
-<select class="select" id="invite-role">
-<option value="">Rolle auswählen...</option>
-<option value="manager">Manager</option>
-<option value="accountant">Buchhalter</option>
-<option value="readonly">Nur-Lesen</option>
+<label class="label">Rolle *</label>
+<select class="select" id="invite-role" onchange="updateInvitePermissions()" required>
+<option value="">Bitte wählen...</option>
+<option value="manager">Manager - Kann eine oder mehrere Entitäten verwalten</option>
+<option value="employee">Mitarbeiter - Nur Lese-/Bearbeitungsrechte</option>
 </select>
+<div class="label-desc" id="role-description"></div>
 </div>
 
-<div class="form-group">
-<label class="label">Zugriff auf Module</label>
-<div class="label-desc">Wählen Sie die Module aus, auf die dieser Benutzer Zugriff haben soll</div>
-<div class="checkbox-group" id="invite-modules-container">
-<!-- Module checkboxes will be generated dynamically -->
+<!-- Entitäten Zugriff (nur für Manager und Mitarbeiter) -->
+<div class="form-group" id="entities-access-group" style="display:none">
+<label class="label">Zugriff auf Entitäten *</label>
+<div class="label-desc">Wählen Sie die Entitäten aus, auf die der Benutzer Zugriff haben soll</div>
+<div id="invite-entities-container" style="margin-top:12px">
+<!-- Dynamisch generiert -->
+</div>
+</div>
+
+<!-- Module Rechte -->
+<div class="form-group" id="modules-access-group" style="display:none">
+<label class="label">Zugriffsrechte auf Module</label>
+<div class="label-desc">Definieren Sie für jedes Modul, ob der Benutzer es sehen und/oder bearbeiten kann</div>
+<div id="invite-modules-container" style="margin-top:12px">
+<!-- Dynamisch generiert -->
 </div>
 </div>
 
 <div class="modal-footer">
-<button class="btn btn-secondary" onclick="closeInviteModal()">Abbrechen</button>
-<button class="btn btn-success" onclick="sendInvite()">Einladung senden</button>
+<button type="button" class="btn btn-secondary" onclick="closeInviteModal()">Abbrechen</button>
+<button type="submit" class="btn btn-success">Einladung senden</button>
 </div>
+</form>
 </div>
 </div>
 
@@ -949,6 +1033,16 @@ let currentEntityId = null;
 let isGeschaeftsfuehrer = false;
 let managedEntities = [];
 
+
+// ==================================================
+// VARIABLES GLOBALES
+// ==================================================
+// Note: Les fonctions ont été déplacées vers des fichiers séparés:
+// - einstellungen-profile.js: Gestion du profil utilisateur
+// - einstellungen-users.js: Gestion des utilisateurs et permissions
+// - einstellungen-entities.js: Gestion des entités
+
+
 // Module definitions - corresponds to actual app modules (only business modules)
 const MODULES = {
   dashboard: { label: 'Dashboard', icon: '📊', description: 'Übersicht und Zusammenfassung' },
@@ -979,517 +1073,273 @@ function isManagerOf(entity, email) {
   return getEntityManagers(entity).includes(email);
 }
 
-// Initialize - execute immediately since we're loaded dynamically
-(async function init() {
-  console.log('=== Einstellungen page loaded ===');
-  
-  // Try both localStorage keys for compatibility
-  let userData = localStorage.getItem('user') || localStorage.getItem('kontiq_user');
-  console.log('Raw user data:', userData);
-  
-  if (!userData) {
-    console.error('No user data in localStorage!');
-    document.getElementById('users-tbody').innerHTML = '<tr><td colspan="4" style="text-align:center;color:#DC2626;padding:40px">Nicht angemeldet - bitte zuerst einloggen</td></tr>';
-    return;
-  }
-  
-  try {
-    currentUser = JSON.parse(userData);
-    console.log('Parsed user:', currentUser);
-    
-    if (!currentUser.email) {
-      console.error('No email in user object');
-      document.getElementById('users-tbody').innerHTML = '<tr><td colspan="4" style="text-align:center;color:#DC2626;padding:40px">Keine E-Mail gefunden</td></tr>';
-      return;
-    }
-    
-    // Load data
-    await loadPermissionsData();
-    
-  } catch (error) {
-    console.error('Error initializing:', error);
-    document.getElementById('users-tbody').innerHTML = `<tr><td colspan="4" style="text-align:center;color:#DC2626;padding:40px">Fehler: ${error.message}</td></tr>`;
-  }
-})();
-
-// Navigation
-document.querySelectorAll('.nav-item').forEach(item => {
-  item.addEventListener('click', () => {
-    const section = item.getAttribute('data-section');
-    document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
-    item.classList.add('active');
-    document.querySelectorAll('.content-section').forEach(sec => sec.classList.remove('active'));
-    document.getElementById(section + '-section').classList.add('active');
-  });
-});
-
-// Switch permission tabs
-function switchPermTab(tab) {
-  document.getElementById('tab-global').style.borderBottomColor = tab === 'global' ? '#0EB17A' : 'transparent';
-  document.getElementById('tab-global').style.color = tab === 'global' ? '#0A2540' : '#6B7280';
-  document.getElementById('tab-entities').style.borderBottomColor = tab === 'entities' ? '#0EB17A' : 'transparent';
-  document.getElementById('tab-entities').style.color = tab === 'entities' ? '#0A2540' : '#6B7280';
-  
-  document.getElementById('global-perm-tab').style.display = tab === 'global' ? 'block' : 'none';
-  document.getElementById('entities-perm-tab').style.display = tab === 'entities' ? 'block' : 'none';
-}
-
 // Load permissions data
 async function loadPermissionsData() {
-  console.log('=== loadPermissionsData called ===');
-  console.log('Current user email:', currentUser.email);
-  
-  const tbody = document.getElementById('users-tbody');
-  tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#6B7280;padding:40px">Lade Daten...</td></tr>';
-  
   try {
-    // Load permissions
-    const url = `/api/permissions/all?email=${encodeURIComponent(currentUser.email)}`;
-    console.log('Fetching:', url);
-    
-    const permsRes = await fetch(url);
-    console.log('Response status:', permsRes.status);
-    
-    if (!permsRes.ok) {
-      throw new Error(`HTTP ${permsRes.status}: ${permsRes.statusText}`);
+    console.log('Loading permissions data...');
+
+    // Fetch users from API
+    const usersResponse = await fetch('/api/users');
+    const usersData = await usersResponse.json();
+    allUsers = usersData.users || [];
+
+    // Fetch entities from API
+    const entitiesResponse = await fetch('/api/entitaeten');
+    const entitiesData = await entitiesResponse.json();
+    allEntities = entitiesData.entitaeten || [];
+
+    // Fetch permissions from API
+    try {
+      const permissionsResponse = await fetch('/api/permissions');
+      allPermissions = await permissionsResponse.json();
+    } catch (e) {
+      console.warn('Could not load permissions:', e);
+      allPermissions = {};
     }
-    
-    const data = await permsRes.json();
-    console.log('API Response:', data);
-    
-    allUsers = data.users || [];
-    allPermissions = data.entityPermissions || {};
-    
-    console.log('Users loaded:', allUsers.length);
-    
+
+    console.log('Loaded users:', allUsers.length);
+    console.log('Loaded entities:', allEntities.length);
+    console.log('Loaded permissions:', allPermissions);
+
     // Check if current user is Geschäftsführer
-    const myPerms = allUsers.find(u => u.email === currentUser.email);
-    isGeschaeftsfuehrer = myPerms?.globalPermissions?.role === 'geschaeftsfuehrer';
-    console.log('Is Geschäftsführer:', isGeschaeftsfuehrer);
-    
-    // Update stats
-    document.getElementById('stat-users').textContent = allUsers.length;
-    
-    // Populate table
-    populateUsersTable();
-    
-    // Load entities - only for current user
-    const entitiesRes = await fetch(`/api/entitaeten?email=${encodeURIComponent(currentUser.email)}`);
-    if (entitiesRes.ok) {
-      const entData = await entitiesRes.json();
-      allEntities = entData.entitaeten || [];
-      // Filter entities where current user is a manager (supports multi-manager)
+    isGeschaeftsfuehrer = currentUser.role === 'geschäftsfuehrer' || currentUser.role === 'admin';
+
+    // Get managed entities
+    if (isGeschaeftsfuehrer) {
+      managedEntities = allEntities;
+    } else {
       managedEntities = allEntities.filter(e => isManagerOf(e, currentUser.email));
-      document.getElementById('stat-entities').textContent = allEntities.length;
-      populateEntitiesList();
     }
-    
+
+    // Render users table
+    renderUsersTable();
+
+    // Show invite button if user can manage users
+    const inviteBtn = document.getElementById('invite-user-btn');
+    if (inviteBtn && (isGeschaeftsfuehrer || managedEntities.length > 0)) {
+      inviteBtn.style.display = 'inline-flex';
+    }
+
   } catch (error) {
-    console.error('Error loading data:', error);
-    tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:#DC2626;padding:40px">Fehler beim Laden: ${error.message}</td></tr>`;
+    console.error('Error loading permissions data:', error);
+    document.getElementById('users-tbody').innerHTML = `<tr><td colspan="4" style="text-align:center;color:#DC2626;padding:40px">Fehler beim Laden: ${error.message}</td></tr>`;
   }
 }
 
-function populateUsersTable() {
+// Render users table
+function renderUsersTable() {
   const tbody = document.getElementById('users-tbody');
-  console.log('populateUsersTable called, allUsers:', allUsers);
-  
-  if (!tbody) {
-    console.error('users-tbody not found!');
-    return;
-  }
-  
-  if (!allUsers || allUsers.length === 0) {
+  if (!tbody) return;
+
+  if (allUsers.length === 0) {
     tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#6B7280;padding:40px">Keine Benutzer gefunden</td></tr>';
     return;
   }
-  
-  const html = allUsers.map(user => {
-    const perms = user.globalPermissions;
-    const isGF = perms?.role === 'geschaeftsfuehrer';
-    const modulePerms = perms?.permissions || {};
-    
-    const initials = user.name ? user.name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2) : '?';
-    
-    // Build module access display - show real app modules only
-    let moduleDisplay = '';
-    if (isGF) {
-      moduleDisplay = '<span class="badge badge-admin">Vollzugriff auf alle Module</span>';
-    } else {
-      const accessibleModules = Object.keys(modulePerms).filter(m => modulePerms[m]?.view || modulePerms[m]?.edit);
-      if (accessibleModules.length === 0) {
-        moduleDisplay = '<span style="color:#9CA3AF;font-size:13px">Kein Modulzugriff</span>';
-      } else {
-        moduleDisplay = accessibleModules.map(m => {
-          const mod = MODULES[m];
-          const canEdit = modulePerms[m]?.edit;
-          return `<span style="font-size:11px;padding:2px 6px;border-radius:4px;margin:2px;display:inline-block;${canEdit ? 'background:#D1FAE5;color:#065F46' : 'background:#DBEAFE;color:#1E40AF'}">${mod?.icon || ''} ${mod?.label || m}</span>`;
-        }).join('');
-      }
-    }
-    
-    // Build entity access display
-    let entityDisplay = '';
-    if (isGF) {
-      entityDisplay = `<span style="color:#059669;font-size:13px">${allEntities.length} Entität(en)</span>`;
-    } else {
-      // Count entities this user has access to
-      const userEntities = [];
-      Object.keys(allPermissions).forEach(entityId => {
-        if (allPermissions[entityId] && allPermissions[entityId][user.email]) {
-          const entity = allEntities.find(e => e.id === entityId);
-          if (entity) userEntities.push(entity.name);
-        }
-      });
-      entityDisplay = userEntities.length > 0 
-        ? `<span style="color:#0A2540;font-size:13px">${userEntities.join(', ')}</span>`
-        : '<span style="color:#9CA3AF;font-size:13px">Keine Entitäten</span>';
-    }
-    
-    return `
+
+  let html = '';
+  allUsers.forEach(user => {
+    const userPerms = allPermissions.globalPermissions?.[user.email] || {};
+    const role = userPerms.role || user.role || 'employee';
+    const permissions = userPerms.permissions || {};
+    const managedEntityIds = userPerms.managedEntityIds || [];
+    const accessibleEntityIds = userPerms.accessibleEntityIds || [];
+
+    // Count accessible modules
+    const moduleCount = Object.keys(permissions).filter(m => permissions[m]?.read).length;
+
+    // Get entity names
+    const entityNames = [...new Set([...managedEntityIds, ...accessibleEntityIds])]
+      .map(id => {
+        const entity = allEntities.find(e => e.id === id);
+        return entity ? entity.name : id;
+      })
+      .slice(0, 3)
+      .join(', ');
+
+    const roleLabel = role === 'geschäftsfuehrer' ? 'Geschäftsführer' :
+                      role === 'manager' ? 'Manager' :
+                      role === 'employee' ? 'Mitarbeiter' :
+                      role === 'readonly' ? 'Nur-Lesen' : role;
+
+    const roleBadgeClass = role === 'geschäftsfuehrer' ? 'badge-admin' :
+                            role === 'manager' ? 'badge-manager' :
+                            role === 'employee' ? 'badge-user' :
+                            'badge-readonly';
+
+    html += `
       <tr>
         <td>
           <div class="user-row">
-            <div class="user-avatar" style="background:${isGF ? '#059669' : '#6B7280'};color:white">${initials}</div>
+            <div class="user-avatar">${user.name ? user.name.charAt(0).toUpperCase() : user.email.charAt(0).toUpperCase()}</div>
             <div class="user-info">
-              <div class="user-name">${user.name || 'Unbekannt'}${isGF ? ' 👑' : ''}</div>
+              <div class="user-name">${user.name || user.email.split('@')[0]}</div>
               <div class="user-email">${user.email}</div>
             </div>
           </div>
         </td>
-        <td style="max-width:300px">${moduleDisplay}</td>
-        <td>${entityDisplay}</td>
+        <td>
+          <span class="badge ${roleBadgeClass}">${roleLabel}</span>
+          <div style="font-size:12px;color:#6B7280;margin-top:4px">${moduleCount} Module</div>
+        </td>
+        <td>
+          <div style="font-size:14px">${entityNames || 'Keine'}</div>
+          <div style="font-size:12px;color:#6B7280;margin-top:4px">${managedEntityIds.length + accessibleEntityIds.length} Entitäten</div>
+        </td>
         <td>
           <div class="actions">
-            ${isGeschaeftsfuehrer && !isGF ? `
-              <button class="btn btn-sm" style="background:#0EB17A;color:white" onclick="editUserPermissions('${user.email}')">
-                🔐 Rechte bearbeiten
-              </button>
-            ` : isGF ? '<span style="color:#059669;font-size:12px">Geschäftsführer</span>' : ''}
+            ${(isGeschaeftsfuehrer || managedEntityIds.some(id => managedEntities.find(e => e.id === id))) ? `
+              <button class="btn btn-sm btn-secondary" onclick="editUserPermissions('${user.email}')">Rechte bearbeiten</button>
+            ` : ''}
           </div>
         </td>
       </tr>
     `;
-  }).join('');
-  
+  });
+
   tbody.innerHTML = html;
 }
 
-function populateEntitiesList() {
-  const container = document.getElementById('entities-access-container');
-  if (!container) return;
-  
-  // If no entities exist, show message to create one first
-  if (!allEntities || allEntities.length === 0) {
-    container.innerHTML = `
-      <div style="text-align:center;padding:60px 40px;background:#F9FAFB;border-radius:12px;border:2px dashed #E5E7EB">
-        <div style="font-size:48px;margin-bottom:16px">🏢</div>
-        <h3 style="margin:0 0 8px 0;color:#0A2540">Keine Entitäten vorhanden</h3>
-        <p style="color:#6B7280;margin:0 0 20px 0">Erstellen Sie zuerst eine Entität im Menü "Entitäten", um Zugriffsrechte vergeben zu können.</p>
-        <button class="btn btn-primary" onclick="window.location.hash='entitaeten'">
-          Zur Entitäten-Verwaltung
-        </button>
-      </div>
-    `;
-    return;
-  }
-  
-  // Show entity access management with dropdown
-  let html = `
-    <div style="background:#F0FDF4;border:1px solid #BBF7D0;border-radius:12px;padding:16px;margin-bottom:24px">
-      <div style="font-weight:600;color:#059669;margin-bottom:4px">💡 Zugriff verwalten</div>
-      <div style="color:#065F46;font-size:14px">Wählen Sie eine Entität aus und bestimmen Sie, welche Benutzer darauf zugreifen dürfen.</div>
-    </div>
-    
-    <div style="margin-bottom:24px">
-      <label style="font-weight:600;font-size:14px;color:#0A2540;display:block;margin-bottom:8px">Entität auswählen</label>
-      <select id="entity-selector" class="select" onchange="loadEntityUsers()" style="width:100%;max-width:400px">
-        <option value="">-- Entität wählen --</option>
-        ${allEntities.map(e => `<option value="${e.id}">${e.name}</option>`).join('')}
-      </select>
-    </div>
-    
-    <div id="entity-users-section" style="display:none">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
-        <h3 style="margin:0;font-size:16px;color:#0A2540" id="entity-users-title">Benutzer mit Zugriff</h3>
-        <button class="btn btn-success btn-sm" onclick="openAddEntityUserModal()">+ Benutzer hinzufügen</button>
-      </div>
-      <div id="entity-users-list"></div>
-    </div>
-  `;
-  
-  container.innerHTML = html;
+// Edit user permissions (placeholder)
+function editUserPermissions(email) {
+  alert(`Bearbeiten der Rechte für ${email} - Wird implementiert`);
 }
 
-// Load users for selected entity
-function loadEntityUsers() {
-  const selector = document.getElementById('entity-selector');
-  const section = document.getElementById('entity-users-section');
-  const list = document.getElementById('entity-users-list');
-  const title = document.getElementById('entity-users-title');
-  
-  const entityId = selector.value;
-  if (!entityId) {
-    section.style.display = 'none';
-    return;
-  }
-  
-  section.style.display = 'block';
-  const entity = allEntities.find(e => e.id === entityId);
-  title.textContent = `Benutzer mit Zugriff auf "${entity?.name || 'Entität'}"`;
-  
-  // Build user list
-  let usersHtml = '';
-  
-  // First: Show all managers/Geschäftsführer of this entity
-  const entityManagers = getEntityManagers(entity);
-  if (entityManagers.length > 0) {
-    usersHtml += `<div style="font-weight:600;font-size:14px;color:#374151;margin-bottom:8px">👑 Geschäftsführer / Manager (${entityManagers.length})</div>`;
-    entityManagers.forEach((managerEmail, idx) => {
-      const managerUser = allUsers.find(u => u.email === managerEmail);
-      usersHtml += `
-        <div style="padding:12px;border:2px solid #0EB17A;border-radius:8px;display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;background:#F0FDF4">
-          <div>
-            <div style="font-weight:600">${managerUser?.name || managerEmail}</div>
-            <div style="font-size:12px;color:#059669">👑 Geschäftsführer - Vollzugriff</div>
-          </div>
-          <div style="display:flex;gap:8px;align-items:center">
-            <span style="background:#059669;color:white;padding:4px 12px;border-radius:4px;font-size:12px;font-weight:600">Manager ${idx + 1}</span>
-            ${entityManagers.length > 1 && isGeschaeftsfuehrer ? `<button class="btn btn-sm" style="background:#FEE2E2;color:#DC2626" onclick="removeManager('${entityId}', '${managerEmail}')">Entfernen</button>` : ''}
-          </div>
-        </div>
-      `;
-    });
-    
-    // Button to add another manager
-    if (isGeschaeftsfuehrer) {
-      usersHtml += `
-        <button class="btn btn-sm btn-secondary" onclick="openAddManagerModal('${entityId}')" style="margin-bottom:16px">
-          + Weiteren Geschäftsführer hinzufügen
-        </button>
-      `;
-    }
-  }
-  
-  // Divider
-  usersHtml += `<div style="border-top:1px solid #E5E7EB;margin:16px 0;padding-top:16px"><div style="font-weight:600;font-size:14px;color:#374151;margin-bottom:8px">👥 Weitere Benutzer mit Zugriff</div></div>`;
-  
-  // Then: Other users with access (not managers)
-  const entityPerms = allPermissions[entityId] || {};
-  const otherUsers = Object.keys(entityPerms).filter(email => !entityManagers.includes(email));
-  
-  if (otherUsers.length === 0) {
-    usersHtml += `<div style="text-align:center;padding:24px;color:#6B7280;border:1px dashed #E5E7EB;border-radius:8px">
-      Noch keine weiteren Benutzer hinzugefügt
-    </div>`;
-  } else {
-    otherUsers.forEach(email => {
-      const user = allUsers.find(u => u.email === email);
-      const perms = entityPerms[email]?.permissions || {};
-      const moduleIcons = Object.keys(perms).map(m => MODULES[m]?.icon || '').join(' ');
-      
-      usersHtml += `
-        <div style="padding:12px;border:1px solid #E5E7EB;border-radius:8px;display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-          <div>
-            <div style="font-weight:600">${user?.name || email}</div>
-            <div style="font-size:12px;color:#6B7280">${moduleIcons || 'Zugriff konfiguriert'}</div>
-          </div>
-          <button class="btn btn-sm" style="background:#FEE2E2;color:#DC2626" onclick="removeEntityUser('${entityId}', '${email}')">Entfernen</button>
-        </div>
-      `;
-    });
-  }
-  
-  list.innerHTML = usersHtml;
+// Load user profile
+function loadUserProfile() {
+  if (!currentUser) return;
+
+  const firstName = currentUser.name?.split(' ')[0] || '';
+  const lastName = currentUser.name?.split(' ')[1] || '';
+
+  document.getElementById('profileFirstName').value = firstName;
+  document.getElementById('profileLastName').value = lastName;
+  document.getElementById('profileEmail').value = currentUser.email || '';
+  document.getElementById('profileCompany').value = currentUser.company || '';
+
+  const roleLabel = currentUser.role === 'geschäftsfuehrer' ? 'Geschäftsführer' :
+                    currentUser.role === 'manager' ? 'Manager' :
+                    currentUser.role === 'employee' ? 'Mitarbeiter' :
+                    currentUser.role === 'readonly' ? 'Nur-Lesen' : currentUser.role || 'Mitarbeiter';
+
+  document.getElementById('profileRole').value = roleLabel;
 }
 
-// Open modal to add user to entity
-function openAddEntityUserModal() {
-  const entityId = document.getElementById('entity-selector').value;
-  if (!entityId) return;
-  
-  const entity = allEntities.find(e => e.id === entityId);
-  const entityPerms = allPermissions[entityId] || {};
-  const entityManagers = getEntityManagers(entity);
-  
-  // Filter available users (not already in this entity and not a manager)
-  const availableUsers = allUsers.filter(u => 
-    !entityManagers.includes(u.email) && 
-    !entityPerms[u.email] &&
-    u.globalPermissions?.role !== 'geschaeftsfuehrer'
-  );
-  
-  if (availableUsers.length === 0) {
-    alert('Alle Benutzer haben bereits Zugriff auf diese Entität oder es gibt keine weiteren Benutzer.');
-    return;
-  }
-  
-  const modal = document.createElement('div');
-  modal.className = 'modal active';
-  modal.id = 'add-entity-user-modal';
-  modal.innerHTML = `
-    <div class="modal-content" style="max-width:500px">
-      <div class="modal-header">
-        <h3>Benutzer zu "${entity?.name}" hinzufügen</h3>
-        <button class="close-modal" onclick="closeAddEntityUserModal()">×</button>
-      </div>
-      
-      <div class="form-group">
-        <label class="label">Benutzer auswählen</label>
-        <select class="select" id="add-entity-user-select">
-          <option value="">-- Benutzer wählen --</option>
-          ${availableUsers.map(u => `<option value="${u.email}">${u.name || u.email}</option>`).join('')}
-        </select>
-      </div>
-      
-      <div class="modal-footer">
-        <button class="btn btn-secondary" onclick="closeAddEntityUserModal()">Abbrechen</button>
-        <button class="btn btn-success" onclick="addUserToEntity('${entityId}')">Hinzufügen</button>
-      </div>
-    </div>
-  `;
-  document.body.appendChild(modal);
+// Save profile (placeholder)
+function saveProfile(event) {
+  event.preventDefault();
+  alert('Profil speichern - Wird implementiert');
 }
 
-function closeAddEntityUserModal() {
-  const modal = document.getElementById('add-entity-user-modal');
-  if (modal) modal.remove();
-}
-
-async function addUserToEntity(entityId) {
-  const select = document.getElementById('add-entity-user-select');
-  const userEmail = select?.value;
-  if (!userEmail) {
-    alert('Bitte wählen Sie einen Benutzer aus');
-    return;
-  }
-  
-  try {
-    const res = await fetch('/api/permissions/entity', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        adminEmail: currentUser.email,
-        entityId: entityId,
-        targetEmail: userEmail,
-        permissions: { permissions: { view: true } }
-      })
-    });
-    
-    if (res.ok) {
-      closeAddEntityUserModal();
-      await loadPermissionsData();
-      document.getElementById('entity-selector').value = entityId;
-      loadEntityUsers();
-    } else {
-      const err = await res.json();
-      alert('Fehler: ' + (err.error || 'Unbekannter Fehler'));
-    }
-  } catch (error) {
-    alert('Fehler: ' + error.message);
-  }
-}
-
-// Toggle Switch
-function toggleSwitch(element) {
-  element.classList.toggle('active');
-}
-
-// Modals
+// Invite modal functions
 function openInviteModal() {
   document.getElementById('invite-modal').classList.add('active');
-  
-  // Generate module checkboxes dynamically
-  const container = document.getElementById('invite-modules-container');
-  if (container) {
-    let html = '';
-    
-    Object.keys(MODULES).forEach(moduleKey => {
-      const module = MODULES[moduleKey];
-      const isSensitive = module.sensitive === true;
-      
-      html += `
-        <label class="checkbox-item" style="${isSensitive ? 'border-color:#F59E0B;background:#FFFBEB' : ''}">
-          <input type="checkbox" id="invite-module-${moduleKey}" data-module="${moduleKey}">
-          <div style="flex:1">
-            <div class="checkbox-label">${module.icon} ${module.label} ${isSensitive ? '<span style="font-size:10px;background:#F59E0B;color:white;padding:1px 6px;border-radius:4px;margin-left:6px">SENSIBEL</span>' : ''}</div>
-            <div class="checkbox-desc">${module.description || ''}</div>
-          </div>
-        </label>
-      `;
-    });
-    
-    container.innerHTML = html;
-  }
 }
 
 function closeInviteModal() {
   document.getElementById('invite-modal').classList.remove('active');
 }
 
+function updateInvitePermissions() {
+  // Placeholder for updating permissions based on role
+  console.log('Updating invite permissions...');
+}
+
+// Initialize - execute immediately since we're loaded dynamically
+(async function init() {
+  console.log('=== Einstellungen page loaded ===');
+
+  // Try both localStorage keys for compatibility
+  let userData = localStorage.getItem('user') || localStorage.getItem('kontiq_user');
+  console.log('Raw user data:', userData);
+
+  if (!userData) {
+    console.error('No user data in localStorage!');
+    document.getElementById('users-tbody').innerHTML = '<tr><td colspan="4" style="text-align:center;color:#DC2626;padding:40px">Nicht angemeldet - bitte zuerst einloggen</td></tr>';
+    return;
+  }
+
+  try {
+    currentUser = JSON.parse(userData);
+    console.log('Parsed user:', currentUser);
+
+    if (!currentUser.email) {
+      console.error('No email in user object');
+      document.getElementById('users-tbody').innerHTML = '<tr><td colspan="4" style="text-align:center;color:#DC2626;padding:40px">Keine E-Mail gefunden</td></tr>';
+      return;
+    }
+
+    // Structure currentUser with new permissions model for PermissionsManager
+    const perms = currentUser.globalPermissions || {};
+    currentUser.role = perms.role || currentUser.role || 'employee';
+    currentUser.managedEntityIds = perms.managedEntityIds || [];
+    currentUser.accessibleEntityIds = perms.accessibleEntityIds || [];
+    currentUser.permissions = perms.permissions || {};
+
+    console.log('Structured currentUser:', currentUser);
+
+    // Load data
+    await loadPermissionsData();
+
+  } catch (error) {
+    console.error('Error initializing:', error);
+    document.getElementById('users-tbody').innerHTML = `<tr><td colspan="4" style="text-align:center;color:#DC2626;padding:40px">Fehler: ${error.message}</td></tr>`;
+  }
+})();
+
+// Initialize navigation
+function initializeNavigation() {
+  console.log('Initializing navigation...');
+  document.querySelectorAll('.nav-item').forEach(item => {
+    item.addEventListener('click', function(e) {
+      const section = this.getAttribute('data-section');
+      console.log('Navigating to section:', section);
+
+      document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+      this.classList.add('active');
+      document.querySelectorAll('.content-section').forEach(sec => sec.classList.remove('active'));
+      const targetSection = document.getElementById(section + '-section');
+      if (targetSection) {
+        targetSection.classList.add('active');
+
+        // Load section-specific data
+        if (section === 'profile') {
+          loadUserProfile();
+        } else if (section === 'users') {
+          loadPermissionsData();
+        }
+      } else {
+        console.error('Section not found:', section + '-section');
+      }
+    });
+  });
+}
+
+// Call navigation init
+initializeNavigation();
+
+// Load profile on initial load
+setTimeout(() => {
+  loadUserProfile();
+}, 100);
+
+// Switch permission tabs
+function switchPermTab(tab) {
+  // Tab switching logic (if needed in future)
+  console.log('Switching to tab:', tab);
+}
+
+// Toggle switch helper
+function toggleSwitch(element) {
+  element.classList.toggle('active');
+}
+
+// Role modal functions
 function openRoleModal() {
   document.getElementById('role-modal').classList.add('active');
 }
 
 function closeRoleModal() {
   document.getElementById('role-modal').classList.remove('active');
-}
-
-// Invite user WITH module permissions selected in modal
-async function sendInvite() {
-  const email = document.getElementById('invite-email').value.trim();
-  const firstname = document.getElementById('invite-firstname').value.trim();
-  const lastname = document.getElementById('invite-lastname').value.trim();
-
-  if (!email || !firstname || !lastname) {
-    alert('Bitte füllen Sie alle Pflichtfelder aus');
-    return;
-  }
-
-  if (!isGeschaeftsfuehrer) {
-    alert('Nur der Geschäftsführer kann Benutzer einladen');
-    return;
-  }
-
-  // Collect selected module permissions
-  const permissions = {};
-  Object.keys(MODULES).forEach(moduleKey => {
-    const checkbox = document.getElementById(`invite-module-${moduleKey}`);
-    if (checkbox && checkbox.checked) {
-      permissions[moduleKey] = { view: true, edit: false };
-    }
-  });
-
-  try {
-    // Create user with selected permissions
-    const res = await fetch(`${API_BASE}/api/users/invite`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        adminEmail: currentUser.email,
-        targetEmail: email,
-        firstName: firstname,
-        lastName: lastname,
-        permissions: permissions
-      })
-    });
-
-    if (res.ok) {
-      const moduleCount = Object.keys(permissions).length;
-      alert(`Benutzer ${email} wurde erstellt${moduleCount > 0 ? ` mit Zugriff auf ${moduleCount} Module` : ''}.\n\nSie können die Berechtigungen jederzeit über "🔐 Rechte bearbeiten" anpassen.`);
-      closeInviteModal();
-      document.getElementById('invite-email').value = '';
-      document.getElementById('invite-firstname').value = '';
-      document.getElementById('invite-lastname').value = '';
-      loadPermissionsData();
-    } else {
-      const error = await res.json();
-      alert('Fehler: ' + (error.error || 'Benutzer konnte nicht erstellt werden'));
-    }
-  } catch (error) {
-    console.error('Error inviting user:', error);
-    alert('Fehler beim Erstellen des Benutzers: ' + error.message);
-  }
 }
 
 function createRole() {
@@ -1502,604 +1352,6 @@ function createRole() {
   alert('Rolle "' + name + '" wurde erfolgreich erstellt');
   closeRoleModal();
 }
-
-// Edit user permissions - GF defines everything manually
-function editUserPermissions(email) {
-  if (!isGeschaeftsfuehrer) {
-    alert('Nur der Geschäftsführer kann globale Berechtigungen definieren.');
-    return;
-  }
-  
-  const user = allUsers.find(u => u.email === email);
-  if (!user) return;
-  
-  const perms = user.globalPermissions?.permissions || {};
-  
-  const modal = document.createElement('div');
-  modal.className = 'modal active';
-  modal.id = 'edit-perms-modal';
-  
-  modal.innerHTML = `
-    <div class="modal-content" style="max-width:800px">
-      <div class="modal-header">
-        <div>
-          <h3>🔐 Berechtigungen für ${user.name}</h3>
-          <p>${user.email}</p>
-        </div>
-        <button class="close-modal" onclick="closeEditPermsModal()">×</button>
-      </div>
-      
-      <div class="alert alert-warning" style="margin-bottom:20px">
-        <div>
-          <div class="alert-title">Sie definieren die Berechtigungen</div>
-          <div class="alert-message">Wählen Sie genau aus, welche Module dieser Benutzer sehen und bearbeiten darf. Keine automatischen Rechte werden vergeben.</div>
-        </div>
-      </div>
-      
-      <div class="form-group" id="perms-container-edit">
-        <label class="label">Module-Berechtigungen</label>
-        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:16px">
-          ${Object.keys(MODULES).map(moduleKey => {
-            const module = MODULES[moduleKey];
-            const modulePerm = perms[moduleKey] || {};
-            const isSensitive = module.sensitive === true;
-            return `
-              <div style="border:${isSensitive ? '2px solid #F59E0B' : '1px solid #E5E7EB'};border-radius:12px;padding:16px;${isSensitive ? 'background:#FFFBEB' : ''}">
-                <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:8px">
-                  <div style="font-weight:600;font-size:15px">${module.icon} ${module.label}</div>
-                  ${isSensitive ? '<span style="font-size:10px;background:#F59E0B;color:white;padding:2px 6px;border-radius:4px;font-weight:600">SENSIBEL</span>' : ''}
-                </div>
-                <div style="font-size:12px;color:#6B7280;margin-bottom:12px">${module.description || ''}</div>
-                <div style="display:flex;gap:16px">
-                  <label style="display:flex;align-items:center;gap:6px;font-size:14px;cursor:pointer">
-                    <input type="checkbox" id="edit-${moduleKey}-view" ${modulePerm.view ? 'checked' : ''} style="accent-color:#0EB17A;width:18px;height:18px">
-                    👁️ Ansehen
-                  </label>
-                  <label style="display:flex;align-items:center;gap:6px;font-size:14px;cursor:pointer">
-                    <input type="checkbox" id="edit-${moduleKey}-edit" ${modulePerm.edit ? 'checked' : ''} style="accent-color:#0EB17A;width:18px;height:18px">
-                    ✏️ Bearbeiten
-                  </label>
-                </div>
-              </div>
-            `;
-          }).join('')}
-        </div>
-      </div>
-      
-      <div class="modal-footer">
-        <button class="btn btn-secondary" onclick="closeEditPermsModal()">Abbrechen</button>
-        <button class="btn btn-success" onclick="saveUserPermissions('${email}')">Speichern</button>
-      </div>
-    </div>
-  `;
-  
-  document.body.appendChild(modal);
-}
-
-async function saveUserPermissions(email) {
-  const permissions = { permissions: {} };
-  
-  Object.keys(MODULES).forEach(moduleKey => {
-    const view = document.getElementById(`edit-${moduleKey}-view`)?.checked || false;
-    const edit = document.getElementById(`edit-${moduleKey}-edit`)?.checked || false;
-    
-    if (view || edit) {
-      permissions.permissions[moduleKey] = { view, edit };
-    }
-  });
-  
-  try {
-    const res = await fetch(`${API_BASE}/api/permissions/global`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        adminEmail: currentUser.email,
-        targetEmail: email,
-        permissions
-      })
-    });
-    
-    if (res.ok) {
-      alert('Berechtigungen erfolgreich gespeichert');
-      closeEditPermsModal();
-      loadPermissionsData();
-    } else {
-      const error = await res.json();
-      alert('Fehler: ' + (error.error || 'Unbekannter Fehler'));
-    }
-  } catch (error) {
-    console.error('Error saving permissions:', error);
-    alert('Fehler beim Speichern der Berechtigungen');
-  }
-}
-
-function closeEditPermsModal() {
-  const modal = document.getElementById('edit-perms-modal');
-  if (modal) modal.remove();
-}
-
-// Entity permissions - Manager can define for their entity
-function openEntityPermissions(entityId) {
-  currentEntityId = entityId;
-  const entity = allEntities.find(e => e.id === entityId);
-  if (!entity) return;
-  
-  const entityManagers = getEntityManagers(entity);
-  const isManager = isManagerOf(entity, currentUser.email);
-  if (!isGeschaeftsfuehrer && !isManager) {
-    alert('Sie haben keine Berechtigung, diese Entität zu verwalten.');
-    return;
-  }
-  
-  const entityPerms = allPermissions[entityId] || {};
-  
-  const modal = document.createElement('div');
-  modal.className = 'modal active';
-  modal.id = 'entity-perms-modal';
-  
-  // Build users list - All managers first, then other users
-  let usersHtml = '';
-  
-  // First: Show all entity managers/Geschäftsführer
-  if (entityManagers.length > 0) {
-    usersHtml += `<div style="font-weight:600;font-size:14px;color:#374151;margin-bottom:8px">👑 Geschäftsführer (${entityManagers.length})</div>`;
-    entityManagers.forEach((managerEmail, idx) => {
-      const managerUser = allUsers.find(u => u.email === managerEmail);
-      usersHtml += `
-        <div style="padding:12px;border:2px solid #0EB17A;border-radius:8px;display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;background:#F0FDF4">
-          <div>
-            <div style="font-weight:600">${managerUser?.name || managerEmail}</div>
-            <div style="font-size:12px;color:#059669">👑 Geschäftsführer - Vollzugriff</div>
-          </div>
-          <span class="badge badge-admin" style="background:#059669;color:white">Manager ${idx + 1}</span>
-        </div>
-      `;
-    });
-  }
-  
-  // Then: Other users with access (not managers)
-  Object.keys(entityPerms).forEach(userEmail => {
-    // Skip if this is one of the managers (already shown above)
-    if (entityManagers.includes(userEmail)) return;
-    
-    const user = allUsers.find(u => u.email === userEmail);
-    const perms = entityPerms[userEmail].permissions || {};
-    const permIcons = Object.keys(perms).map(m => MODULES[m]?.icon || m).join(' ');
-    
-    usersHtml += `
-      <div style="padding:12px;border:1px solid #E5E7EB;border-radius:8px;display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-        <div>
-          <div style="font-weight:600">${user?.name || userEmail}</div>
-          <div style="font-size:12px;color:#6B7280">${permIcons || 'Keine Module'}</div>
-        </div>
-        <button class="btn btn-sm" style="background:#FEE2E2;color:#DC2626" onclick="removeEntityUser('${entityId}', '${userEmail}')">Entfernen</button>
-      </div>
-    `;
-  });
-  
-  // Count non-manager users
-  const otherUsersCount = Object.keys(entityPerms).filter(e => !entityManagers.includes(e)).length;
-  if (otherUsersCount === 0 && entityManagers.length > 0) {
-    usersHtml += '<div style="color:#6B7280;text-align:center;padding:20px;border:1px dashed #E5E7EB;border-radius:8px;margin-top:8px">Noch keine weiteren Benutzer hinzugefügt</div>';
-  } else if (entityManagers.length === 0 && Object.keys(entityPerms).length === 0) {
-    usersHtml = '<div style="color:#6B7280;text-align:center;padding:20px">Keine Benutzer haben Zugriff auf diese Entität</div>';
-  }
-  
-  modal.innerHTML = `
-    <div class="modal-content" style="max-width:700px">
-      <div class="modal-header">
-        <div>
-          <h3>👥 ${entity.name}</h3>
-          <p>${isManager ? 'Sie sind Manager dieser Entität' : 'Geschäftsführer-Zugriff'}</p>
-        </div>
-        <button class="close-modal" onclick="closeEntityPermsModal()">×</button>
-      </div>
-      
-      <div class="alert alert-info" style="margin-bottom:20px">
-        <div>
-          <div class="alert-title">Entitäts-Berechtigungen</div>
-          <div class="alert-message">${isManager ? 'Als Manager können Sie festlegen, wer Zugriff auf diese Entität hat und was sie sehen/bearbeiten dürfen.' : 'Sie können festlegen, wer Zugriff auf diese Entität hat.'}</div>
-        </div>
-      </div>
-      
-      <div class="section">
-        <div class="section-title">Benutzer mit Zugriff</div>
-        <div id="entity-users-list">${usersHtml}</div>
-      </div>
-      
-      <div class="divider"></div>
-      
-      <div class="section">
-        <div class="section-title">Benutzer hinzufügen</div>
-        <div class="form-group">
-          <label class="label">Benutzer wählen</label>
-          <select class="select" id="entity-add-user">
-            <option value="">Benutzer auswählen...</option>
-            ${allUsers.filter(u => !entityPerms[u.email] && !entityManagers.includes(u.email) && u.globalPermissions?.role !== 'geschaeftsfuehrer').map(u => `
-              <option value="${u.email}">${u.name || u.email}</option>
-            `).join('')}
-          </select>
-        </div>
-        
-        <div class="form-group" id="entity-user-perms" style="display:none">
-          <label class="label">Module-Berechtigungen für diese Entität</label>
-          <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:12px">
-            ${Object.keys(MODULES).map(moduleKey => {
-              const module = MODULES[moduleKey];
-              return `
-                <div style="border:1px solid #E5E7EB;border-radius:8px;padding:12px">
-                  <div style="font-weight:600;font-size:14px;margin-bottom:8px">${module.icon} ${module.label}</div>
-                  <div style="display:flex;gap:12px">
-                    <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer">
-                      <input type="checkbox" id="entity-${moduleKey}-view" style="accent-color:#0EB17A">
-                      👁️ Ansehen
-                    </label>
-                    <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer">
-                      <input type="checkbox" id="entity-${moduleKey}-edit" style="accent-color:#0EB17A">
-                      ✏️ Bearbeiten
-                    </label>
-                  </div>
-                </div>
-              `;
-            }).join('')}
-          </div>
-          <button class="btn btn-success" style="margin-top:16px;width:100%" onclick="addUserToEntity()">Benutzer hinzufügen</button>
-        </div>
-      </div>
-      
-      <div class="modal-footer">
-        <button class="btn btn-secondary" onclick="closeEntityPermsModal()">Schließen</button>
-      </div>
-    </div>
-  `;
-  
-  document.body.appendChild(modal);
-  
-  // Show permissions when user is selected
-  document.getElementById('entity-add-user').addEventListener('change', function() {
-    document.getElementById('entity-user-perms').style.display = this.value ? 'block' : 'none';
-  });
-}
-
-async function addUserToEntity() {
-  const userEmail = document.getElementById('entity-add-user').value;
-  if (!userEmail) {
-    alert('Bitte wählen Sie einen Benutzer aus');
-    return;
-  }
-  
-  const permissions = { permissions: {} };
-  
-  Object.keys(MODULES).forEach(moduleKey => {
-    const view = document.getElementById(`entity-${moduleKey}-view`)?.checked || false;
-    const edit = document.getElementById(`entity-${moduleKey}-edit`)?.checked || false;
-    
-    if (view || edit) {
-      permissions.permissions[moduleKey] = { view, edit };
-    }
-  });
-  
-  try {
-    const res = await fetch(`${API_BASE}/api/permissions/entity`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        adminEmail: currentUser.email,
-        entityId: currentEntityId,
-        targetEmail: userEmail,
-        permissions
-      })
-    });
-    
-    if (res.ok) {
-      alert('Benutzer erfolgreich hinzugefügt');
-      closeEntityPermsModal();
-      loadPermissionsData();
-    } else {
-      const error = await res.json();
-      alert('Fehler: ' + (error.error || 'Unbekannter Fehler'));
-    }
-  } catch (error) {
-    console.error('Error adding user to entity:', error);
-    alert('Fehler beim Hinzufügen des Benutzers');
-  }
-}
-
-async function removeEntityUser(entityId, userEmail) {
-  if (!confirm(`Möchten Sie den Zugriff für diesen Benutzer wirklich entfernen?`)) return;
-  
-  try {
-    const res = await fetch(`${API_BASE}/api/permissions/entity/${userEmail}?adminEmail=${currentUser.email}&entityId=${entityId}`, {
-      method: 'DELETE'
-    });
-    
-    if (res.ok) {
-      await loadPermissionsData();
-      // Reload entity users list
-      document.getElementById('entity-selector').value = entityId;
-      loadEntityUsers();
-    } else {
-      const error = await res.json();
-      alert('Fehler: ' + (error.error || 'Unbekannter Fehler'));
-    }
-  } catch (error) {
-    console.error('Error removing entity user:', error);
-  }
-}
-
-// Open modal to add another manager/Geschäftsführer to an entity
-function openAddManagerModal(entityId) {
-  if (!isGeschaeftsfuehrer) {
-    alert('Nur der Geschäftsführer kann weitere Manager hinzufügen.');
-    return;
-  }
-  
-  const entity = allEntities.find(e => e.id === entityId);
-  if (!entity) return;
-  
-  const entityManagers = getEntityManagers(entity);
-  
-  // Filter available users (not already a manager of this entity)
-  const availableUsers = allUsers.filter(u => 
-    !entityManagers.includes(u.email)
-  );
-  
-  if (availableUsers.length === 0) {
-    alert('Alle Benutzer sind bereits Manager dieser Entität.');
-    return;
-  }
-  
-  const modal = document.createElement('div');
-  modal.className = 'modal active';
-  modal.id = 'add-manager-modal';
-  modal.innerHTML = `
-    <div class="modal-content" style="max-width:500px">
-      <div class="modal-header">
-        <div>
-          <h3>👑 Geschäftsführer hinzufügen</h3>
-          <p>Fügen Sie einen weiteren Geschäftsführer zu "${entity.name}" hinzu</p>
-        </div>
-        <button class="close-modal" onclick="closeAddManagerModal()">×</button>
-      </div>
-      
-      <div class="alert alert-info" style="margin-bottom:20px">
-        <div>
-          <div class="alert-title">Geschäftsführer-Rechte</div>
-          <div class="alert-message">Der neue Geschäftsführer erhält Vollzugriff auf diese Entität und kann selbst Benutzerrechte vergeben.</div>
-        </div>
-      </div>
-      
-      <div class="form-group">
-        <label class="label">Benutzer auswählen</label>
-        <select class="select" id="add-manager-select">
-          <option value="">-- Benutzer wählen --</option>
-          ${availableUsers.map(u => `<option value="${u.email}">${u.name || u.email}</option>`).join('')}
-        </select>
-      </div>
-      
-      <div class="modal-footer">
-        <button class="btn btn-secondary" onclick="closeAddManagerModal()">Abbrechen</button>
-        <button class="btn btn-success" onclick="addManagerToEntity('${entityId}')">Als Geschäftsführer hinzufügen</button>
-      </div>
-    </div>
-  `;
-  document.body.appendChild(modal);
-}
-
-function closeAddManagerModal() {
-  const modal = document.getElementById('add-manager-modal');
-  if (modal) modal.remove();
-}
-
-async function addManagerToEntity(entityId) {
-  const select = document.getElementById('add-manager-select');
-  const userEmail = select?.value;
-  if (!userEmail) {
-    alert('Bitte wählen Sie einen Benutzer aus');
-    return;
-  }
-  
-  try {
-    const entity = allEntities.find(e => e.id === entityId);
-    const currentManagers = getEntityManagers(entity);
-    const newManagers = [...currentManagers, userEmail];
-    
-    const res = await fetch(`${API_BASE}/api/entitaeten/${entityId}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        managers: newManagers
-      })
-    });
-    
-    if (res.ok) {
-      alert('Geschäftsführer erfolgreich hinzugefügt');
-      closeAddManagerModal();
-      await loadPermissionsData();
-      document.getElementById('entity-selector').value = entityId;
-      loadEntityUsers();
-    } else {
-      const error = await res.json();
-      alert('Fehler: ' + (error.error || 'Unbekannter Fehler'));
-    }
-  } catch (error) {
-    console.error('Error adding manager:', error);
-    alert('Fehler beim Hinzufügen des Geschäftsführers');
-  }
-}
-
-async function removeManager(entityId, managerEmail) {
-  const entity = allEntities.find(e => e.id === entityId);
-  const currentManagers = getEntityManagers(entity);
-  
-  if (currentManagers.length <= 1) {
-    alert('Eine Entität muss mindestens einen Geschäftsführer haben.');
-    return;
-  }
-  
-  if (!confirm(`Möchten Sie diesen Geschäftsführer wirklich entfernen?`)) return;
-  
-  try {
-    const newManagers = currentManagers.filter(m => m !== managerEmail);
-    
-    const res = await fetch(`${API_BASE}/api/entitaeten/${entityId}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        managers: newManagers
-      })
-    });
-    
-    if (res.ok) {
-      await loadPermissionsData();
-      document.getElementById('entity-selector').value = entityId;
-      loadEntityUsers();
-    } else {
-      const error = await res.json();
-      alert('Fehler: ' + (error.error || 'Unbekannter Fehler'));
-    }
-  } catch (error) {
-    console.error('Error removing manager:', error);
-  }
-}
-
-function closeEntityPermsModal() {
-  const modal = document.getElementById('entity-perms-modal');
-  if (modal) modal.remove();
-  currentEntityId = null;
-}
-
-// Create entity modal
-function openCreateEntityModal() {
-  if (!isGeschaeftsfuehrer) {
-    alert('Nur der Geschäftsführer kann Entitäten erstellen.');
-    return;
-  }
-  
-  const modal = document.createElement('div');
-  modal.className = 'modal active';
-  modal.id = 'create-entity-modal';
-  
-  modal.innerHTML = `
-    <div class="modal-content">
-      <div class="modal-header">
-        <div>
-          <h3>🏢 Neue Entität erstellen</h3>
-          <p>Erstellen Sie eine Geschäftseinheit oder Filiale</p>
-        </div>
-        <button class="close-modal" onclick="closeCreateEntityModal()">×</button>
-      </div>
-      
-      <div class="form-group">
-        <label class="label">Name der Entität</label>
-        <input type="text" class="input" id="new-entity-name" placeholder="z.B. Filiale Berlin">
-      </div>
-      
-      <div class="form-group">
-        <label class="label">Manager (kann Berechtigungen für diese Entität vergeben)</label>
-        <select class="select" id="new-entity-manager">
-          <option value="">Kein Manager</option>
-          ${allUsers.filter(u => u.globalPermissions?.role !== 'geschaeftsfuehrer').map(u => `
-            <option value="${u.email}">${u.name || u.email}</option>
-          `).join('')}
-        </select>
-      </div>
-      
-      <div class="alert alert-info">
-        <div>
-          <div class="alert-title">💡 Manager-Rechte</div>
-          <div class="alert-message">Der Manager kann selbst entscheiden, wer Zugriff auf diese Entität hat und welche Module die eingeladenen Benutzer sehen/bearbeiten dürfen.</div>
-        </div>
-      </div>
-      
-      <div class="modal-footer">
-        <button class="btn btn-secondary" onclick="closeCreateEntityModal()">Abbrechen</button>
-        <button class="btn btn-success" onclick="createEntity()">Erstellen</button>
-      </div>
-    </div>
-  `;
-  
-  document.body.appendChild(modal);
-}
-
-async function createEntity() {
-  const name = document.getElementById('new-entity-name').value.trim();
-  const manager = document.getElementById('new-entity-manager').value;
-  
-  if (!name) {
-    alert('Bitte geben Sie einen Namen ein');
-    return;
-  }
-  
-  try {
-    const res = await fetch(`${API_BASE}/api/entitaeten`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, manager, type: 'standard' })
-    });
-    
-    if (res.ok) {
-      alert('Entität erfolgreich erstellt');
-      closeCreateEntityModal();
-      loadPermissionsData();
-    } else {
-      const error = await res.json();
-      alert('Fehler: ' + (error.error || 'Unbekannter Fehler'));
-    }
-  } catch (error) {
-    console.error('Error creating entity:', error);
-    alert('Fehler beim Erstellen der Entität');
-  }
-}
-
-function closeCreateEntityModal() {
-  const modal = document.getElementById('create-entity-modal');
-  if (modal) modal.remove();
-}
-
-async function deleteEntity(entityId) {
-  if (!confirm('Möchten Sie diese Entität wirklich löschen? Alle Berechtigungen werden entfernt.')) return;
-  
-  try {
-    const res = await fetch(`${API_BASE}/api/entitaeten/${entityId}`, {
-      method: 'DELETE'
-    });
-    
-    if (res.ok) {
-      alert('Entität gelöscht');
-      loadPermissionsData();
-    } else {
-      const error = await res.json();
-      alert('Fehler: ' + (error.error || 'Unbekannter Fehler'));
-    }
-  } catch (error) {
-    console.error('Error deleting entity:', error);
-  }
-}
-
-function removeUser(id) {
-  if (confirm('Möchten Sie diesen Benutzer wirklich entfernen?')) {
-    alert('Benutzer entfernt');
-  }
-}
-
-function resendInvite(id) {
-  alert('Einladung wurde erneut gesendet');
-}
-
-// Close modals on outside click
-document.addEventListener('click', (e) => {
-  if (e.target.classList.contains('modal')) {
-    e.target.remove();
-  }
-});
-
-// Close modals on Escape key
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') {
-    document.querySelectorAll('.modal').forEach(modal => modal.remove());
-  }
-});
 </script>
 </body>
 </html>
