@@ -2,169 +2,199 @@
  * KONTIQ TYPOGRAPHY SYSTEM
  * Fintech Minimalist Design - Inter Font Family
  * This file enforces consistent typography across all modules
+ * LOADED LAST - Overrides everything with !important
  */
 
-/* ==================== GLOBAL FONT FAMILY ==================== */
-/* Force Inter font on ALL elements */
-*,
-*::before,
-*::after,
-html,
-body,
-div,
-span,
-p,
-a,
-button,
-input,
-select,
-textarea,
-label,
-h1, h2, h3, h4, h5, h6 {
+/* ==================== GLOBAL FONT FAMILY - NUCLEAR OPTION ==================== */
+/* Force Inter font on EVERYTHING */
+* {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif !important;
 }
 
-/* Exception: Roboto Mono ONLY for numeric amounts */
-.cashflow-amount,
-.stat-amount,
-.forecast-amount,
-.mono-numbers,
-[data-mono="true"] {
-    font-family: 'Roboto Mono', monospace !important;
-}
+/* ==================== SPECIFIC OVERRIDES FOR ALL MODULES ==================== */
 
-/* ==================== FONT SIZE STANDARDIZATION ==================== */
-/* Only use these 3 sizes: 11px (small), 13px (body), 18px (headings) */
-
-/* Small text - labels, captions, meta */
-.text-xs,
-.label-small,
-.meta-text,
-small {
-    font-size: 11px !important;
-}
-
-/* Body text - default, descriptions */
-body,
-.text-sm,
-.text-base,
-p,
-li,
-.description {
-    font-size: 13px !important;
-}
-
-/* Headings */
-h1, h2, h3,
-.heading,
-.section-title,
-.modal-title,
-.card-title {
-    font-size: 18px !important;
-    font-weight: 700 !important;
-}
-
-/* ==================== BADGE STANDARDIZATION ==================== */
-.badge,
-[class*="badge-"],
-.kategorie-badge,
-.status-badge {
-    font-size: 11px !important;
-    font-weight: 600 !important;
-    padding: 4px 10px !important;
-    border-radius: 6px !important;
-    display: inline-block !important;
-    font-family: 'Inter', sans-serif !important;
-}
-
-/* ==================== TABLE & LIST STANDARDIZATION ==================== */
-table,
-.table,
-.invoices-table,
+/* FORDERUNGEN specific elements */
+.stat-label,
+.filter-label,
 .table-header,
-.table-row {
-    font-size: 13px !important;
-    font-family: 'Inter', sans-serif !important;
+.invoice-row,
+.client-name,
+.client-warning,
+.invoice-number,
+.date-sub,
+.analysis-title,
+.analysis-card-header,
+.client-item,
+.client-item-name,
+.form-label,
+.items-section-title,
+.mahnung-calculator-title,
+.import-title,
+.import-desc,
+.upload-zone-title,
+.upload-zone-desc,
+.history-box-title,
+.page-title,
+.filter-group select,
+.filter-group input,
+.form-group input,
+.form-group select,
+.form-group textarea,
+.form-input,
+.total-row,
+.calc-row,
+.reminder-detail {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif !important;
 }
 
+/* LIQUIDITÄT specific elements */
+.forecast-title,
+.forecast-subtitle,
+.forecast-label,
+.cashflow-title,
+.payment-item,
+.scenario-card,
+.scenario-title,
+.scenario-desc {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif !important;
+}
+
+/* STEUERN specific elements */
+.section-title,
+.tax-row,
+.steuerberater-recommendations {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif !important;
+}
+
+/* ==================== FONT SIZE OVERRIDES - ULTRA SPECIFIC ==================== */
+
+/* 11px elements */
+.stat-label,
+.filter-label,
+.table-header,
+.table-header > div,
+.invoice-number,
+.date-sub,
+.form-label,
+.items-section-title,
+.mahnung-calculator-title,
+.import-desc,
+.upload-zone-desc,
+.history-box-title,
+.history-box-content,
 table th,
 .table th,
-.table-header > div {
+.badge,
+[class*="badge-"],
+.kategorie-badge {
     font-size: 11px !important;
-    font-weight: 600 !important;
-    text-transform: uppercase !important;
-    letter-spacing: 0.5px !important;
 }
 
-/* ==================== FORM ELEMENTS STANDARDIZATION ==================== */
+/* 13px elements */
+body,
+p,
+li,
 input,
 select,
 textarea,
 button,
 .btn,
+.invoice-row,
+.filter-group select,
+.filter-group input,
+.form-group input,
+.form-group select,
+.form-group textarea,
 .form-input,
-.form-select {
-    font-size: 13px !important;
-    font-family: 'Inter', sans-serif !important;
-}
-
+.analysis-card-header,
+.client-item,
+.import-title,
+.total-row,
+.calc-row,
+.reminder-detail,
+.date-main,
+.amount,
+.modal-body,
 label,
 .form-label,
 .label {
     font-size: 13px !important;
-    font-weight: 600 !important;
-    font-family: 'Inter', sans-serif !important;
 }
 
-/* ==================== CARD STANDARDIZATION ==================== */
-.card,
-.cashflow-card,
-.stat-card,
-.module-card {
-    font-family: 'Inter', sans-serif !important;
-}
-
-.card-label,
-.stat-label,
-.cashflow-title {
-    font-size: 11px !important;
-    font-weight: 600 !important;
-    color: var(--gray) !important;
-    text-transform: uppercase !important;
-    letter-spacing: 0.5px !important;
-}
-
+/* 18px elements */
+h1, h2, h3, h4, h5, h6,
+.analysis-title,
+.page-title,
+.modal-title,
+.modal-header h2,
+.modal-header h3,
+.section-title,
+.card-title,
+.heading,
 .card-value,
 .stat-value {
     font-size: 18px !important;
     font-weight: 700 !important;
-    color: var(--navy) !important;
 }
 
-/* ==================== MODAL STANDARDIZATION ==================== */
-.modal-header h2,
-.modal-header h3,
-.modal-title {
-    font-size: 18px !important;
-    font-weight: 700 !important;
+/* ==================== EXCEPTION: Roboto Mono for amounts ONLY ==================== */
+.amount,
+.stat-value,
+.cashflow-amount,
+.stat-amount,
+.forecast-amount,
+.mono-numbers,
+.client-item-value,
+.total-row span:last-child,
+.calc-row span:last-child,
+.reminder-detail span:last-child,
+.date-main,
+[data-mono="true"],
+[class*="amount"] {
+    font-family: 'Roboto Mono', monospace !important;
 }
 
-.modal-body,
-.modal-content p {
-    font-size: 13px !important;
-}
-
-/* ==================== NAVIGATION STANDARDIZATION ==================== */
-nav,
-.nav,
-.nav-link,
-.menu-item {
-    font-size: 13px !important;
+/* ==================== BADGE STANDARDIZATION ==================== */
+.badge,
+.badge-offen,
+.badge-bezahlt,
+.badge-uberfällig,
+.badge-mahnung,
+.badge-uberweisung,
+.badge-lastschrift,
+.badge-bar,
+.kategorie-badge,
+.status-badge,
+[class*="badge-"] {
+    font-size: 11px !important;
+    font-weight: 600 !important;
     font-family: 'Inter', sans-serif !important;
+    padding: 4px 10px !important;
+    border-radius: 6px !important;
+    display: inline-block !important;
 }
 
-/* ==================== REMOVE ROBOTO MONO EXCEPT FOR NUMBERS ==================== */
-/* Override any Roboto Mono usage except for amounts */
-*:not(.cashflow-amount):not(.stat-amount):not(.forecast-amount):not(.mono-numbers):not([data-mono="true"]) {
+/* ==================== CLEAN TYPOGRAPHY HIERARCHY ==================== */
+/* Remove all inline font-size and font-family by being more specific */
+.stats-bar * ,
+.filter-section *,
+.invoices-table *,
+.analysis-section *,
+.modal *,
+.cashflow-grid *,
+.kategorien-widget * {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif !important;
 }
+
+/* Re-apply Roboto Mono for amounts inside these sections */
+.stats-bar .stat-value,
+.stats-bar .amount,
+.invoices-table .amount,
+.invoices-table .date-main,
+.analysis-section .client-item-value,
+.modal .total-row span:last-child,
+.modal .calc-row span:last-child,
+.cashflow-grid .cashflow-amount {
+    font-family: 'Roboto Mono', monospace !important;
+}
+
