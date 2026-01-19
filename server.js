@@ -302,7 +302,7 @@ app.post('/api/users/register', validate(schemas.user), async (req, res) => {
     // Hash password with bcrypt (secure, salted hashing)
     const passwordHash = await bcrypt.hash(password, SALT_ROUNDS);
 
-    const user = { email, name: name || '', company: company || '', passwordHash, created: new Date().toISOString() };
+    const user = { email, name: name || '', company: company || '', passwordHash, createdAt: new Date().toISOString() };
     users.push(user);
     writeJSON(FILES.users, users);
     // Ajout du rôle geschaeftsfuehrer dans permissions.json
@@ -401,7 +401,7 @@ app.post('/api/entitaeten', validate(schemas.entity), (req, res) => {
   if (!entityManagers.length) return res.status(400).json({ error: 'Manager fehlt' });
   
   const data = readJSON(FILES.entitaeten);
-  const item = { id: Date.now().toString(), name, managers: entityManagers, manager: entityManagers[0], type: type || 'standard', created: new Date().toISOString() };
+  const item = { id: Date.now().toString(), name, managers: entityManagers, manager: entityManagers[0], type: type || 'standard', createdAt: new Date().toISOString() };
   data.push(item);
   writeJSON(FILES.entitaeten, data);
   res.status(201).json({ entity: item });
@@ -512,7 +512,7 @@ app.post('/api/permissions/invite', (req, res) => {
   const { adminEmail, targetEmail, entityId, permissions } = req.body;
   if (!adminEmail || !targetEmail || !entityId || !permissions) return res.status(400).json({ error: 'Parameter fehlen' });
   const perms = readJSON(FILES.permissions);
-  const invitation = { id: Date.now().toString(), from: adminEmail, to: targetEmail, entityId, permissions, created: new Date().toISOString(), status: 'pending' };
+  const invitation = { id: Date.now().toString(), from: adminEmail, to: targetEmail, entityId, permissions, createdAt: new Date().toISOString(), status: 'pending' };
   perms.invitations = perms.invitations || [];
   perms.invitations.push(invitation);
   writeJSON(FILES.permissions, perms);
@@ -690,7 +690,7 @@ app.post('/api/forderungen-kategorien', (req, res) => {
       color: color || '#607d8b',
       icon: icon || 'folder',
       isDefault: false,
-      created: new Date().toISOString()
+      createdAt: new Date().toISOString()
     };
 
     kategorien.push(neueKategorie);
@@ -813,7 +813,7 @@ app.post('/api/zahlungen-kategorien', (req, res) => {
       icon: icon || 'folder',
       priority: priority || 'medium',
       isDefault: false,
-      created: new Date().toISOString()
+      createdAt: new Date().toISOString()
     };
 
     kategorien.push(neueKategorie);
