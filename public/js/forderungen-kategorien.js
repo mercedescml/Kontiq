@@ -182,13 +182,14 @@ kategorienCSS.textContent = `
         display: inline-block;
         padding: 0.25rem 0.75rem;
         border-radius: 6px;
-        font-size: 0.75rem;
+        font-size: 11px;
         font-weight: 600;
         color: var(--gray);
         background: var(--light-gray);
         border: 1px solid var(--border-gray);
         white-space: nowrap;
         letter-spacing: 0.3px;
+        font-family: 'Inter', sans-serif;
     }
 
     .kategorie-badge.uncategorized {
@@ -201,7 +202,8 @@ kategorienCSS.textContent = `
         padding: 0.5rem;
         border: 1px solid var(--border-gray);
         border-radius: 8px;
-        font-size: 0.95rem;
+        font-size: 13px;
+        font-family: 'Inter', sans-serif;
     }
 
     .kategorie-options {
@@ -247,14 +249,16 @@ kategorienCSS.textContent = `
 
     .kategorie-option-name {
         font-weight: 600;
-        font-size: 1rem;
+        font-size: 13px;
         margin-bottom: 0.25rem;
         color: var(--navy);
+        font-family: 'Inter', sans-serif;
     }
 
     .kategorie-option-description {
-        font-size: 0.875rem;
+        font-size: 11px;
         color: var(--gray);
+        font-family: 'Inter', sans-serif;
     }
 `;
 document.head.appendChild(kategorienCSS);

@@ -94,28 +94,28 @@ class KategorienAnalyse {
                             <div class="cashflow-title">Gesamtumsatz</div>
                         </div>
                         <div class="cashflow-amount" style="color: var(--navy);">€${this.formatNumber(this.data.totals.totalAmount)}</div>
-                        <div style="font-size: 13px; color: var(--gray); margin-top: 8px;">${this.data.totals.count} Forderungen</div>
+                        <div style="font-size: 13px; color: var(--gray); margin-top: 8px; font-family: 'Inter', sans-serif;">${this.data.totals.count} Forderungen</div>
                     </div>
                     <div class="cashflow-card">
                         <div class="cashflow-header">
                             <div class="cashflow-title">Top Kategorie</div>
                         </div>
-                        <div class="cashflow-amount" style="color: var(--teal); font-size: 16px; font-weight: 700;">${this.data.insights.topByRevenue[0]?.name || 'N/A'}</div>
-                        <div style="font-size: 13px; color: var(--gray); margin-top: 8px;">€${this.formatNumber(this.data.insights.topByRevenue[0]?.totalAmount || 0)}</div>
+                        <div class="cashflow-amount" style="color: var(--teal); font-size: 16px; font-weight: 700; font-family: 'Inter', sans-serif;">${this.data.insights.topByRevenue[0]?.name || 'N/A'}</div>
+                        <div style="font-size: 13px; color: var(--gray); margin-top: 8px; font-family: 'Inter', sans-serif;">€${this.formatNumber(this.data.insights.topByRevenue[0]?.totalAmount || 0)}</div>
                     </div>
                     <div class="cashflow-card">
                         <div class="cashflow-header">
                             <div class="cashflow-title">Überfällig</div>
                         </div>
                         <div class="cashflow-amount" style="color: var(--navy);">€${this.formatNumber(this.data.totals.overdueAmount)}</div>
-                        <div style="font-size: 13px; color: var(--gray); margin-top: 8px;">${this.data.totals.overdueAmount > 0 ? 'Maßnahmen erforderlich' : 'Alles aktuell'}</div>
+                        <div style="font-size: 13px; color: var(--gray); margin-top: 8px; font-family: 'Inter', sans-serif;">${this.data.totals.overdueAmount > 0 ? 'Maßnahmen erforderlich' : 'Alles aktuell'}</div>
                     </div>
                     <div class="cashflow-card">
                         <div class="cashflow-header">
                             <div class="cashflow-title">Skonto erfasst</div>
                         </div>
                         <div class="cashflow-amount" style="color: var(--teal);">€${this.formatNumber(this.data.totals.skontoCaptured)}</div>
-                        <div style="font-size: 13px; color: var(--gray); margin-top: 8px;">von €${this.formatNumber(this.data.totals.skontoAvailable)}</div>
+                        <div style="font-size: 13px; color: var(--gray); margin-top: 8px; font-family: 'Inter', sans-serif;">von €${this.formatNumber(this.data.totals.skontoAvailable)}</div>
                     </div>
                 </div>
 
@@ -124,7 +124,7 @@ class KategorienAnalyse {
                     ${this.data.kategorien.map(kat => `
                         <div class="cashflow-card">
                             <div class="cashflow-header">
-                                <div class="cashflow-title" style="font-size: 13px; font-weight: 600;">${kat.name}</div>
+                                <div class="cashflow-title" style="font-size: 13px; font-weight: 600; font-family: 'Inter', sans-serif;">${kat.name}</div>
                             </div>
                             <div class="cashflow-amount" style="color: var(--navy); font-size: 18px; font-weight: 700; font-family: 'Inter', sans-serif;">€${this.formatNumber(kat.totalAmount)}</div>
                             <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 12px; font-size: 11px; color: var(--gray);">
@@ -152,7 +152,7 @@ class KategorienAnalyse {
                         <div class="cashflow-header">
                             <div class="cashflow-title">Top Kategorien (Umsatz)</div>
                         </div>
-                        <ol style="padding-left: 1.2rem; margin: 0; font-size: 13px; line-height: 1.8;">
+                        <ol style="padding-left: 1.2rem; margin: 0; font-size: 13px; line-height: 1.8; font-family: 'Inter', sans-serif;">
                             ${this.data.insights.topByRevenue.map(kat => `
                                 <li>${kat.name}: <strong>€${this.formatNumber(kat.totalAmount)}</strong></li>
                             `).join('')}
@@ -163,7 +163,7 @@ class KategorienAnalyse {
                         <div class="cashflow-header">
                             <div class="cashflow-title">Top Kategorien (Anzahl)</div>
                         </div>
-                        <ol style="padding-left: 1.2rem; margin: 0; font-size: 13px; line-height: 1.8;">
+                        <ol style="padding-left: 1.2rem; margin: 0; font-size: 13px; line-height: 1.8; font-family: 'Inter', sans-serif;">
                             ${this.data.insights.topByCount.map(kat => `
                                 <li>${kat.name}: <strong>${kat.count}</strong> Forderungen</li>
                             `).join('')}
@@ -173,8 +173,8 @@ class KategorienAnalyse {
 
                 ${this.data.insights.uncategorizedCount > 0 ? `
                     <div style="background: var(--light-gray); border: 1px solid var(--border-gray); border-radius: 8px; padding: 16px; margin-top: 20px;">
-                        <div style="font-size: 14px; font-weight: 600; color: var(--navy); margin-bottom: 8px;">Nicht kategorisierte Forderungen</div>
-                        <div style="font-size: 13px; color: var(--gray);">
+                        <div style="font-size: 13px; font-weight: 600; color: var(--navy); margin-bottom: 8px; font-family: 'Inter', sans-serif;">Nicht kategorisierte Forderungen</div>
+                        <div style="font-size: 13px; color: var(--gray); font-family: 'Inter', sans-serif;">
                             <strong>${this.data.insights.uncategorizedCount}</strong> Forderungen
                             im Wert von <strong>€${this.formatNumber(this.data.insights.uncategorizedAmount)}</strong>
                             sind noch nicht kategorisiert.

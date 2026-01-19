@@ -9,8 +9,10 @@
 
 .kategorien-widget h3 {
     margin: 0 0 1.5rem 0;
-    font-size: 1.2rem;
+    font-size: 18px;
+    font-weight: 700;
     color: var(--navy);
+    font-family: 'Inter', sans-serif;
 }
 
 .kategorien-summary {
@@ -28,15 +30,17 @@
 }
 
 .summary-label {
-    font-size: 0.875rem;
+    font-size: 11px;
     color: var(--gray);
     margin-bottom: 0.5rem;
+    font-family: 'Inter', sans-serif;
 }
 
 .summary-value {
-    font-size: 1.5rem;
-    font-weight: 600;
+    font-size: 18px;
+    font-weight: 700;
     color: var(--navy);
+    font-family: 'Inter', sans-serif;
 }
 
 .kategorien-list {
@@ -61,10 +65,11 @@
 
 .kategorie-rank {
     font-weight: 700;
-    font-size: 1.1rem;
+    font-size: 13px;
     color: var(--gray);
     width: 24px;
     text-align: center;
+    font-family: 'Inter', sans-serif;
 }
 
 .kategorie-color {
@@ -76,19 +81,24 @@
 .kategorie-name {
     flex: 1;
     font-weight: 500;
+    font-size: 13px;
     color: var(--navy);
+    font-family: 'Inter', sans-serif;
 }
 
 .kategorie-amount {
     font-weight: 600;
+    font-size: 13px;
     color: var(--navy);
+    font-family: 'Inter', sans-serif;
 }
 
 .kategorie-percentage {
-    font-size: 0.875rem;
+    font-size: 11px;
     color: var(--gray);
     width: 50px;
     text-align: right;
+    font-family: 'Inter', sans-serif;
 }
 
 .widget-footer {
@@ -102,6 +112,8 @@
     color: var(--teal);
     text-decoration: none;
     font-weight: 500;
+    font-size: 13px;
+    font-family: 'Inter', sans-serif;
     transition: color 0.2s;
 }
 
@@ -123,8 +135,10 @@
 
 .analyse-header h2 {
     margin: 0;
-    font-size: 1.8rem;
+    font-size: 18px;
+    font-weight: 700;
     color: var(--navy);
+    font-family: 'Inter', sans-serif;
 }
 
 .analyse-filters {
@@ -137,7 +151,8 @@
     padding: 0.5rem 1rem;
     border: 1px solid var(--border-gray);
     border-radius: 8px;
-    font-size: 0.95rem;
+    font-size: 13px;
+    font-family: 'Inter', sans-serif;
 }
 
 .overview-cards {
@@ -163,7 +178,7 @@
 }
 
 .card-icon {
-    font-size: 2.5rem;
+    font-size: 24px;
     width: 60px;
     height: 60px;
     display: flex;
@@ -178,21 +193,24 @@
 }
 
 .card-label {
-    font-size: 0.875rem;
+    font-size: 11px;
     color: var(--gray);
     margin-bottom: 0.5rem;
+    font-family: 'Inter', sans-serif;
 }
 
 .card-value {
-    font-size: 1.5rem;
+    font-size: 18px;
     font-weight: 700;
     color: var(--navy);
     margin-bottom: 0.25rem;
+    font-family: 'Inter', sans-serif;
 }
 
 .card-detail {
-    font-size: 0.875rem;
+    font-size: 11px;
     color: var(--gray);
+    font-family: 'Inter', sans-serif;
 }
 
 .chart-section,
@@ -207,8 +225,10 @@
 .chart-section h3,
 .table-section h3 {
     margin: 0 0 1.5rem 0;
-    font-size: 1.2rem;
+    font-size: 18px;
+    font-weight: 700;
     color: var(--navy);
+    font-family: 'Inter', sans-serif;
 }
 
 .table-responsive {
@@ -227,12 +247,15 @@
     font-weight: 600;
     color: var(--navy);
     border-bottom: 2px solid var(--border-gray);
-    font-size: 0.875rem;
+    font-size: 11px;
+    font-family: 'Inter', sans-serif;
 }
 
 .kategorien-table td {
     padding: 1rem;
     border-bottom: 1px solid var(--border-gray);
+    font-size: 13px;
+    font-family: 'Inter', sans-serif;
 }
 
 .kategorien-table tr:hover {
@@ -271,9 +294,10 @@
     align-items: center;
     justify-content: center;
     height: 100%;
-    font-size: 0.875rem;
+    font-size: 11px;
     font-weight: 600;
     color: var(--navy);
+    font-family: 'Inter', sans-serif;
 }
 
 .insights-section {
@@ -291,8 +315,10 @@
 
 .insight-card h4 {
     margin: 0 0 1rem 0;
-    font-size: 1.1rem;
+    font-size: 18px;
+    font-weight: 700;
     color: var(--navy);
+    font-family: 'Inter', sans-serif;
 }
 
 .insight-card ol,
@@ -304,6 +330,8 @@
 .insight-card li {
     margin-bottom: 0.75rem;
     line-height: 1.6;
+    font-size: 13px;
+    font-family: 'Inter', sans-serif;
 }
 
 .insight-card.warning {
@@ -315,9 +343,10 @@
     display: inline-block;
     padding: 0.25rem 0.5rem;
     border-radius: 4px;
-    font-size: 0.75rem;
+    font-size: 11px;
     font-weight: 600;
     margin-right: 0.5rem;
+    font-family: 'Inter', sans-serif;
 }
 
 .behavior-label.very-punctual {
@@ -351,6 +380,8 @@
     color: var(--teal);
     text-decoration: none;
     font-weight: 500;
+    font-size: 13px;
+    font-family: 'Inter', sans-serif;
 }
 
 .btn-link:hover {
