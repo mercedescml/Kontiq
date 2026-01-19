@@ -7,35 +7,27 @@
 <!-- Tax Overview Cards -->
 <div class="cashflow-grid" style="margin-bottom: 24px;">
     <div class="cashflow-card">
-        <div class="cashflow-header">
-            <div class="cashflow-title">Umsatzsteuer (erhalten)</div>
-        </div>
-        <div class="cashflow-amount" style="color: var(--teal);" id="steuer-erhalten-total">€0,00</div>
-        <div style="font-size: 13px; color: var(--gray); margin-top: 8px;">Aus Forderungen</div>
+        <div class="tax-card-label">Umsatzsteuer (erhalten)</div>
+        <div class="tax-card-amount" style="color: var(--teal);" id="steuer-erhalten-total">€0,00</div>
+        <div class="tax-card-subtitle">Aus Forderungen</div>
     </div>
 
     <div class="cashflow-card">
-        <div class="cashflow-header">
-            <div class="cashflow-title">Vorsteuer (gezahlt)</div>
-        </div>
-        <div class="cashflow-amount" style="color: var(--navy);" id="steuer-gezahlt-total">€0,00</div>
-        <div style="font-size: 13px; color: var(--gray); margin-top: 8px;">Aus Zahlungen</div>
+        <div class="tax-card-label">Vorsteuer (gezahlt)</div>
+        <div class="tax-card-amount" style="color: var(--navy);" id="steuer-gezahlt-total">€0,00</div>
+        <div class="tax-card-subtitle">Aus Zahlungen</div>
     </div>
 
     <div class="cashflow-card">
-        <div class="cashflow-header">
-            <div class="cashflow-title">Zahllast / Erstattung</div>
-        </div>
-        <div class="cashflow-amount" id="steuer-zahllast">€0,00</div>
-        <div style="font-size: 13px; color: var(--gray); margin-top: 8px;" id="steuer-zahllast-label">Zu zahlen</div>
+        <div class="tax-card-label">Zahllast / Erstattung</div>
+        <div class="tax-card-amount" id="steuer-zahllast">€0,00</div>
+        <div class="tax-card-subtitle" id="steuer-zahllast-label">Zu zahlen</div>
     </div>
 
     <div class="cashflow-card">
-        <div class="cashflow-header">
-            <div class="cashflow-title">Zeitraum</div>
-        </div>
+        <div class="tax-card-label">Zeitraum</div>
         <div style="margin-top: 12px;">
-            <select id="steuer-zeitraum" onchange="loadSteuernData()" style="width: 100%; padding: 8px; border: 1px solid var(--border-gray); border-radius: 6px; font-size: 13px;">
+            <select id="steuer-zeitraum" onchange="loadSteuernData()" style="width: 100%; padding: 10px 12px; border: 1px solid var(--border-gray); border-radius: 8px; font-size: 13px; font-family: 'Inter', sans-serif;">
                 <option value="current-month">Aktueller Monat</option>
                 <option value="last-month">Letzter Monat</option>
                 <option value="current-quarter">Aktuelles Quartal</option>
@@ -52,49 +44,43 @@
     <div class="section-title">Aufschlüsselung nach Steuersätzen</div>
     <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; margin-top: 16px;">
         <div class="cashflow-card">
-            <div class="cashflow-header">
-                <div class="cashflow-title" style="font-size: 13px; font-weight: 600;">19% MwSt.</div>
-            </div>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 12px;">
+            <div class="tax-rate-title">19% MwSt.</div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 16px;">
                 <div>
-                    <div style="font-size: 11px; color: var(--gray);">Erhalten</div>
-                    <div style="font-size: 16px; font-weight: 700; color: var(--teal); margin-top: 4px;" id="steuer-19-erhalten">€0,00</div>
+                    <div class="tax-split-label">Erhalten</div>
+                    <div class="tax-split-amount" style="color: var(--teal);" id="steuer-19-erhalten">€0,00</div>
                 </div>
                 <div>
-                    <div style="font-size: 11px; color: var(--gray);">Gezahlt</div>
-                    <div style="font-size: 16px; font-weight: 700; color: var(--navy); margin-top: 4px;" id="steuer-19-gezahlt">€0,00</div>
+                    <div class="tax-split-label">Gezahlt</div>
+                    <div class="tax-split-amount" style="color: var(--navy);" id="steuer-19-gezahlt">€0,00</div>
                 </div>
             </div>
         </div>
 
         <div class="cashflow-card">
-            <div class="cashflow-header">
-                <div class="cashflow-title" style="font-size: 13px; font-weight: 600;">7% MwSt.</div>
-            </div>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 12px;">
+            <div class="tax-rate-title">7% MwSt.</div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 16px;">
                 <div>
-                    <div style="font-size: 11px; color: var(--gray);">Erhalten</div>
-                    <div style="font-size: 16px; font-weight: 700; color: var(--teal); margin-top: 4px;" id="steuer-7-erhalten">€0,00</div>
+                    <div class="tax-split-label">Erhalten</div>
+                    <div class="tax-split-amount" style="color: var(--teal);" id="steuer-7-erhalten">€0,00</div>
                 </div>
                 <div>
-                    <div style="font-size: 11px; color: var(--gray);">Gezahlt</div>
-                    <div style="font-size: 16px; font-weight: 700; color: var(--navy); margin-top: 4px;" id="steuer-7-gezahlt">€0,00</div>
+                    <div class="tax-split-label">Gezahlt</div>
+                    <div class="tax-split-amount" style="color: var(--navy);" id="steuer-7-gezahlt">€0,00</div>
                 </div>
             </div>
         </div>
 
         <div class="cashflow-card">
-            <div class="cashflow-header">
-                <div class="cashflow-title" style="font-size: 13px; font-weight: 600;">0% MwSt. (Steuerbefreit)</div>
-            </div>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 12px;">
+            <div class="tax-rate-title">0% MwSt. (Steuerbefreit)</div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 16px;">
                 <div>
-                    <div style="font-size: 11px; color: var(--gray);">Erhalten</div>
-                    <div style="font-size: 16px; font-weight: 700; color: var(--teal); margin-top: 4px;" id="steuer-0-erhalten">€0,00</div>
+                    <div class="tax-split-label">Erhalten</div>
+                    <div class="tax-split-amount" style="color: var(--teal);" id="steuer-0-erhalten">€0,00</div>
                 </div>
                 <div>
-                    <div style="font-size: 11px; color: var(--gray);">Gezahlt</div>
-                    <div style="font-size: 16px; font-weight: 700; color: var(--navy); margin-top: 4px;" id="steuer-0-gezahlt">€0,00</div>
+                    <div class="tax-split-label">Gezahlt</div>
+                    <div class="tax-split-amount" style="color: var(--navy);" id="steuer-0-gezahlt">€0,00</div>
                 </div>
             </div>
         </div>
@@ -174,6 +160,56 @@
     color: var(--navy);
     margin-bottom: 1rem;
     font-family: 'Inter', sans-serif;
+}
+
+/* Tax Card Styling */
+.tax-card-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--gray);
+    margin-bottom: 12px;
+}
+
+.tax-card-amount {
+    font-size: 28px;
+    font-weight: 700;
+    font-family: 'Roboto Mono', monospace;
+    line-height: 1.2;
+    margin-bottom: 8px;
+}
+
+.tax-card-subtitle {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--gray);
+    margin-top: 8px;
+}
+
+/* Tax Rate Breakdown Card Styling */
+.tax-rate-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--navy);
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--light-gray);
+}
+
+.tax-split-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    color: var(--gray);
+    margin-bottom: 6px;
+}
+
+.tax-split-amount {
+    font-size: 20px;
+    font-weight: 700;
+    font-family: 'Roboto Mono', monospace;
+    line-height: 1.2;
 }
 
 .tax-row {
