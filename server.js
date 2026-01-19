@@ -147,145 +147,118 @@ app.get('/app', (req, res) => res.sendFile(path.join(__dirname, 'public', 'index
 
 app.use(express.static('public', { maxAge: '1d' }));
 
+// ========== CRUD ROUTE FACTORY ==========
+/**
+ * Generic CRUD route factory to eliminate duplication
+ * @param {string} resource - Plural resource name (e.g., 'zahlungen')
+ * @param {string} file - Path to JSON file
+ * @param {object} options - Configuration options
+ *   @param {object} options.schema - Joi validation schema for POST
+ *   @param {string} options.singularKey - Singular form for response (auto-generated if not provided)
+ *   @param {function} options.beforeGet - Hook to modify data before GET response
+ */
+function createCrudRoutes(resource, file, options = {}) {
+  const { schema, singularKey, beforeGet } = options;
+
+  // Auto-generate singular key if not provided
+  const singular = singularKey || (
+    resource.endsWith('en') ? resource.slice(0, -2) : // zahlungen → zahlung, forderungen → forderung
+    resource.endsWith('s') ? resource.slice(0, -1) :  // contracts → contract
+    resource // kosten → kosten (already singular-looking)
+  );
+
+  // GET - List all with optional userId filter
+  app.get(`/api/${resource}`, (req, res) => {
+    let data = readJSON(file);
+
+    // Apply beforeGet hook if provided (for sample data initialization, etc.)
+    if (beforeGet) data = beforeGet(data);
+
+    const userId = req.query.userId;
+    const filtered = userId ? data.filter(x => x.userId === userId) : data;
+    res.json({ [resource]: filtered });
+  });
+
+  // POST - Create new item
+  const postHandler = (req, res) => {
+    const data = readJSON(file);
+    const item = {
+      id: Date.now().toString(),
+      ...req.body,
+      userId: req.body.userId,
+      createdAt: new Date().toISOString()
+    };
+    data.push(item);
+    const success = writeJSON(file, data);
+    success
+      ? res.status(201).json({ [singular]: item })
+      : res.status(500).json({ error: 'Fehler beim Speichern' });
+  };
+
+  // Apply validation middleware if schema provided
+  if (schema) {
+    app.post(`/api/${resource}`, validate(schema), postHandler);
+  } else {
+    app.post(`/api/${resource}`, postHandler);
+  }
+
+  // PUT - Update existing item
+  app.put(`/api/${resource}/:id`, (req, res) => {
+    let data = readJSON(file);
+    const idx = data.findIndex(x => x.id === req.params.id);
+    if (idx === -1) return res.status(404).json({ error: 'Nicht gefunden' });
+
+    data[idx] = { ...data[idx], ...req.body, id: req.params.id };
+    writeJSON(file, data);
+    res.json({ [singular]: data[idx] });
+  });
+
+  // DELETE - Remove item
+  app.delete(`/api/${resource}/:id`, (req, res) => {
+    const filtered = readJSON(file).filter(x => x.id !== req.params.id);
+    writeJSON(file, filtered);
+    res.json({ ok: true });
+  });
+}
+
 // ========== API ROUTES ==========
 
 // Dashboard
 app.get('/api/dashboard', (req, res) => res.json({ liquiditaet: 0, skontoMoeglichkeiten: 0, faelligeZahlungen: 0 }));
 
-// Zahlungen
-app.get('/api/zahlungen', (req, res) => {
-  const data = readJSON(FILES.zahlungen);
-  const userId = req.query.userId;
-  const filtered = userId ? data.filter(x => x.userId === userId) : data;
-  res.json({ zahlungen: filtered });
-});
-app.post('/api/zahlungen', validate(schemas.transaction), (req, res) => {
-  const data = readJSON(FILES.zahlungen);
-  const item = { id: Date.now().toString(), ...req.body, userId: req.body.userId, createdAt: new Date().toISOString() };
-  data.push(item);
-  writeJSON(FILES.zahlungen, data) ? res.status(201).json({ zahlung: item }) : res.status(500).json({ error: 'Fehler' });
-});
-app.put('/api/zahlungen/:id', (req, res) => {
-  let data = readJSON(FILES.zahlungen);
-  const idx = data.findIndex(x => x.id === req.params.id);
-  if (idx === -1) return res.status(404).json({ error: 'Nicht gefunden' });
-  data[idx] = { ...data[idx], ...req.body, id: req.params.id };
-  writeJSON(FILES.zahlungen, data);
-  res.json({ zahlung: data[idx] });
-});
-app.delete('/api/zahlungen/:id', (req, res) => {
-  let data = readJSON(FILES.zahlungen).filter(x => x.id !== req.params.id);
-  writeJSON(FILES.zahlungen, data);
-  res.json({ ok: true });
+// Create CRUD routes for all resources
+createCrudRoutes('zahlungen', FILES.zahlungen, {
+  schema: schemas.transaction,
+  singularKey: 'zahlung'
 });
 
-// Contracts
-app.get('/api/contracts', (req, res) => {
-  let data = readJSON(FILES.contracts);
-  if (!data.length) { data = SAMPLE_CONTRACTS; writeJSON(FILES.contracts, data); }
-  const userId = req.query.userId;
-  const filtered = userId ? data.filter(x => x.userId === userId) : data;
-  res.json({ contracts: filtered });
-});
-app.post('/api/contracts', validate(schemas.contract), (req, res) => {
-  const data = readJSON(FILES.contracts);
-  const item = { id: Date.now().toString(), ...req.body, userId: req.body.userId, createdAt: new Date().toISOString() };
-  data.push(item);
-  writeJSON(FILES.contracts, data) ? res.status(201).json({ contract: item }) : res.status(500).json({ error: 'Fehler' });
-});
-app.put('/api/contracts/:id', (req, res) => {
-  let data = readJSON(FILES.contracts);
-  const idx = data.findIndex(x => x.id === req.params.id);
-  if (idx === -1) return res.status(404).json({ error: 'Nicht gefunden' });
-  data[idx] = { ...data[idx], ...req.body, id: req.params.id };
-  writeJSON(FILES.contracts, data);
-  res.json({ contract: data[idx] });
-});
-app.delete('/api/contracts/:id', (req, res) => {
-  writeJSON(FILES.contracts, readJSON(FILES.contracts).filter(x => x.id !== req.params.id));
-  res.json({ ok: true });
+createCrudRoutes('contracts', FILES.contracts, {
+  schema: schemas.contract,
+  singularKey: 'contract',
+  beforeGet: (data) => {
+    // Initialize with sample data if empty
+    if (!data.length) {
+      writeJSON(FILES.contracts, SAMPLE_CONTRACTS);
+      return SAMPLE_CONTRACTS;
+    }
+    return data;
+  }
 });
 app.post('/api/contracts/upload', (req, res) => res.json({ ok: true }));
 
-// Kosten
-app.get('/api/kosten', (req, res) => {
-  const data = readJSON(FILES.kosten);
-  const userId = req.query.userId;
-  const filtered = userId ? data.filter(x => x.userId === userId) : data;
-  res.json({ kosten: filtered });
-});
-app.post('/api/kosten', validate(schemas.transaction), (req, res) => {
-  const data = readJSON(FILES.kosten);
-  const item = { id: Date.now().toString(), ...req.body, userId: req.body.userId, createdAt: new Date().toISOString() };
-  data.push(item);
-  writeJSON(FILES.kosten, data);
-  res.status(201).json({ kosten: item });
-});
-app.put('/api/kosten/:id', (req, res) => {
-  let data = readJSON(FILES.kosten);
-  const idx = data.findIndex(x => x.id === req.params.id);
-  if (idx === -1) return res.status(404).json({ error: 'Nicht gefunden' });
-  data[idx] = { ...data[idx], ...req.body, id: req.params.id };
-  writeJSON(FILES.kosten, data);
-  res.json({ kosten: data[idx] });
-});
-app.delete('/api/kosten/:id', (req, res) => {
-  writeJSON(FILES.kosten, readJSON(FILES.kosten).filter(x => x.id !== req.params.id));
-  res.json({ ok: true });
+createCrudRoutes('kosten', FILES.kosten, {
+  schema: schemas.transaction,
+  singularKey: 'kosten' // Same in singular and plural
 });
 
-// Forderungen
-app.get('/api/forderungen', (req, res) => {
-  const data = readJSON(FILES.forderungen);
-  const userId = req.query.userId;
-  const filtered = userId ? data.filter(x => x.userId === userId) : data;
-  res.json({ forderungen: filtered });
-});
-app.post('/api/forderungen', validate(schemas.transaction), (req, res) => {
-  const data = readJSON(FILES.forderungen);
-  const item = { id: Date.now().toString(), ...req.body, userId: req.body.userId, createdAt: new Date().toISOString() };
-  data.push(item);
-  writeJSON(FILES.forderungen, data);
-  res.status(201).json({ forderung: item });
-});
-app.put('/api/forderungen/:id', (req, res) => {
-  let data = readJSON(FILES.forderungen);
-  const idx = data.findIndex(x => x.id === req.params.id);
-  if (idx === -1) return res.status(404).json({ error: 'Nicht gefunden' });
-  data[idx] = { ...data[idx], ...req.body, id: req.params.id };
-  writeJSON(FILES.forderungen, data);
-  res.json({ forderung: data[idx] });
-});
-app.delete('/api/forderungen/:id', (req, res) => {
-  writeJSON(FILES.forderungen, readJSON(FILES.forderungen).filter(x => x.id !== req.params.id));
-  res.json({ ok: true });
+createCrudRoutes('forderungen', FILES.forderungen, {
+  schema: schemas.transaction,
+  singularKey: 'forderung'
 });
 
-// Bankkonten
-app.get('/api/bankkonten', (req, res) => {
-  const data = readJSON(FILES.bankkonten);
-  const userId = req.query.userId;
-  const filtered = userId ? data.filter(x => x.userId === userId) : data;
-  res.json({ bankkonten: filtered });
-});
-app.post('/api/bankkonten', (req, res) => {
-  const data = readJSON(FILES.bankkonten);
-  const item = { id: Date.now().toString(), ...req.body, userId: req.body.userId, createdAt: new Date().toISOString() };
-  data.push(item);
-  writeJSON(FILES.bankkonten, data);
-  res.status(201).json({ bankkonto: item });
-});
-app.put('/api/bankkonten/:id', (req, res) => {
-  let data = readJSON(FILES.bankkonten);
-  const idx = data.findIndex(x => x.id === req.params.id);
-  if (idx === -1) return res.status(404).json({ error: 'Nicht gefunden' });
-  data[idx] = { ...data[idx], ...req.body, id: req.params.id };
-  writeJSON(FILES.bankkonten, data);
-  res.json({ bankkonto: data[idx] });
-});
-app.delete('/api/bankkonten/:id', (req, res) => {
-  writeJSON(FILES.bankkonten, readJSON(FILES.bankkonten).filter(x => x.id !== req.params.id));
-  res.json({ ok: true });
+createCrudRoutes('bankkonten', FILES.bankkonten, {
+  singularKey: 'bankkonto'
+  // Note: No validation schema for bankkonten
 });
 
 // Categories
