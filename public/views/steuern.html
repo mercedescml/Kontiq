@@ -1,0 +1,340 @@
+<!-- STEUERN MODULE -->
+<div class="module-header">
+    <h1>Steuern</h1>
+    <p>Übersicht über Umsatzsteuer und Vorsteuer für Ihre Steuererklärung</p>
+</div>
+
+<!-- Tax Overview Cards -->
+<div class="cashflow-grid" style="margin-bottom: 24px;">
+    <div class="cashflow-card">
+        <div class="cashflow-header">
+            <div class="cashflow-title">Umsatzsteuer (erhalten)</div>
+        </div>
+        <div class="cashflow-amount" style="color: var(--teal);" id="steuer-erhalten-total">€0,00</div>
+        <div style="font-size: 13px; color: var(--gray); margin-top: 8px;">Aus Forderungen</div>
+    </div>
+
+    <div class="cashflow-card">
+        <div class="cashflow-header">
+            <div class="cashflow-title">Vorsteuer (gezahlt)</div>
+        </div>
+        <div class="cashflow-amount" style="color: var(--navy);" id="steuer-gezahlt-total">€0,00</div>
+        <div style="font-size: 13px; color: var(--gray); margin-top: 8px;">Aus Zahlungen</div>
+    </div>
+
+    <div class="cashflow-card">
+        <div class="cashflow-header">
+            <div class="cashflow-title">Zahllast / Erstattung</div>
+        </div>
+        <div class="cashflow-amount" id="steuer-zahllast">€0,00</div>
+        <div style="font-size: 13px; color: var(--gray); margin-top: 8px;" id="steuer-zahllast-label">Zu zahlen</div>
+    </div>
+
+    <div class="cashflow-card">
+        <div class="cashflow-header">
+            <div class="cashflow-title">Zeitraum</div>
+        </div>
+        <div style="margin-top: 12px;">
+            <select id="steuer-zeitraum" onchange="loadSteuernData()" style="width: 100%; padding: 8px; border: 1px solid var(--border-gray); border-radius: 6px; font-size: 13px;">
+                <option value="current-month">Aktueller Monat</option>
+                <option value="last-month">Letzter Monat</option>
+                <option value="current-quarter">Aktuelles Quartal</option>
+                <option value="last-quarter">Letztes Quartal</option>
+                <option value="current-year" selected>Aktuelles Jahr</option>
+                <option value="last-year">Letztes Jahr</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<!-- Tax Breakdown by Rate -->
+<div class="section">
+    <div class="section-title">Aufschlüsselung nach Steuersätzen</div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; margin-top: 16px;">
+        <div class="cashflow-card">
+            <div class="cashflow-header">
+                <div class="cashflow-title" style="font-size: 13px; font-weight: 600;">19% MwSt.</div>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 12px;">
+                <div>
+                    <div style="font-size: 11px; color: var(--gray);">Erhalten</div>
+                    <div style="font-size: 16px; font-weight: 700; color: var(--teal); margin-top: 4px;" id="steuer-19-erhalten">€0,00</div>
+                </div>
+                <div>
+                    <div style="font-size: 11px; color: var(--gray);">Gezahlt</div>
+                    <div style="font-size: 16px; font-weight: 700; color: var(--navy); margin-top: 4px;" id="steuer-19-gezahlt">€0,00</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="cashflow-card">
+            <div class="cashflow-header">
+                <div class="cashflow-title" style="font-size: 13px; font-weight: 600;">7% MwSt.</div>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 12px;">
+                <div>
+                    <div style="font-size: 11px; color: var(--gray);">Erhalten</div>
+                    <div style="font-size: 16px; font-weight: 700; color: var(--teal); margin-top: 4px;" id="steuer-7-erhalten">€0,00</div>
+                </div>
+                <div>
+                    <div style="font-size: 11px; color: var(--gray);">Gezahlt</div>
+                    <div style="font-size: 16px; font-weight: 700; color: var(--navy); margin-top: 4px;" id="steuer-7-gezahlt">€0,00</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="cashflow-card">
+            <div class="cashflow-header">
+                <div class="cashflow-title" style="font-size: 13px; font-weight: 600;">0% MwSt. (Steuerbefreit)</div>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 12px;">
+                <div>
+                    <div style="font-size: 11px; color: var(--gray);">Erhalten</div>
+                    <div style="font-size: 16px; font-weight: 700; color: var(--teal); margin-top: 4px;" id="steuer-0-erhalten">€0,00</div>
+                </div>
+                <div>
+                    <div style="font-size: 11px; color: var(--gray);">Gezahlt</div>
+                    <div style="font-size: 16px; font-weight: 700; color: var(--navy); margin-top: 4px;" id="steuer-0-gezahlt">€0,00</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Detailed Lists -->
+<div class="section" style="margin-top: 24px;">
+    <div class="section-title">Erhaltene Umsatzsteuer (Forderungen)</div>
+    <div class="invoices-table" style="margin-top: 16px;">
+        <div class="table-header">
+            <div>Rechnung</div>
+            <div>Kunde</div>
+            <div>Datum</div>
+            <div>Netto</div>
+            <div>MwSt. %</div>
+            <div>Steuerbetrag</div>
+            <div>Brutto</div>
+        </div>
+        <div id="steuer-forderungen-list"></div>
+    </div>
+</div>
+
+<div class="section" style="margin-top: 24px;">
+    <div class="section-title">Gezahlte Vorsteuer (Zahlungen)</div>
+    <div class="invoices-table" style="margin-top: 16px;">
+        <div class="table-header">
+            <div>Lieferant</div>
+            <div>Beschreibung</div>
+            <div>Datum</div>
+            <div>Netto</div>
+            <div>MwSt. %</div>
+            <div>Steuerbetrag</div>
+            <div>Brutto</div>
+        </div>
+        <div id="steuer-zahlungen-list"></div>
+    </div>
+</div>
+
+<style>
+.section {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.section-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 1rem;
+    font-family: 'Inter', sans-serif;
+}
+
+.tax-row {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 1rem;
+    padding: 1rem;
+    border-bottom: 1px solid var(--border-gray);
+    align-items: center;
+    font-size: 13px;
+}
+
+.tax-row:hover {
+    background: var(--light-gray);
+}
+
+.tax-row > div {
+    font-family: 'Inter', sans-serif;
+}
+</style>
+
+<script>
+let steuernData = {
+    forderungen: [],
+    zahlungen: []
+};
+
+async function loadSteuernData() {
+    try {
+        // Load Forderungen
+        const forderungenResponse = await fetch('/api/forderungen');
+        if (!forderungenResponse.ok) throw new Error('Fehler beim Laden der Forderungen');
+        const forderungenData = await forderungenResponse.json();
+        steuernData.forderungen = forderungenData.forderungen || forderungenData;
+
+        // Load Zahlungen
+        const zahlungenResponse = await fetch('/api/zahlungen');
+        if (!zahlungenResponse.ok) throw new Error('Fehler beim Laden der Zahlungen');
+        const zahlungenData = await zahlungenResponse.json();
+        steuernData.zahlungen = zahlungenData.zahlungen || zahlungenData;
+
+        // Calculate and display tax summary
+        calculateTaxSummary();
+        renderForderungenList();
+        renderZahlungenList();
+    } catch (error) {
+        console.error('Error loading Steuern data:', error);
+    }
+}
+
+function calculateTaxSummary() {
+    // Calculate received tax (from Forderungen)
+    const forderungenByRate = {
+        0: { erhalten: 0, count: 0 },
+        7: { erhalten: 0, count: 0 },
+        19: { erhalten: 0, count: 0 }
+    };
+
+    let totalErhalten = 0;
+
+    steuernData.forderungen.forEach(f => {
+        const rate = f.steuer_rate || 0;
+        const betrag = f.steuer_betrag || 0;
+
+        if (!forderungenByRate[rate]) {
+            forderungenByRate[rate] = { erhalten: 0, count: 0 };
+        }
+
+        forderungenByRate[rate].erhalten += betrag;
+        forderungenByRate[rate].count += 1;
+        totalErhalten += betrag;
+    });
+
+    // Calculate paid tax (from Zahlungen)
+    const zahlungenByRate = {
+        0: { gezahlt: 0, count: 0 },
+        7: { gezahlt: 0, count: 0 },
+        19: { gezahlt: 0, count: 0 }
+    };
+
+    let totalGezahlt = 0;
+
+    steuernData.zahlungen.forEach(z => {
+        const rate = z.steuer_rate || 0;
+        const betrag = z.steuer_betrag || 0;
+
+        if (!zahlungenByRate[rate]) {
+            zahlungenByRate[rate] = { gezahlt: 0, count: 0 };
+        }
+
+        zahlungenByRate[rate].gezahlt += betrag;
+        zahlungenByRate[rate].count += 1;
+        totalGezahlt += betrag;
+    });
+
+    // Calculate Zahllast (tax liability)
+    const zahllast = totalErhalten - totalGezahlt;
+
+    // Update summary cards
+    document.getElementById('steuer-erhalten-total').textContent = formatCurrency(totalErhalten);
+    document.getElementById('steuer-gezahlt-total').textContent = formatCurrency(totalGezahlt);
+    document.getElementById('steuer-zahllast').textContent = formatCurrency(Math.abs(zahllast));
+    document.getElementById('steuer-zahllast').style.color = zahllast >= 0 ? 'var(--navy)' : 'var(--teal)';
+    document.getElementById('steuer-zahllast-label').textContent = zahllast >= 0 ? 'Zu zahlen' : 'Erstattung';
+
+    // Update rate breakdown
+    document.getElementById('steuer-19-erhalten').textContent = formatCurrency(forderungenByRate[19]?.erhalten || 0);
+    document.getElementById('steuer-19-gezahlt').textContent = formatCurrency(zahlungenByRate[19]?.gezahlt || 0);
+
+    document.getElementById('steuer-7-erhalten').textContent = formatCurrency(forderungenByRate[7]?.erhalten || 0);
+    document.getElementById('steuer-7-gezahlt').textContent = formatCurrency(zahlungenByRate[7]?.gezahlt || 0);
+
+    document.getElementById('steuer-0-erhalten').textContent = formatCurrency(forderungenByRate[0]?.erhalten || 0);
+    document.getElementById('steuer-0-gezahlt').textContent = formatCurrency(zahlungenByRate[0]?.gezahlt || 0);
+}
+
+function renderForderungenList() {
+    const container = document.getElementById('steuer-forderungen-list');
+
+    if (!steuernData.forderungen || steuernData.forderungen.length === 0) {
+        container.innerHTML = `
+            <div style="padding: 2rem; text-align: center; color: var(--gray);">
+                <p>Keine Forderungen vorhanden</p>
+            </div>
+        `;
+        return;
+    }
+
+    container.innerHTML = steuernData.forderungen.map(f => {
+        const date = new Date(f.invoice_date).toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' });
+
+        return `
+            <div class="tax-row">
+                <div style="font-weight: 600;">${f.invoice_number || 'N/A'}</div>
+                <div>${f.client_name || 'N/A'}</div>
+                <div>${date}</div>
+                <div>${formatCurrency(f.netto_betrag || 0)}</div>
+                <div><span class="badge" style="background: var(--light-gray); color: var(--navy); border: 1px solid var(--border-gray);">${f.steuer_rate || 0}%</span></div>
+                <div style="font-weight: 700; color: var(--teal);">${formatCurrency(f.steuer_betrag || 0)}</div>
+                <div style="font-weight: 600;">${formatCurrency(f.brutto_betrag || f.amount || 0)}</div>
+            </div>
+        `;
+    }).join('');
+}
+
+function renderZahlungenList() {
+    const container = document.getElementById('steuer-zahlungen-list');
+
+    if (!steuernData.zahlungen || steuernData.zahlungen.length === 0) {
+        container.innerHTML = `
+            <div style="padding: 2rem; text-align: center; color: var(--gray);">
+                <p>Keine Zahlungen vorhanden</p>
+            </div>
+        `;
+        return;
+    }
+
+    container.innerHTML = steuernData.zahlungen.map(z => {
+        const date = new Date(z.date).toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' });
+
+        return `
+            <div class="tax-row">
+                <div style="font-weight: 600;">${z.supplier || z.recipient || 'N/A'}</div>
+                <div>${z.description || 'N/A'}</div>
+                <div>${date}</div>
+                <div>${formatCurrency(z.netto_betrag || 0)}</div>
+                <div><span class="badge" style="background: var(--light-gray); color: var(--navy); border: 1px solid var(--border-gray);">${z.steuer_rate || 0}%</span></div>
+                <div style="font-weight: 700; color: var(--navy);">${formatCurrency(z.steuer_betrag || 0)}</div>
+                <div style="font-weight: 600;">${formatCurrency(z.brutto_betrag || z.amount || 0)}</div>
+            </div>
+        `;
+    }).join('');
+}
+
+function formatCurrency(amount) {
+    return new Intl.NumberFormat('de-DE', {
+        style: 'currency',
+        currency: 'EUR',
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    }).format(amount);
+}
+
+// Load data when page loads
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', loadSteuernData);
+} else {
+    loadSteuernData();
+}
+</script>

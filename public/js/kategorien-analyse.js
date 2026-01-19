@@ -43,7 +43,7 @@ class KategorienAnalyse {
 
         container.innerHTML = `
             <div class="kategorien-widget">
-                <h3>📊 Umsatz nach Kategorien</h3>
+                <h3>Umsatz nach Kategorien</h3>
                 <div class="kategorien-summary">
                     <div class="summary-card">
                         <div class="summary-label">Gesamt</div>
@@ -55,14 +55,13 @@ class KategorienAnalyse {
                     </div>
                     <div class="summary-card">
                         <div class="summary-label">Überfällig</div>
-                        <div class="summary-value" style="color: #d32f2f;">€${this.formatNumber(this.data.totals.overdueAmount)}</div>
+                        <div class="summary-value" style="color: var(--navy);">€${this.formatNumber(this.data.totals.overdueAmount)}</div>
                     </div>
                 </div>
                 <div class="kategorien-list">
                     ${top5.map((kat, index) => `
                         <div class="kategorie-item">
                             <div class="kategorie-rank">${index + 1}</div>
-                            <div class="kategorie-color" style="background-color: ${kat.color};"></div>
                             <div class="kategorie-name">${kat.name}</div>
                             <div class="kategorie-amount">€${this.formatNumber(kat.totalAmount)}</div>
                             <div class="kategorie-percentage">${kat.percentOfTotal.toFixed(1)}%</div>
@@ -108,7 +107,7 @@ class KategorienAnalyse {
                         <div class="cashflow-header">
                             <div class="cashflow-title">Überfällig</div>
                         </div>
-                        <div class="cashflow-amount" style="color: ${this.data.totals.overdueAmount > 0 ? '#dc2626' : 'var(--navy)'};">€${this.formatNumber(this.data.totals.overdueAmount)}</div>
+                        <div class="cashflow-amount" style="color: var(--navy);">€${this.formatNumber(this.data.totals.overdueAmount)}</div>
                         <div style="font-size: 13px; color: var(--gray); margin-top: 8px;">${this.data.totals.overdueAmount > 0 ? 'Maßnahmen erforderlich' : 'Alles aktuell'}</div>
                     </div>
                     <div class="cashflow-card">
@@ -173,7 +172,7 @@ class KategorienAnalyse {
                 </div>
 
                 ${this.data.insights.uncategorizedCount > 0 ? `
-                    <div style="background: #fff3cd; border: 1px solid #ffc107; border-radius: 8px; padding: 16px; margin-top: 20px;">
+                    <div style="background: var(--light-gray); border: 1px solid var(--border-gray); border-radius: 8px; padding: 16px; margin-top: 20px;">
                         <div style="font-size: 14px; font-weight: 600; color: var(--navy); margin-bottom: 8px;">Nicht kategorisierte Forderungen</div>
                         <div style="font-size: 13px; color: var(--gray);">
                             <strong>${this.data.insights.uncategorizedCount}</strong> Forderungen
@@ -199,13 +198,19 @@ class KategorienAnalyse {
 
         const chartData = this.data.kategorien.slice(0, 10); // Top 10
 
+        // Neutral color palette for fintech minimalist design
+        const neutralColors = [
+            '#0A2540', '#1A3552', '#2A4564', '#3A5576', '#4A6588',
+            '#5A759A', '#6A85AC', '#7A95BE', '#8AA5D0', '#9AB5E2'
+        ];
+
         this.chart = new Chart(ctx, {
             type: 'doughnut',
             data: {
                 labels: chartData.map(k => k.name),
                 datasets: [{
                     data: chartData.map(k => k.totalAmount),
-                    backgroundColor: chartData.map(k => k.color),
+                    backgroundColor: neutralColors.slice(0, chartData.length),
                     borderWidth: 2,
                     borderColor: '#fff'
                 }]

@@ -913,6 +913,7 @@
         <div>Kunde</div>
         <div>Rechnung</div>
         <div>Betrag</div>
+        <div>MwSt.</div>
         <div>Erstellt</div>
         <div>Fällig</div>
         <div>Status</div>
@@ -1730,6 +1731,10 @@ Mit freundlichen Grüßen</textarea>
                 ? getKategorieBadge(forderung.kategorie)
                 : '<span class="kategorie-badge uncategorized">Nicht kategorisiert</span>';
 
+            // Tax rate badge
+            const taxRate = forderung.steuer_rate || 0;
+            const taxBadge = `<span class="badge" style="background: var(--light-gray); color: var(--navy); border: 1px solid var(--border-gray);">${taxRate}%</span>`;
+
             return `
                 <div class="${rowClass}">
                     <div><input type="checkbox"></div>
@@ -1738,6 +1743,7 @@ Mit freundlichen Grüßen</textarea>
                     </div>
                     <div class="invoice-number">${forderung.invoice_number || 'N/A'}</div>
                     <div class="amount">${formatCurrency(forderung.amount)}</div>
+                    <div>${taxBadge}</div>
                     <div class="date-info">
                         <div class="date-main">${createdDate}</div>
                     </div>

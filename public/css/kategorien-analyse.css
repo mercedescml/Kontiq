@@ -10,7 +10,7 @@
 .kategorien-widget h3 {
     margin: 0 0 1.5rem 0;
     font-size: 1.2rem;
-    color: #1a1a1a;
+    color: var(--navy);
 }
 
 .kategorien-summary {
@@ -21,7 +21,7 @@
 }
 
 .summary-card {
-    background: #f5f5f5;
+    background: var(--light-gray);
     padding: 1rem;
     border-radius: 8px;
     text-align: center;
@@ -29,14 +29,14 @@
 
 .summary-label {
     font-size: 0.875rem;
-    color: #666;
+    color: var(--gray);
     margin-bottom: 0.5rem;
 }
 
 .summary-value {
     font-size: 1.5rem;
     font-weight: 600;
-    color: #1976d2;
+    color: var(--navy);
 }
 
 .kategorien-list {
@@ -50,19 +50,19 @@
     align-items: center;
     gap: 0.75rem;
     padding: 0.75rem;
-    background: #fafafa;
+    background: var(--light-gray);
     border-radius: 8px;
     transition: all 0.2s;
 }
 
 .kategorie-item:hover {
-    background: #f0f0f0;
+    background: var(--border-gray);
 }
 
 .kategorie-rank {
     font-weight: 700;
     font-size: 1.1rem;
-    color: #666;
+    color: var(--gray);
     width: 24px;
     text-align: center;
 }
@@ -76,17 +76,17 @@
 .kategorie-name {
     flex: 1;
     font-weight: 500;
-    color: #333;
+    color: var(--navy);
 }
 
 .kategorie-amount {
     font-weight: 600;
-    color: #1976d2;
+    color: var(--navy);
 }
 
 .kategorie-percentage {
     font-size: 0.875rem;
-    color: #666;
+    color: var(--gray);
     width: 50px;
     text-align: right;
 }
@@ -94,19 +94,19 @@
 .widget-footer {
     margin-top: 1.5rem;
     padding-top: 1rem;
-    border-top: 1px solid #eee;
+    border-top: 1px solid var(--border-gray);
     text-align: center;
 }
 
 .widget-footer a {
-    color: #1976d2;
+    color: var(--teal);
     text-decoration: none;
     font-weight: 500;
     transition: color 0.2s;
 }
 
 .widget-footer a:hover {
-    color: #1565c0;
+    color: var(--navy);
 }
 
 /* Detailed Analysis */
@@ -124,7 +124,7 @@
 .analyse-header h2 {
     margin: 0;
     font-size: 1.8rem;
-    color: #1a1a1a;
+    color: var(--navy);
 }
 
 .analyse-filters {
@@ -135,7 +135,7 @@
 .analyse-filters select,
 .analyse-filters input {
     padding: 0.5rem 1rem;
-    border: 1px solid #ddd;
+    border: 1px solid var(--border-gray);
     border-radius: 8px;
     font-size: 0.95rem;
 }
@@ -169,7 +169,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #f5f5f5;
+    background: var(--light-gray);
     border-radius: 12px;
 }
 
@@ -179,20 +179,20 @@
 
 .card-label {
     font-size: 0.875rem;
-    color: #666;
+    color: var(--gray);
     margin-bottom: 0.5rem;
 }
 
 .card-value {
     font-size: 1.5rem;
     font-weight: 700;
-    color: #1a1a1a;
+    color: var(--navy);
     margin-bottom: 0.25rem;
 }
 
 .card-detail {
     font-size: 0.875rem;
-    color: #999;
+    color: var(--gray);
 }
 
 .chart-section,
@@ -208,7 +208,7 @@
 .table-section h3 {
     margin: 0 0 1.5rem 0;
     font-size: 1.2rem;
-    color: #1a1a1a;
+    color: var(--navy);
 }
 
 .table-responsive {
@@ -221,22 +221,22 @@
 }
 
 .kategorien-table th {
-    background: #f5f5f5;
+    background: var(--light-gray);
     padding: 1rem;
     text-align: left;
     font-weight: 600;
-    color: #333;
-    border-bottom: 2px solid #ddd;
+    color: var(--navy);
+    border-bottom: 2px solid var(--border-gray);
     font-size: 0.875rem;
 }
 
 .kategorien-table td {
     padding: 1rem;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--border-gray);
 }
 
 .kategorien-table tr:hover {
-    background: #fafafa;
+    background: var(--light-gray);
 }
 
 .kategorie-indicator {
@@ -251,7 +251,7 @@
     position: relative;
     width: 100%;
     height: 24px;
-    background: #f5f5f5;
+    background: var(--light-gray);
     border-radius: 4px;
     overflow: hidden;
 }
@@ -273,7 +273,7 @@
     height: 100%;
     font-size: 0.875rem;
     font-weight: 600;
-    color: #333;
+    color: var(--navy);
 }
 
 .insights-section {
@@ -292,7 +292,7 @@
 .insight-card h4 {
     margin: 0 0 1rem 0;
     font-size: 1.1rem;
-    color: #1a1a1a;
+    color: var(--navy);
 }
 
 .insight-card ol,
@@ -307,8 +307,8 @@
 }
 
 .insight-card.warning {
-    background: #fff8e1;
-    border: 2px solid #ffc107;
+    background: var(--light-gray);
+    border: 2px solid var(--border-gray);
 }
 
 .behavior-label {
@@ -321,40 +321,40 @@
 }
 
 .behavior-label.very-punctual {
-    background: #c8e6c9;
-    color: #2e7d32;
+    background: var(--light-gray);
+    color: var(--teal);
 }
 
 .behavior-label.punctual {
-    background: #e8f5e9;
-    color: #388e3c;
+    background: var(--light-gray);
+    color: var(--teal);
 }
 
 .behavior-label.slightly-late {
-    background: #fff9c4;
-    color: #f57f17;
+    background: var(--light-gray);
+    color: var(--gray);
 }
 
 .behavior-label.late {
-    background: #ffecb3;
-    color: #f57c00;
+    background: var(--light-gray);
+    color: var(--gray);
 }
 
 .behavior-label.very-late {
-    background: #ffcdd2;
-    color: #c62828;
+    background: var(--light-gray);
+    color: var(--navy);
 }
 
 .btn-link {
     display: inline-block;
     margin-top: 0.5rem;
-    color: #1976d2;
+    color: var(--teal);
     text-decoration: none;
     font-weight: 500;
 }
 
 .btn-link:hover {
-    color: #1565c0;
+    color: var(--navy);
     text-decoration: underline;
 }
 

@@ -842,7 +842,7 @@
 
 <script>
     // Chart.js - Modern Clean Style
-    setTimeout(() => {
+    function initializeLiquidityChart() {
         const ctx = document.getElementById('liquidityForecastChart');
         if (ctx && typeof Chart !== 'undefined') {
             const context = ctx.getContext('2d');
@@ -935,8 +935,18 @@
                     }
                 }
             });
+        } else if (!ctx || typeof Chart === 'undefined') {
+            // Retry after a short delay if elements aren't ready
+            setTimeout(initializeLiquidityChart, 100);
         }
-    }, 100);
+    }
+
+    // Initialize chart when DOM is ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initializeLiquidityChart);
+    } else {
+        initializeLiquidityChart();
+    }
 
     // Calculator Update Function
     function updateCalculator() {

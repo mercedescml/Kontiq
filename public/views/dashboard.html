@@ -775,14 +775,18 @@
 
 <script>
     // Chart.js configuration - Modern & Clean avec Einnahmen/Ausgaben + Indicators
-    setTimeout(() => {
+    function initializeDashboardChart() {
         const canvas = document.getElementById('liquidityChart');
         const chartWrapper = document.getElementById('chartWrapper');
         const warningInput = document.getElementById('thresholdWarning');
         const criticalInput = document.getElementById('thresholdCritical');
         const applyBtn = document.getElementById('applyThresholds');
 
-        if (!(canvas && chartWrapper && typeof Chart !== 'undefined')) return;
+        if (!(canvas && chartWrapper && typeof Chart !== 'undefined')) {
+            // Retry after a short delay if elements aren't ready
+            setTimeout(initializeDashboardChart, 100);
+            return;
+        }
 
         const defaults = { warning: 5000, critical: 8000 };
         const thresholds = { ...defaults };
@@ -1022,5 +1026,12 @@
         applyBtn?.addEventListener('click', applyThresholds);
 
         renderChart();
-    }, 100);
+    }
+
+    // Initialize chart when DOM is ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initializeDashboardChart);
+    } else {
+        initializeDashboardChart();
+    }
 </script>

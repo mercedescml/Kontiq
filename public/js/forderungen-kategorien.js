@@ -84,7 +84,7 @@ function openKategorieAssignModal(forderungId, currentKategorieId = null) {
                             <div class="kategorie-option"
                                  data-kategorie-id=""
                                  onclick="selectKategorie('', '${forderungId}')">
-                                <div class="kategorie-option-icon" style="background-color: #9e9e9e;"></div>
+                                <div class="kategorie-option-icon" style="background-color: var(--gray);"></div>
                                 <div class="kategorie-option-info">
                                     <div class="kategorie-option-name">Kategorie entfernen</div>
                                     <div class="kategorie-option-description">Forderung nicht kategorisieren</div>
@@ -148,7 +148,7 @@ function showNotification(message, type = 'info') {
         position: fixed;
         top: 20px;
         right: 20px;
-        background: ${type === 'success' ? '#4caf50' : '#f44336'};
+        background: ${type === 'success' ? 'var(--teal)' : 'var(--navy)'};
         color: white;
         padding: 1rem 1.5rem;
         border-radius: 8px;
@@ -192,14 +192,14 @@ kategorienCSS.textContent = `
     }
 
     .kategorie-badge.uncategorized {
-        color: #9CA3AF;
-        background: #F9FAFB;
+        color: var(--gray);
+        background: var(--light-gray);
     }
 
     .kategorie-select {
         width: 100%;
         padding: 0.5rem;
-        border: 1px solid #ddd;
+        border: 1px solid var(--border-gray);
         border-radius: 8px;
         font-size: 0.95rem;
     }
@@ -216,20 +216,20 @@ kategorienCSS.textContent = `
         align-items: center;
         gap: 1rem;
         padding: 1rem;
-        border: 2px solid #e0e0e0;
+        border: 2px solid var(--border-gray);
         border-radius: 12px;
         cursor: pointer;
         transition: all 0.2s;
     }
 
     .kategorie-option:hover {
-        border-color: #1976d2;
-        background: #f5f5f5;
+        border-color: var(--teal);
+        background: var(--light-gray);
     }
 
     .kategorie-option.selected {
-        border-color: #1976d2;
-        background: #e3f2fd;
+        border-color: var(--teal);
+        background: var(--light-gray);
     }
 
     .kategorie-option-icon {
@@ -249,12 +249,12 @@ kategorienCSS.textContent = `
         font-weight: 600;
         font-size: 1rem;
         margin-bottom: 0.25rem;
-        color: #1a1a1a;
+        color: var(--navy);
     }
 
     .kategorie-option-description {
         font-size: 0.875rem;
-        color: #666;
+        color: var(--gray);
     }
 `;
 document.head.appendChild(kategorienCSS);
