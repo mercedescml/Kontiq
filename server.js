@@ -401,7 +401,7 @@ app.post('/api/entitaeten', validate(schemas.entity), (req, res) => {
   if (!entityManagers.length) return res.status(400).json({ error: 'Manager fehlt' });
   
   const data = readJSON(FILES.entitaeten);
-  const item = { id: Date.now().toString(), name, managers: entityManagers, manager: entityManagers[0], type: type || 'standard', createdAt: new Date().toISOString() };
+  const item = { id: Date.now().toString(), name, managers: entityManagers, type: type || 'standard', createdAt: new Date().toISOString() };
   data.push(item);
   writeJSON(FILES.entitaeten, data);
   res.status(201).json({ entity: item });
