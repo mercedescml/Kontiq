@@ -1240,13 +1240,7 @@ if (!user) {
             const dd = document.getElementById('profileDropdown'); if (dd) dd.style.display = 'none';
             const ed = document.getElementById('entityDropdown'); if (ed) ed.classList.remove('active');
 
-            // Einstellungen is a full HTML page, open it directly
-            if (name === 'einstellungen') {
-                window.location.href = '/views/einstellungen.html';
-                return;
-            }
-
-            // Use SPA navigation function for other views
+            // Use SPA navigation function for all views
             navigateTo(name);
         }
 
