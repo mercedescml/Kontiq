@@ -66,6 +66,100 @@
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif !important;
 }
 
+/* ZAHLUNGEN (Payments) specific elements */
+.payment-row,
+.payment-table,
+.bank-account-card,
+.risk-indicator,
+.postpone-section,
+.postpone-title,
+.postpone-option,
+.simulator-result,
+.btn-zahlen,
+.btn-verschieben,
+.btn-details {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif !important;
+}
+
+/* EINSTELLUNGEN (Settings) specific elements */
+.nav-group,
+.nav-group-title,
+.nav-item,
+.content-header,
+.content-section,
+.permission-section,
+.permission-section-title,
+.permission-level,
+.alert,
+.alert-title,
+.alert-message,
+.alert-info,
+.alert-warning,
+.divider {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif !important;
+}
+
+/* DASHBOARD specific elements */
+.dashboard-card,
+.metric-card,
+.metric-label,
+.metric-value,
+.widget-title,
+.chart-container {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif !important;
+}
+
+/* KOSTEN (Costs) specific elements */
+.cost-row,
+.cost-table,
+.cost-category,
+.budget-card,
+.variance-indicator {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif !important;
+}
+
+/* KPIs specific elements */
+.kpi-card,
+.kpi-title,
+.kpi-value,
+.kpi-trend,
+.kpi-description {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif !important;
+}
+
+/* REPORTS specific elements */
+.report-card,
+.report-title,
+.report-description,
+.report-actions {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif !important;
+}
+
+/* VERTRÄGE (Contracts) specific elements */
+.contract-card,
+.contract-title,
+.contract-details,
+.contract-status {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif !important;
+}
+
+/* ENTITÄTEN (Entities) specific elements */
+.entity-card,
+.entity-title,
+.entity-info,
+.entity-stats {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif !important;
+}
+
+/* BANKKONTEN (Bank Accounts) specific elements */
+.account-card,
+.account-name,
+.account-balance,
+.account-number,
+.transaction-item {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif !important;
+}
+
 /* ==================== FONT SIZE OVERRIDES - ULTRA SPECIFIC ==================== */
 
 /* 11px elements */
@@ -82,11 +176,18 @@
 .upload-zone-desc,
 .history-box-title,
 .history-box-content,
+.metric-label,
+.kpi-description,
+.alert-message,
+.permission-level,
+.account-number,
+.nav-group-title,
 table th,
 .table th,
 .badge,
 [class*="badge-"],
-.kategorie-badge {
+.kategorie-badge,
+small {
     font-size: 11px !important;
 }
 
@@ -100,6 +201,8 @@ textarea,
 button,
 .btn,
 .invoice-row,
+.payment-row,
+.cost-row,
 .filter-group select,
 .filter-group input,
 .form-group input,
@@ -115,6 +218,14 @@ button,
 .date-main,
 .amount,
 .modal-body,
+.modal-subtitle,
+.nav-item,
+.permission-section,
+.alert-title,
+.report-description,
+.contract-details,
+.entity-info,
+.transaction-item,
 label,
 .form-label,
 .label {
@@ -132,7 +243,17 @@ h1, h2, h3, h4, h5, h6,
 .card-title,
 .heading,
 .card-value,
-.stat-value {
+.stat-value,
+.widget-title,
+.content-header,
+.kpi-title,
+.kpi-value,
+.metric-value,
+.report-title,
+.contract-title,
+.entity-title,
+.postpone-title,
+.permission-section-title {
     font-size: 18px !important;
     font-weight: 700 !important;
 }
@@ -143,14 +264,19 @@ h1, h2, h3, h4, h5, h6,
 .cashflow-amount,
 .stat-amount,
 .forecast-amount,
+.metric-value,
+.kpi-value,
 .mono-numbers,
 .client-item-value,
+.account-balance,
 .total-row span:last-child,
 .calc-row span:last-child,
 .reminder-detail span:last-child,
+.simulator-result .amount,
 .date-main,
 [data-mono="true"],
-[class*="amount"] {
+[class*="amount"],
+[class*="balance"] {
     font-family: 'Roboto Mono', monospace !important;
 }
 
@@ -163,8 +289,15 @@ h1, h2, h3, h4, h5, h6,
 .badge-uberweisung,
 .badge-lastschrift,
 .badge-bar,
+.badge-active,
+.badge-primary,
+.badge-success,
+.badge-warning,
+.badge-error,
 .kategorie-badge,
 .status-badge,
+.contract-status,
+.kpi-trend,
 [class*="badge-"] {
     font-size: 11px !important;
     font-weight: 600 !important;
@@ -175,26 +308,47 @@ h1, h2, h3, h4, h5, h6,
 }
 
 /* ==================== CLEAN TYPOGRAPHY HIERARCHY ==================== */
-/* Remove all inline font-size and font-family by being more specific */
-.stats-bar * ,
+/* Remove all inline font-size and font-family by being more specific - ALL MODULES */
+.stats-bar *,
 .filter-section *,
 .invoices-table *,
+.payment-table *,
 .analysis-section *,
 .modal *,
 .cashflow-grid *,
-.kategorien-widget * {
+.kategorien-widget *,
+.dashboard-card *,
+.kpi-card *,
+.report-card *,
+.contract-card *,
+.entity-card *,
+.account-card *,
+.content-section *,
+.permission-section *,
+.alert *,
+.cost-table *,
+.budget-card *,
+.postpone-section *,
+.simulator-result * {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif !important;
 }
 
-/* Re-apply Roboto Mono for amounts inside these sections */
+/* Re-apply Roboto Mono for amounts inside ALL sections */
 .stats-bar .stat-value,
 .stats-bar .amount,
 .invoices-table .amount,
 .invoices-table .date-main,
+.payment-table .amount,
+.payment-table .date-main,
 .analysis-section .client-item-value,
 .modal .total-row span:last-child,
 .modal .calc-row span:last-child,
-.cashflow-grid .cashflow-amount {
+.cashflow-grid .cashflow-amount,
+.dashboard-card .metric-value,
+.kpi-card .kpi-value,
+.account-card .account-balance,
+.cost-table .amount,
+.simulator-result .amount {
     font-family: 'Roboto Mono', monospace !important;
 }
 
