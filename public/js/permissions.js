@@ -14,11 +14,11 @@ class PermissionsManager {
    * Initialize permissions for current user
    */
   async init() {
-    const userData = localStorage.getItem('user');
+    const userData = localStorage.getItem('kontiq_user');
     if (!userData) {
       throw new Error('User not logged in');
     }
-    
+
     this.currentUser = JSON.parse(userData);
     await this.loadPermissions();
     return this.permissions;

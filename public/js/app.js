@@ -116,6 +116,18 @@ const APP = {
   },
 
   /**
+   * Affiche une confirmation modale
+   * @param {string} message - Message à afficher
+   * @returns {Promise<boolean>} - true si confirmé, false sinon
+   */
+  async confirm(message) {
+    return new Promise((resolve) => {
+      const confirmed = window.confirm(message);
+      resolve(confirmed);
+    });
+  },
+
+  /**
    * Configure la navigation entre les pages
    */
   setupNavigation() {

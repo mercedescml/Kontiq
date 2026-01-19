@@ -12,36 +12,27 @@
  * Charge les données de permissions et utilisateurs depuis l'API
  */
 async function loadPermissionsData() {
-  console.log('=== loadPermissionsData called ===');
-  console.log('Current user email:', currentUser.email);
-  
   const tbody = document.getElementById('users-tbody');
   tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#6B7280;padding:40px">Lade Daten...</td></tr>';
-  
+
   try {
     // Load permissions
     const url = `/api/permissions/all?email=${encodeURIComponent(currentUser.email)}`;
-    console.log('Fetching:', url);
-    
+
     const permsRes = await fetch(url);
-    console.log('Response status:', permsRes.status);
-    
+
     if (!permsRes.ok) {
       throw new Error(`HTTP ${permsRes.status}: ${permsRes.statusText}`);
     }
-    
+
     const data = await permsRes.json();
-    console.log('API Response:', data);
-    
+
     allUsers = data.users || [];
     allPermissions = data.entityPermissions || {};
-    
-    console.log('Users loaded:', allUsers.length);
-    
+
     // Check if current user is Geschäftsführer
     const myPerms = allUsers.find(u => u.email === currentUser.email);
     isGeschaeftsfuehrer = myPerms?.globalPermissions?.role === 'geschaeftsfuehrer';
-    console.log('Is Geschäftsführer:', isGeschaeftsfuehrer);
     
     // Update stats
     document.getElementById('stat-users').textContent = allUsers.length;
@@ -69,7 +60,6 @@ async function loadPermissionsData() {
 
 function populateUsersTable() {
   const tbody = document.getElementById('users-tbody');
-  console.log('populateUsersTable called, allUsers:', allUsers);
 
   if (!tbody) {
     console.error('users-tbody not found!');
