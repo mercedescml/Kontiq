@@ -5,7 +5,7 @@
 </div>
 
 <!-- Tax Overview Cards -->
-<div class="cashflow-grid" style="margin-bottom: 24px;">
+<div class="cashflow-grid">
     <div class="cashflow-card">
         <div class="tax-card-label">Umsatzsteuer (erhalten)</div>
         <div class="tax-card-amount" style="color: var(--teal);" id="steuer-erhalten-total">€0,00</div>
@@ -147,6 +147,26 @@
 </div>
 
 <style>
+/* Cashflow Grid - Horizontal Layout */
+.cashflow-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+@media (max-width: 1200px) {
+    .cashflow-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .cashflow-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
 .section {
     background: white;
     border-radius: 12px;
