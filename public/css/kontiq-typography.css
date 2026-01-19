@@ -1,0 +1,170 @@
+/**
+ * KONTIQ TYPOGRAPHY SYSTEM
+ * Fintech Minimalist Design - Inter Font Family
+ * This file enforces consistent typography across all modules
+ */
+
+/* ==================== GLOBAL FONT FAMILY ==================== */
+/* Force Inter font on ALL elements */
+*,
+*::before,
+*::after,
+html,
+body,
+div,
+span,
+p,
+a,
+button,
+input,
+select,
+textarea,
+label,
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif !important;
+}
+
+/* Exception: Roboto Mono ONLY for numeric amounts */
+.cashflow-amount,
+.stat-amount,
+.forecast-amount,
+.mono-numbers,
+[data-mono="true"] {
+    font-family: 'Roboto Mono', monospace !important;
+}
+
+/* ==================== FONT SIZE STANDARDIZATION ==================== */
+/* Only use these 3 sizes: 11px (small), 13px (body), 18px (headings) */
+
+/* Small text - labels, captions, meta */
+.text-xs,
+.label-small,
+.meta-text,
+small {
+    font-size: 11px !important;
+}
+
+/* Body text - default, descriptions */
+body,
+.text-sm,
+.text-base,
+p,
+li,
+.description {
+    font-size: 13px !important;
+}
+
+/* Headings */
+h1, h2, h3,
+.heading,
+.section-title,
+.modal-title,
+.card-title {
+    font-size: 18px !important;
+    font-weight: 700 !important;
+}
+
+/* ==================== BADGE STANDARDIZATION ==================== */
+.badge,
+[class*="badge-"],
+.kategorie-badge,
+.status-badge {
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    padding: 4px 10px !important;
+    border-radius: 6px !important;
+    display: inline-block !important;
+    font-family: 'Inter', sans-serif !important;
+}
+
+/* ==================== TABLE & LIST STANDARDIZATION ==================== */
+table,
+.table,
+.invoices-table,
+.table-header,
+.table-row {
+    font-size: 13px !important;
+    font-family: 'Inter', sans-serif !important;
+}
+
+table th,
+.table th,
+.table-header > div {
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+}
+
+/* ==================== FORM ELEMENTS STANDARDIZATION ==================== */
+input,
+select,
+textarea,
+button,
+.btn,
+.form-input,
+.form-select {
+    font-size: 13px !important;
+    font-family: 'Inter', sans-serif !important;
+}
+
+label,
+.form-label,
+.label {
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    font-family: 'Inter', sans-serif !important;
+}
+
+/* ==================== CARD STANDARDIZATION ==================== */
+.card,
+.cashflow-card,
+.stat-card,
+.module-card {
+    font-family: 'Inter', sans-serif !important;
+}
+
+.card-label,
+.stat-label,
+.cashflow-title {
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    color: var(--gray) !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+}
+
+.card-value,
+.stat-value {
+    font-size: 18px !important;
+    font-weight: 700 !important;
+    color: var(--navy) !important;
+}
+
+/* ==================== MODAL STANDARDIZATION ==================== */
+.modal-header h2,
+.modal-header h3,
+.modal-title {
+    font-size: 18px !important;
+    font-weight: 700 !important;
+}
+
+.modal-body,
+.modal-content p {
+    font-size: 13px !important;
+}
+
+/* ==================== NAVIGATION STANDARDIZATION ==================== */
+nav,
+.nav,
+.nav-link,
+.menu-item {
+    font-size: 13px !important;
+    font-family: 'Inter', sans-serif !important;
+}
+
+/* ==================== REMOVE ROBOTO MONO EXCEPT FOR NUMBERS ==================== */
+/* Override any Roboto Mono usage except for amounts */
+*:not(.cashflow-amount):not(.stat-amount):not(.forecast-amount):not(.mono-numbers):not([data-mono="true"]) {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif !important;
+}
