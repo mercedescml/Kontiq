@@ -232,30 +232,105 @@ label,
     font-size: 13px !important;
 }
 
-/* 18px elements */
-h1, h2, h3, h4, h5, h6,
-.analysis-title,
+/* ==================== PROPER HEADING HIERARCHY ==================== */
+
+/* H1 / PAGE TITLES - LARGEST (28px) */
+h1,
 .page-title,
-.modal-title,
-.modal-header h2,
-.modal-header h3,
+.view-title,
+.main-title {
+    font-size: 28px !important;
+    font-weight: 700 !important;
+    line-height: 1.2 !important;
+    color: var(--navy, #0A2540) !important;
+    margin-bottom: 8px !important;
+}
+
+/* PAGE SUBTITLES - Under main titles (14px, gray) */
+.page-subtitle,
+.view-subtitle,
+.main-subtitle,
+h1 + p,
+.page-title + p {
+    font-size: 14px !important;
+    font-weight: 400 !important;
+    color: var(--gray, #6B7280) !important;
+    line-height: 1.4 !important;
+    margin-top: 4px !important;
+}
+
+/* H2 / SECTION TITLES - LARGE (22px) */
+h2,
 .section-title,
-.card-title,
-.heading,
-.card-value,
-.stat-value,
-.widget-title,
+.modal-title,
 .content-header,
+.widget-title,
+.analysis-title {
+    font-size: 22px !important;
+    font-weight: 700 !important;
+    line-height: 1.3 !important;
+    color: var(--navy, #0A2540) !important;
+}
+
+/* SECTION SUBTITLES - Under section titles (13px, gray) */
+.section-subtitle,
+h2 + p,
+.section-title + p {
+    font-size: 13px !important;
+    font-weight: 400 !important;
+    color: var(--gray, #6B7280) !important;
+    margin-top: 4px !important;
+}
+
+/* H3 / SUBSECTION TITLES - MEDIUM (18px) */
+h3,
+.subsection-title,
+.card-title,
 .kpi-title,
-.kpi-value,
-.metric-value,
 .report-title,
 .contract-title,
 .entity-title,
 .postpone-title,
-.permission-section-title {
+.permission-section-title,
+.modal-header h3 {
     font-size: 18px !important;
+    font-weight: 600 !important;
+    line-height: 1.4 !important;
+    color: var(--navy, #0A2540) !important;
+}
+
+/* H4, H5, H6 / SMALL HEADINGS (15px) */
+h4, h5, h6,
+.heading,
+.small-title {
+    font-size: 15px !important;
+    font-weight: 600 !important;
+    line-height: 1.4 !important;
+    color: var(--navy, #0A2540) !important;
+}
+
+/* TABLE HEADERS / COLUMN LABELS (11px, uppercase) */
+.table-header,
+.table-header > div,
+table th,
+.table th,
+thead th {
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    color: var(--gray, #6B7280) !important;
+}
+
+/* METRIC VALUES - Large numbers (24px, Roboto Mono) */
+.stat-value,
+.card-value,
+.metric-value,
+.kpi-value {
+    font-size: 24px !important;
     font-weight: 700 !important;
+    font-family: 'Roboto Mono', monospace !important;
+    line-height: 1.2 !important;
 }
 
 /* ==================== EXCEPTION: Roboto Mono for amounts ONLY ==================== */
