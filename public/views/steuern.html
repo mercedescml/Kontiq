@@ -111,6 +111,15 @@
 <div class="section" style="margin-top: 24px;">
     <div class="section-title">Erhaltene Umsatzsteuer (Forderungen)</div>
     <div class="invoices-table" style="margin-top: 16px;">
+        <div class="tax-row" style="background: var(--light-gray); border-bottom: 2px solid var(--border-gray); font-weight: 600; color: var(--navy); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px;">
+            <div>Rechnung</div>
+            <div>Kunde</div>
+            <div>Datum</div>
+            <div>Netto</div>
+            <div>MwSt. %</div>
+            <div>Steuerbetrag</div>
+            <div>Brutto</div>
+        </div>
         <div id="steuer-forderungen-list"></div>
     </div>
 </div>
@@ -118,6 +127,15 @@
 <div class="section" style="margin-top: 24px;">
     <div class="section-title">Gezahlte Vorsteuer (Zahlungen)</div>
     <div class="invoices-table" style="margin-top: 16px;">
+        <div class="tax-row" style="background: var(--light-gray); border-bottom: 2px solid var(--border-gray); font-weight: 600; color: var(--navy); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px;">
+            <div>Lieferant</div>
+            <div>Beschreibung</div>
+            <div>Datum</div>
+            <div>Netto</div>
+            <div>MwSt. %</div>
+            <div>Steuerbetrag</div>
+            <div>Brutto</div>
+        </div>
         <div id="steuer-zahlungen-list"></div>
     </div>
 </div>
@@ -168,13 +186,15 @@
     font-size: 13px;
 }
 
-.tax-row:hover {
+.tax-row:hover:not(:first-child) {
     background: var(--light-gray);
 }
 
 .tax-row > div {
     font-family: 'Inter', sans-serif;
 }
+
+/* Header row styling - will be applied via inline styles and kontiq-typography.css */
 </style>
 
 <script>
