@@ -1,6 +1,6 @@
 <style>
     .bankkonten-container {
-        max-width: 1200px;
+        max-width: 1400px;
         margin: 0 auto;
         padding: 32px;
     }
@@ -174,6 +174,7 @@
     .balance-amount {
         font-size: 18px;
         font-weight: 700;
+        font-family: 'Roboto Mono', monospace;
         color: var(--navy);
     }
 
@@ -187,7 +188,303 @@
         margin-top: 12px;
     }
 
-    /* Modal Styles */
+    /* Transactions View */
+    .transactions-view {
+        background: white;
+        border-radius: 12px;
+        padding: 24px;
+        margin-top: 24px;
+        border: 1px solid var(--light-gray);
+    }
+
+    .transactions-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        padding-bottom: 16px;
+        border-bottom: 2px solid var(--light-gray);
+    }
+
+    .transactions-title {
+        font-size: 20px;
+        font-weight: 700;
+        color: var(--navy);
+    }
+
+    .transaction-filters {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+    }
+
+    .transaction-item {
+        display: grid;
+        grid-template-columns: 80px 1fr 150px 150px auto;
+        gap: 16px;
+        padding: 16px;
+        border-bottom: 1px solid #f3f4f6;
+        align-items: center;
+        transition: background 0.2s;
+    }
+
+    .transaction-item:hover {
+        background: #f9fafb;
+    }
+
+    .transaction-item.debit {
+        border-left: 3px solid var(--error);
+    }
+
+    .transaction-item.credit {
+        border-left: 3px solid var(--teal);
+    }
+
+    .transaction-date {
+        font-size: 11px;
+        color: var(--gray);
+        text-transform: uppercase;
+        font-weight: 600;
+    }
+
+    .transaction-description {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .transaction-title {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--navy);
+    }
+
+    .transaction-reference {
+        font-size: 12px;
+        color: var(--gray);
+        font-family: 'Roboto Mono', monospace;
+    }
+
+    .transaction-category {
+        font-size: 11px;
+        padding: 3px 8px;
+        border-radius: 4px;
+        background: var(--light-gray);
+        color: var(--gray);
+        width: fit-content;
+    }
+
+    .transaction-amount {
+        font-size: 16px;
+        font-weight: 700;
+        font-family: 'Roboto Mono', monospace;
+    }
+
+    .transaction-amount.debit {
+        color: var(--error);
+    }
+
+    .transaction-amount.credit {
+        color: var(--teal);
+    }
+
+    .transaction-status {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .status-badge {
+        padding: 4px 10px;
+        border-radius: 6px;
+        font-size: 11px;
+        font-weight: 600;
+        text-align: center;
+    }
+
+    .status-badge.assigned {
+        background: rgba(14, 177, 122, 0.1);
+        color: var(--teal);
+    }
+
+    .status-badge.unassigned {
+        background: rgba(245, 158, 11, 0.1);
+        color: var(--warning);
+    }
+
+    .transaction-actions {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+    }
+
+    .btn-action {
+        padding: 6px 12px;
+        font-size: 11px;
+        border-radius: 6px;
+        border: 1px solid var(--border-gray);
+        background: white;
+        color: var(--navy);
+        cursor: pointer;
+        transition: all 0.2s;
+        font-weight: 600;
+    }
+
+    .btn-action:hover {
+        background: var(--light-gray);
+        border-color: var(--navy);
+    }
+
+    .btn-action.primary {
+        background: var(--teal);
+        color: white;
+        border-color: var(--teal);
+    }
+
+    .btn-action.primary:hover {
+        background: #059669;
+    }
+
+    /* Assignment Modal */
+    .assignment-modal {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: white;
+        border-radius: 16px;
+        padding: 0;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        width: 600px;
+        max-width: 90vw;
+        max-height: 80vh;
+        z-index: 1000001;
+        display: none;
+        overflow: hidden;
+    }
+
+    .assignment-modal.active {
+        display: block;
+    }
+
+    .assignment-modal-header {
+        padding: 20px 24px;
+        border-bottom: 1px solid var(--light-gray);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .assignment-modal-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--navy);
+    }
+
+    .assignment-modal-body {
+        padding: 24px;
+        max-height: 60vh;
+        overflow-y: auto;
+    }
+
+    .transaction-info-box {
+        background: var(--light-gray);
+        border-radius: 8px;
+        padding: 16px;
+        margin-bottom: 20px;
+    }
+
+    .assignment-options {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .assignment-option {
+        border: 2px solid var(--border-gray);
+        border-radius: 12px;
+        padding: 16px;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .assignment-option:hover {
+        border-color: var(--teal);
+        background: rgba(14, 177, 122, 0.05);
+    }
+
+    .assignment-option.selected {
+        border-color: var(--teal);
+        background: rgba(14, 177, 122, 0.1);
+    }
+
+    .option-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 8px;
+    }
+
+    .option-icon {
+        font-size: 24px;
+    }
+
+    .option-title {
+        font-size: 15px;
+        font-weight: 600;
+        color: var(--navy);
+    }
+
+    .option-description {
+        font-size: 12px;
+        color: var(--gray);
+        margin-left: 36px;
+    }
+
+    .search-list {
+        margin-top: 16px;
+        border: 1px solid var(--border-gray);
+        border-radius: 8px;
+        max-height: 300px;
+        overflow-y: auto;
+    }
+
+    .search-item {
+        padding: 12px 16px;
+        border-bottom: 1px solid #f3f4f6;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+
+    .search-item:last-child {
+        border-bottom: none;
+    }
+
+    .search-item:hover {
+        background: #f9fafb;
+    }
+
+    .search-item.selected {
+        background: rgba(14, 177, 122, 0.1);
+    }
+
+    /* Modal Overlay */
+    .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0,0,0,0.5);
+        z-index: 1000000;
+        display: none;
+    }
+
+    .modal-overlay.active {
+        display: block;
+    }
+
+    /* Bank Account Modal */
     .bank-modal-overlay {
         position: fixed !important;
         top: 0 !important;
@@ -381,22 +678,12 @@
         color: var(--gray);
         margin: 0;
     }
-/* Masquer header/menu sur mobile */
-@media (max-width: 768px) {
-    .sidebar,
-    .side-menu,
-    .module-list,
-    .main-nav,
-    .page-header {
-        display: none !important;
-    }
-}
 </style>
 
 <div class="bankkonten-container">
     <div class="page-header">
         <h1 class="page-title">Bankkonten</h1>
-        <p class="page-subtitle">Verwalten Sie Ihre Geschäftskonten und ordnen Sie diese Entitäten zu</p>
+        <p class="page-subtitle">Verwalten Sie Ihre Geschäftskonten und ordnen Sie Transaktionen zu</p>
     </div>
 
     <div class="section-header">
@@ -407,6 +694,27 @@
     </div>
 
     <div class="accounts-grid" id="accountsGrid"></div>
+
+    <!-- Transactions View -->
+    <div class="transactions-view" id="transactionsView" style="display: none;">
+        <div class="transactions-header">
+            <div>
+                <h3 class="transactions-title" id="transactionsAccountName"></h3>
+                <p style="font-size: 13px; color: var(--gray); margin-top: 4px;">Aktuelle Transaktionen & Zuordnung</p>
+            </div>
+            <div class="transaction-filters">
+                <select style="padding: 8px 12px; border: 1px solid var(--border-gray); border-radius: 6px; font-size: 13px;">
+                    <option>Alle Transaktionen</option>
+                    <option>Nicht zugeordnet</option>
+                    <option>Zugeordnet</option>
+                    <option>Einnahmen</option>
+                    <option>Ausgaben</option>
+                </select>
+                <button class="btn btn-secondary btn-sm" onclick="closeTransactions()">Zurück</button>
+            </div>
+        </div>
+        <div id="transactionsList"></div>
+    </div>
 </div>
 
 <!-- Bank Account Modal -->
@@ -418,7 +726,7 @@
     </div>
     <form onsubmit="saveAccount(event)">
         <input type="hidden" id="accountId">
-        
+
         <div class="bank-form-group">
             <label class="bank-form-label">Bank</label>
             <input type="text" class="bank-form-input" id="accountBank" placeholder="z.B. Sparkasse, N26, Commerzbank" required>
@@ -459,9 +767,72 @@
     </form>
 </div>
 
+<!-- Assignment Modal -->
+<div class="modal-overlay" id="assignmentOverlay" onclick="closeAssignmentModal()"></div>
+<div class="assignment-modal" id="assignmentModal">
+    <div class="assignment-modal-header">
+        <h3 class="assignment-modal-title">Transaktion zuordnen</h3>
+        <button class="bank-modal-close" onclick="closeAssignmentModal()">✕</button>
+    </div>
+    <div class="assignment-modal-body">
+        <div class="transaction-info-box" id="assignmentTransactionInfo"></div>
+
+        <div class="assignment-options">
+            <div class="assignment-option" onclick="selectAssignmentType('existing-zahlung')">
+                <div class="option-header">
+                    <span class="option-icon">💰</span>
+                    <span class="option-title">Zu bestehender Zahlung zuordnen</span>
+                </div>
+                <p class="option-description">Diese Transaktion einer bereits erfassten Zahlung zuordnen</p>
+            </div>
+
+            <div class="assignment-option" onclick="selectAssignmentType('new-zahlung')">
+                <div class="option-header">
+                    <span class="option-icon">➕</span>
+                    <span class="option-title">Als neue Zahlung erfassen</span>
+                </div>
+                <p class="option-description">Neue Zahlung basierend auf dieser Transaktion erstellen</p>
+            </div>
+
+            <div class="assignment-option" onclick="selectAssignmentType('existing-forderung')">
+                <div class="option-header">
+                    <span class="option-icon">📄</span>
+                    <span class="option-title">Zu bestehender Forderung zuordnen</span>
+                </div>
+                <p class="option-description">Diese Transaktion einer offenen Forderung zuordnen</p>
+            </div>
+
+            <div class="assignment-option" onclick="selectAssignmentType('new-forderung')">
+                <div class="option-header">
+                    <span class="option-icon">✨</span>
+                    <span class="option-title">Als neue Forderung erfassen</span>
+                </div>
+                <p class="option-description">Neue Forderung basierend auf dieser Transaktion erstellen</p>
+            </div>
+        </div>
+
+        <div id="assignmentSearchArea" style="display: none; margin-top: 20px;">
+            <input type="text" id="assignmentSearch" placeholder="Suchen..." style="width: 100%; padding: 12px; border: 1px solid var(--border-gray); border-radius: 8px; font-size: 14px;">
+            <div class="search-list" id="assignmentSearchList"></div>
+        </div>
+
+        <div style="margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--light-gray); display: flex; gap: 10px; justify-content: flex-end;">
+            <button class="btn btn-secondary" onclick="closeAssignmentModal()">Abbrechen</button>
+            <button class="btn btn-primary" onclick="saveAssignment()" id="saveAssignmentBtn" style="display: none;">Zuordnen</button>
+        </div>
+    </div>
+</div>
+
+<script src="/data/forderungen.json"></script>
+<script src="/data/zahlungen.json"></script>
 <script>
     let accounts = JSON.parse(localStorage.getItem('kontiq_accounts') || '[]');
     let entities = JSON.parse(localStorage.getItem('kontiq_entities') || '[]');
+    let transactions = JSON.parse(localStorage.getItem('kontiq_transactions') || '[]');
+    let currentAccountId = null;
+    let currentTransaction = null;
+    let selectedAssignmentType = null;
+    let selectedAssignmentId = null;
 
     // Initialize with default accounts if none exist
     if (accounts.length === 0) {
@@ -488,6 +859,91 @@
         localStorage.setItem('kontiq_accounts', JSON.stringify(accounts));
     }
 
+    // Initialize transactions if none exist
+    if (transactions.length === 0) {
+        transactions = [
+            {
+                id: 't1',
+                accountId: '1',
+                date: '2025-01-18',
+                description: 'Firma ABC GmbH - Rechnung RE-2025-001',
+                reference: 'WIRE-20250118-0001',
+                amount: 4850.00,
+                type: 'credit',
+                category: 'Kundeneinzahlung',
+                status: 'unassigned',
+                assignedTo: null,
+                assignedType: null
+            },
+            {
+                id: 't2',
+                accountId: '1',
+                date: '2025-01-17',
+                description: 'Deutsche Telekom AG',
+                reference: 'DD-20250117-TELEKOM',
+                amount: -89.95,
+                type: 'debit',
+                category: 'Telekommunikation',
+                status: 'unassigned',
+                assignedTo: null,
+                assignedType: null
+            },
+            {
+                id: 't3',
+                accountId: '1',
+                date: '2025-01-16',
+                description: 'AWS EMEA SARL',
+                reference: 'DD-20250116-AWS',
+                amount: -245.80,
+                type: 'debit',
+                category: 'IT & Software',
+                status: 'unassigned',
+                assignedTo: null,
+                assignedType: null
+            },
+            {
+                id: 't4',
+                accountId: '1',
+                date: '2025-01-15',
+                description: 'XYZ Consulting - Projektabrechnung',
+                reference: 'WIRE-20250115-0002',
+                amount: 8500.00,
+                type: 'credit',
+                category: 'Dienstleistungseinnahmen',
+                status: 'unassigned',
+                assignedTo: null,
+                assignedType: null
+            },
+            {
+                id: 't5',
+                accountId: '1',
+                date: '2025-01-14',
+                description: 'Office Depot Deutschland GmbH',
+                reference: 'DD-20250114-OFFICE',
+                amount: -342.50,
+                type: 'debit',
+                category: 'Büromaterial',
+                status: 'unassigned',
+                assignedTo: null,
+                assignedType: null
+            },
+            {
+                id: 't6',
+                accountId: '2',
+                date: '2025-01-17',
+                description: 'Google Cloud EMEA',
+                reference: 'DD-20250117-GOOGLE',
+                amount: -156.20,
+                type: 'debit',
+                category: 'IT & Software',
+                status: 'unassigned',
+                assignedTo: null,
+                assignedType: null
+            }
+        ];
+        localStorage.setItem('kontiq_transactions', JSON.stringify(transactions));
+    }
+
     function getEntityName(entityId) {
         if (entityId === 'all') return 'Alle Entitäten';
         const entity = entities.find(e => e.id === entityId);
@@ -512,9 +968,14 @@
         return iban.replace(/(.{4})/g, '$1 ').trim();
     }
 
+    function formatDate(dateStr) {
+        const date = new Date(dateStr);
+        return date.toLocaleDateString('de-DE', { day: '2-digit', month: 'short', year: 'numeric' });
+    }
+
     function renderAccounts() {
         const grid = document.getElementById('accountsGrid');
-        
+
         if (accounts.length === 0) {
             grid.innerHTML = `
                 <div class="empty-state" style="grid-column: 1/-1;">
@@ -527,12 +988,15 @@
         }
 
         grid.innerHTML = accounts.map(account => {
+            const accountTransactions = transactions.filter(t => t.accountId === account.id);
+            const unassignedCount = accountTransactions.filter(t => t.status === 'unassigned').length;
+
             const isAllEntities = account.entityIds.includes('all');
-            const entityDisplay = isAllEntities 
+            const entityDisplay = isAllEntities
                 ? { icon: '🌐', name: 'Alle Entitäten', label: 'Gesamtunternehmen' }
-                : { 
-                    icon: getEntityIcon(account.entityIds[0]), 
-                    name: account.entityIds.length > 1 
+                : {
+                    icon: getEntityIcon(account.entityIds[0]),
+                    name: account.entityIds.length > 1
                         ? `${getEntityName(account.entityIds[0])} +${account.entityIds.length - 1}`
                         : getEntityName(account.entityIds[0]),
                     label: account.entityIds.length > 1 ? 'Mehrere Entitäten' : 'Zugeordnet'
@@ -546,7 +1010,7 @@
                             <div class="account-iban">${formatIban(account.iban)}</div>
                         </div>
                         <span class="account-badge ${account.type}">${
-                            account.type === 'primary' ? 'Hauptkonto' : 
+                            account.type === 'primary' ? 'Hauptkonto' :
                             account.type === 'savings' ? 'Sparkonto' : 'Sekundär'
                         }</span>
                     </div>
@@ -564,18 +1028,265 @@
                         <span class="balance-amount ${account.balance >= 0 ? 'positive' : ''}">${formatCurrency(account.balance)}</span>
                     </div>
 
+                    ${unassignedCount > 0 ? `
+                        <div style="margin-top: 12px; padding: 10px; background: rgba(245, 158, 11, 0.1); border-radius: 8px; border-left: 3px solid var(--warning);">
+                            <div style="font-size: 12px; font-weight: 600; color: var(--warning);">
+                                ${unassignedCount} nicht zugeordnete Transaktion${unassignedCount > 1 ? 'en' : ''}
+                            </div>
+                        </div>
+                    ` : ''}
+
                     <div class="account-actions">
+                        <button class="btn btn-primary btn-sm" onclick="viewTransactions('${account.id}')">
+                            📊 Transaktionen (${accountTransactions.length})
+                        </button>
                         <button class="btn btn-secondary btn-sm" onclick="editAccount('${account.id}')">Bearbeiten</button>
-                        <button class="btn btn-secondary btn-sm" onclick="deleteAccount('${account.id}')">Löschen</button>
                     </div>
                 </div>
             `;
         }).join('');
     }
 
+    function viewTransactions(accountId) {
+        currentAccountId = accountId;
+        const account = accounts.find(a => a.id === accountId);
+        const accountTransactions = transactions.filter(t => t.accountId === accountId);
+
+        document.getElementById('accountsGrid').style.display = 'none';
+        document.querySelector('.section-header').style.display = 'none';
+        document.getElementById('transactionsView').style.display = 'block';
+        document.getElementById('transactionsAccountName').textContent = `${account.bank} - Transaktionen`;
+
+        renderTransactions(accountTransactions);
+    }
+
+    function closeTransactions() {
+        document.getElementById('accountsGrid').style.display = 'grid';
+        document.querySelector('.section-header').style.display = 'flex';
+        document.getElementById('transactionsView').style.display = 'none';
+        currentAccountId = null;
+    }
+
+    function renderTransactions(transactionsList) {
+        const container = document.getElementById('transactionsList');
+
+        if (transactionsList.length === 0) {
+            container.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-state-icon">💳</div>
+                    <h3>Keine Transaktionen</h3>
+                    <p>Es wurden noch keine Transaktionen für dieses Konto erfasst</p>
+                </div>
+            `;
+            return;
+        }
+
+        container.innerHTML = transactionsList.map(transaction => `
+            <div class="transaction-item ${transaction.type}">
+                <div>
+                    <div class="transaction-date">${formatDate(transaction.date)}</div>
+                </div>
+
+                <div class="transaction-description">
+                    <div class="transaction-title">${transaction.description}</div>
+                    <div class="transaction-reference">${transaction.reference}</div>
+                    <div class="transaction-category">${transaction.category}</div>
+                </div>
+
+                <div class="transaction-amount ${transaction.type}">
+                    ${transaction.type === 'debit' ? '-' : '+'}${formatCurrency(Math.abs(transaction.amount))}
+                </div>
+
+                <div class="transaction-status">
+                    <span class="status-badge ${transaction.status}">
+                        ${transaction.status === 'assigned' ? '✓ Zugeordnet' : '⚠ Nicht zugeordnet'}
+                    </span>
+                    ${transaction.status === 'assigned' ? `
+                        <div style="font-size: 11px; color: var(--gray); margin-top: 4px;">
+                            ${transaction.assignedType === 'zahlung' ? '💰 Zahlung' : '📄 Forderung'}
+                        </div>
+                    ` : ''}
+                </div>
+
+                <div class="transaction-actions">
+                    ${transaction.status === 'unassigned' ? `
+                        <button class="btn-action primary" onclick="openAssignmentModal('${transaction.id}')">
+                            Zuordnen
+                        </button>
+                    ` : `
+                        <button class="btn-action" onclick="viewAssignment('${transaction.id}')">
+                            Details
+                        </button>
+                        <button class="btn-action" onclick="removeAssignment('${transaction.id}')">
+                            Entfernen
+                        </button>
+                    `}
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function openAssignmentModal(transactionId) {
+        currentTransaction = transactions.find(t => t.id === transactionId);
+        if (!currentTransaction) return;
+
+        const modal = document.getElementById('assignmentModal');
+        const overlay = document.getElementById('assignmentOverlay');
+
+        document.getElementById('assignmentTransactionInfo').innerHTML = `
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <div>
+                    <div style="font-size: 14px; font-weight: 700; color: var(--navy);">${currentTransaction.description}</div>
+                    <div style="font-size: 12px; color: var(--gray); margin-top: 2px;">${currentTransaction.reference}</div>
+                </div>
+                <div style="font-size: 18px; font-weight: 700; font-family: 'Roboto Mono', monospace; color: ${currentTransaction.type === 'credit' ? 'var(--teal)' : 'var(--error)'};">
+                    ${currentTransaction.type === 'debit' ? '-' : '+'}${formatCurrency(Math.abs(currentTransaction.amount))}
+                </div>
+            </div>
+            <div style="font-size: 12px; color: var(--gray);">
+                <strong>Datum:</strong> ${formatDate(currentTransaction.date)} |
+                <strong>Kategorie:</strong> ${currentTransaction.category}
+            </div>
+        `;
+
+        overlay.classList.add('active');
+        modal.classList.add('active');
+    }
+
+    function closeAssignmentModal() {
+        document.getElementById('assignmentOverlay').classList.remove('active');
+        document.getElementById('assignmentModal').classList.remove('active');
+        document.getElementById('assignmentSearchArea').style.display = 'none';
+        document.getElementById('saveAssignmentBtn').style.display = 'none';
+        selectedAssignmentType = null;
+        selectedAssignmentId = null;
+        currentTransaction = null;
+    }
+
+    async function selectAssignmentType(type) {
+        selectedAssignmentType = type;
+        const searchArea = document.getElementById('assignmentSearchArea');
+        const saveBtn = document.getElementById('saveAssignmentBtn');
+
+        document.querySelectorAll('.assignment-option').forEach(opt => opt.classList.remove('selected'));
+        event.target.closest('.assignment-option').classList.add('selected');
+
+        if (type === 'existing-zahlung' || type === 'existing-forderung') {
+            searchArea.style.display = 'block';
+            saveBtn.style.display = 'inline-flex';
+
+            // Load data
+            if (type === 'existing-zahlung') {
+                try {
+                    const response = await fetch('/api/zahlungen');
+                    const data = await response.json();
+                    renderSearchList(data.zahlungen || data, 'zahlung');
+                } catch (error) {
+                    console.error('Error loading Zahlungen:', error);
+                    document.getElementById('assignmentSearchList').innerHTML = '<p style="padding: 16px; text-align: center; color: var(--gray);">Fehler beim Laden der Zahlungen</p>';
+                }
+            } else {
+                try {
+                    const response = await fetch('/api/forderungen');
+                    const data = await response.json();
+                    renderSearchList(data.forderungen || data, 'forderung');
+                } catch (error) {
+                    console.error('Error loading Forderungen:', error);
+                    document.getElementById('assignmentSearchList').innerHTML = '<p style="padding: 16px; text-align: center; color: var(--gray);">Fehler beim Laden der Forderungen</p>';
+                }
+            }
+        } else if (type === 'new-zahlung') {
+            // Create new Zahlung
+            window.location.href = '#zahlungen';
+            closeAssignmentModal();
+        } else if (type === 'new-forderung') {
+            // Create new Forderung
+            window.location.href = '#forderungen';
+            closeAssignmentModal();
+        }
+    }
+
+    function renderSearchList(items, itemType) {
+        const list = document.getElementById('assignmentSearchList');
+
+        if (!items || items.length === 0) {
+            list.innerHTML = `<p style="padding: 16px; text-align: center; color: var(--gray);">Keine ${itemType === 'zahlung' ? 'Zahlungen' : 'Forderungen'} gefunden</p>`;
+            return;
+        }
+
+        list.innerHTML = items.map(item => {
+            const displayName = itemType === 'zahlung'
+                ? `${item.supplier || item.recipient || 'Unbekannt'} - ${formatCurrency(item.amount || item.brutto_betrag || 0)}`
+                : `${item.client_name || 'Unbekannt'} - ${item.invoice_number || ''} - ${formatCurrency(item.amount || item.brutto_betrag || 0)}`;
+
+            return `
+                <div class="search-item" onclick="selectSearchItem('${item.id}', '${itemType}')">
+                    <div style="font-size: 14px; font-weight: 600; color: var(--navy); margin-bottom: 4px;">${displayName}</div>
+                    <div style="font-size: 12px; color: var(--gray);">
+                        ${itemType === 'zahlung' ? `Fälligkeit: ${item.due_date || item.date || '-'}` : `Rechnung vom: ${item.invoice_date || '-'}`}
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    function selectSearchItem(itemId, itemType) {
+        selectedAssignmentId = itemId;
+        document.querySelectorAll('.search-item').forEach(item => item.classList.remove('selected'));
+        event.target.closest('.search-item').classList.add('selected');
+    }
+
+    function saveAssignment() {
+        if (!selectedAssignmentId || !currentTransaction) {
+            alert('Bitte wählen Sie eine Zuordnung aus');
+            return;
+        }
+
+        currentTransaction.status = 'assigned';
+        currentTransaction.assignedTo = selectedAssignmentId;
+        currentTransaction.assignedType = selectedAssignmentType.includes('zahlung') ? 'zahlung' : 'forderung';
+
+        const index = transactions.findIndex(t => t.id === currentTransaction.id);
+        transactions[index] = currentTransaction;
+        localStorage.setItem('kontiq_transactions', JSON.stringify(transactions));
+
+        closeAssignmentModal();
+        viewTransactions(currentAccountId);
+        renderAccounts();
+    }
+
+    function removeAssignment(transactionId) {
+        const transaction = transactions.find(t => t.id === transactionId);
+        if (!transaction) return;
+
+        if (confirm('Möchten Sie die Zuordnung wirklich entfernen?')) {
+            transaction.status = 'unassigned';
+            transaction.assignedTo = null;
+            transaction.assignedType = null;
+
+            const index = transactions.findIndex(t => t.id === transactionId);
+            transactions[index] = transaction;
+            localStorage.setItem('kontiq_transactions', JSON.stringify(transactions));
+
+            viewTransactions(currentAccountId);
+            renderAccounts();
+        }
+    }
+
+    function viewAssignment(transactionId) {
+        const transaction = transactions.find(t => t.id === transactionId);
+        if (!transaction || transaction.status !== 'assigned') return;
+
+        if (transaction.assignedType === 'zahlung') {
+            window.location.href = '#zahlungen';
+        } else {
+            window.location.href = '#forderungen';
+        }
+    }
+
     function renderEntityCheckboxes() {
         const container = document.getElementById('entityCheckboxList');
-        
+
         if (entities.length === 0) {
             container.innerHTML = '<p style="color:#6b7280;font-size:12px;text-align:center;padding:12px;">Keine Entitäten vorhanden</p>';
             return;
@@ -614,7 +1325,6 @@
             document.getElementById('accountBalance').value = account.balance;
             document.getElementById('accountType').value = account.type;
 
-            // Set entity checkboxes
             const isAllEntities = account.entityIds.includes('all');
             document.getElementById('allEntities').checked = isAllEntities;
             toggleAllEntities();
@@ -644,10 +1354,10 @@
 
     function saveAccount(event) {
         event.preventDefault();
-        
+
         const id = document.getElementById('accountId').value;
         const isAllEntities = document.getElementById('allEntities').checked;
-        
+
         let entityIds = [];
         if (isAllEntities) {
             entityIds = ['all'];
