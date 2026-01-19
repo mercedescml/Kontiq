@@ -4,10 +4,18 @@ const path = require('path');
 const fs = require('fs');
 const bcrypt = require('bcrypt');
 const Joi = require('joi');
+const jwt = require('jsonwebtoken');
+const rateLimit = require('express-rate-limit');
 require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const JWT_SECRET = process.env.JWT_SECRET || 'fallback_secret_change_me';
+
+// Warn if using default secret
+if (!process.env.JWT_SECRET) {
+  console.warn('⚠️  WARNING: Using default JWT_SECRET. Set JWT_SECRET in .env for production!');
+}
 
 // ========== DATA HELPERS ==========
 const DATA_DIR = path.join(__dirname, 'data');
@@ -43,6 +51,69 @@ const FILES = {
 
 // ========== PASSWORD HASHING WITH BCRYPT ==========
 const SALT_ROUNDS = 10; // bcrypt salt rounds for password hashing
+
+// ========== JWT AUTHENTICATION MIDDLEWARE ==========
+/**
+ * Middleware to verify JWT token and attach user to request
+ * Usage: Add to protected routes that require authentication
+ */
+function authenticateToken(req, res, next) {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
+
+  if (!token) {
+    return res.status(401).json({ error: 'Authentifizierung erforderlich' });
+  }
+
+  jwt.verify(token, JWT_SECRET, (err, user) => {
+    if (err) {
+      return res.status(403).json({ error: 'Ungültiger oder abgelaufener Token' });
+    }
+    req.user = user; // Attach user info to request
+    next();
+  });
+}
+
+/**
+ * Middleware to verify resource ownership
+ * Prevents IDOR attacks by checking if user owns the resource
+ */
+function verifyOwnership(req, res, next) {
+  // For GET requests with userId filter
+  if (req.method === 'GET' && req.query.userId) {
+    if (req.query.userId !== req.user.email) {
+      return res.status(403).json({ error: 'Zugriff verweigert' });
+    }
+  }
+
+  // For PUT/DELETE, we'll check ownership in the route handler
+  next();
+}
+
+// ========== RATE LIMITING ==========
+/**
+ * Rate limiter for login endpoint
+ * Prevents brute-force attacks
+ */
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 5, // Limit each IP to 5 requests per windowMs
+  message: { error: 'Zu viele Login-Versuche. Bitte versuchen Sie es in 15 Minuten erneut.' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+/**
+ * General API rate limiter
+ * Prevents DoS attacks
+ */
+const apiLimiter = rateLimit({
+  windowMs: 1 * 60 * 1000, // 1 minute
+  max: 100, // Limit each IP to 100 requests per minute
+  message: { error: 'Zu viele Anfragen. Bitte versuchen Sie es später erneut.' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
 
 // ========== VALIDATION SCHEMAS ==========
 const schemas = {
@@ -131,6 +202,7 @@ const SAMPLE_CONTRACTS = [
 // ========== MIDDLEWARE ==========
 app.use(cors());
 app.use(express.json());
+app.use('/api', apiLimiter); // Apply rate limiting to all API routes
 
 app.use((req, res, next) => {
   if (req.path.endsWith('.html')) res.set('Cache-Control', 'public, max-age=3600');
@@ -167,25 +239,26 @@ function createCrudRoutes(resource, file, options = {}) {
     resource // kosten → kosten (already singular-looking)
   );
 
-  // GET - List all with optional userId filter
-  app.get(`/api/${resource}`, (req, res) => {
+  // GET - List all with optional userId filter (PROTECTED)
+  app.get(`/api/${resource}`, authenticateToken, verifyOwnership, (req, res) => {
     let data = readJSON(file);
 
     // Apply beforeGet hook if provided (for sample data initialization, etc.)
     if (beforeGet) data = beforeGet(data);
 
     const userId = req.query.userId;
-    const filtered = userId ? data.filter(x => x.userId === userId) : data;
+    // SECURITY FIX: Only return data for authenticated user
+    const filtered = userId ? data.filter(x => x.userId === userId) : data.filter(x => x.userId === req.user.email);
     res.json({ [resource]: filtered });
   });
 
-  // POST - Create new item
+  // POST - Create new item (PROTECTED)
   const postHandler = (req, res) => {
     const data = readJSON(file);
     const item = {
       id: Date.now().toString(),
       ...req.body,
-      userId: req.body.userId,
+      userId: req.user.email, // SECURITY FIX: Use authenticated user's email
       createdAt: new Date().toISOString()
     };
     data.push(item);
@@ -197,25 +270,41 @@ function createCrudRoutes(resource, file, options = {}) {
 
   // Apply validation middleware if schema provided
   if (schema) {
-    app.post(`/api/${resource}`, validate(schema), postHandler);
+    app.post(`/api/${resource}`, authenticateToken, validate(schema), postHandler);
   } else {
-    app.post(`/api/${resource}`, postHandler);
+    app.post(`/api/${resource}`, authenticateToken, postHandler);
   }
 
-  // PUT - Update existing item
-  app.put(`/api/${resource}/:id`, (req, res) => {
+  // PUT - Update existing item (PROTECTED + IDOR FIX)
+  app.put(`/api/${resource}/:id`, authenticateToken, (req, res) => {
     let data = readJSON(file);
     const idx = data.findIndex(x => x.id === req.params.id);
     if (idx === -1) return res.status(404).json({ error: 'Nicht gefunden' });
 
-    data[idx] = { ...data[idx], ...req.body, id: req.params.id };
+    // SECURITY FIX: Verify ownership before allowing update
+    if (data[idx].userId !== req.user.email) {
+      return res.status(403).json({ error: 'Zugriff verweigert' });
+    }
+
+    data[idx] = { ...data[idx], ...req.body, id: req.params.id, userId: data[idx].userId }; // Preserve userId
     writeJSON(file, data);
     res.json({ [singular]: data[idx] });
   });
 
-  // DELETE - Remove item
-  app.delete(`/api/${resource}/:id`, (req, res) => {
-    const filtered = readJSON(file).filter(x => x.id !== req.params.id);
+  // DELETE - Remove item (PROTECTED + IDOR FIX)
+  app.delete(`/api/${resource}/:id`, authenticateToken, (req, res) => {
+    const data = readJSON(file);
+    const item = data.find(x => x.id === req.params.id);
+
+    // SECURITY FIX: Verify ownership before allowing deletion
+    if (!item) {
+      return res.status(404).json({ error: 'Nicht gefunden' });
+    }
+    if (item.userId !== req.user.email) {
+      return res.status(403).json({ error: 'Zugriff verweigert' });
+    }
+
+    const filtered = data.filter(x => x.id !== req.params.id);
     writeJSON(file, filtered);
     res.json({ ok: true });
   });
@@ -224,7 +313,7 @@ function createCrudRoutes(resource, file, options = {}) {
 // ========== API ROUTES ==========
 
 // Dashboard
-app.get('/api/dashboard', (req, res) => res.json({ liquiditaet: 0, skontoMoeglichkeiten: 0, faelligeZahlungen: 0 }));
+app.get('/api/dashboard', authenticateToken, (req, res) => res.json({ liquiditaet: 0, skontoMoeglichkeiten: 0, faelligeZahlungen: 0 }));
 
 // Create CRUD routes for all resources
 createCrudRoutes('zahlungen', FILES.zahlungen, {
@@ -262,8 +351,8 @@ createCrudRoutes('bankkonten', FILES.bankkonten, {
 });
 
 // Categories
-app.get('/api/categories', (req, res) => res.json({ categories: readJSON(FILES.categories) }));
-app.post('/api/categories', validate(schemas.category), (req, res) => {
+app.get('/api/categories', authenticateToken, (req, res) => res.json({ categories: readJSON(FILES.categories) }));
+app.post('/api/categories', authenticateToken, validate(schemas.category), (req, res) => {
   const { name } = req.body;
   const data = readJSON(FILES.categories);
   if (data.includes(name)) return res.status(409).json({ error: 'Existiert bereits' });
@@ -271,21 +360,21 @@ app.post('/api/categories', validate(schemas.category), (req, res) => {
   writeJSON(FILES.categories, data);
   res.status(201).json({ categories: data });
 });
-app.delete('/api/categories/:name', (req, res) => {
+app.delete('/api/categories/:name', authenticateToken, (req, res) => {
   writeJSON(FILES.categories, readJSON(FILES.categories).filter(c => c !== req.params.name));
   res.json({ ok: true });
 });
 
 // Onboarding
-app.get('/api/onboarding', (req, res) => {
-  const email = req.query.email;
-  if (!email) return res.status(400).json({ error: 'E-Mail fehlt' });
+app.get('/api/onboarding', authenticateToken, (req, res) => {
+  const email = req.user.email; // SECURITY FIX: Use authenticated user
   const all = readJSON(FILES.onboarding);
   res.json({ data: all[email] || null });
 });
-app.post('/api/onboarding', (req, res) => {
-  const { email, data } = req.body;
-  if (!email || !data) return res.status(400).json({ error: 'Daten fehlen' });
+app.post('/api/onboarding', authenticateToken, (req, res) => {
+  const email = req.user.email; // SECURITY FIX: Use authenticated user
+  const { data } = req.body;
+  if (!data) return res.status(400).json({ error: 'Daten fehlen' });
   const all = readJSON(FILES.onboarding);
   all[email] = data;
   writeJSON(FILES.onboarding, all);
@@ -325,58 +414,78 @@ app.post('/api/users/register', validate(schemas.user), async (req, res) => {
       }
     };
     writeJSON(FILES.permissions, perms);
-    console.log(`[INSCRIPTION] Nouvel utilisateur: ${user.email} | Nom: ${user.name} | Société: ${user.company} | Date: ${user.created}`);
+    console.log(`[INSCRIPTION] Nouvel utilisateur: ${user.email} | Nom: ${user.name} | Société: ${user.company} | Date: ${user.createdAt}`);
     res.status(201).json({ user: { email: user.email, name: user.name, company: user.company } });
   } catch (error) {
     console.error('Registration error:', error);
     res.status(500).json({ error: 'Fehler bei der Registrierung' });
   }
 });
-app.post('/api/users/login', async (req, res) => {
+app.post('/api/users/login', loginLimiter, async (req, res) => {
   try {
     const { email, password } = req.body;
     if (!email || !password) return res.status(400).json({ error: 'E-Mail oder Passwort fehlt' });
+
     const users = readJSON(FILES.users);
     const user = users.find(u => u.email === email);
-    if (!user) return res.status(404).json({ error: 'Benutzer nicht gefunden' });
+
+    // SECURITY FIX: Generic error message to prevent user enumeration
+    if (!user) {
+      return res.status(401).json({ error: 'Ungültige Anmeldedaten' });
+    }
 
     // Compare password with bcrypt (secure comparison with timing attack protection)
     const isPasswordValid = await bcrypt.compare(password, user.passwordHash);
-    if (!isPasswordValid) return res.status(401).json({ error: 'Falsches Passwort' });
 
-    res.json({ user: { email: user.email, name: user.name, company: user.company } });
+    // SECURITY FIX: Same generic error for wrong password
+    if (!isPasswordValid) {
+      return res.status(401).json({ error: 'Ungültige Anmeldedaten' });
+    }
+
+    // Generate JWT token (expires in 24 hours)
+    const token = jwt.sign(
+      { email: user.email, name: user.name, company: user.company },
+      JWT_SECRET,
+      { expiresIn: '24h' }
+    );
+
+    res.json({
+      user: { email: user.email, name: user.name, company: user.company },
+      token
+    });
   } catch (error) {
     console.error('Login error:', error);
     res.status(500).json({ error: 'Fehler beim Login' });
   }
 });
-app.post('/api/users/invite', (req, res) => {
-  const { adminEmail, targetEmail, firstName, lastName, permissions } = req.body;
-  if (!adminEmail || !targetEmail || !firstName) return res.status(400).json({ error: 'Parameter fehlen' });
+app.post('/api/users/invite', authenticateToken, (req, res) => {
+  const { targetEmail, firstName, lastName, permissions } = req.body;
+  const adminEmail = req.user.email; // SECURITY FIX: Use authenticated user
+
+  if (!targetEmail || !firstName) return res.status(400).json({ error: 'Parameter fehlen' });
   const users = readJSON(FILES.users);
   const perms = readJSON(FILES.permissions);
   if (perms.globalPermissions[adminEmail]?.role !== 'geschaeftsfuehrer') return res.status(403).json({ error: 'Nur Geschäftsführer' });
   if (users.find(u => u.email === targetEmail)) return res.status(400).json({ error: 'Benutzer existiert' });
-  
+
   const adminUser = users.find(u => u.email === adminEmail);
   const newUser = { email: targetEmail, name: `${firstName} ${lastName || ''}`.trim(), company: adminUser?.company || '', createdAt: new Date().toISOString() };
   users.push(newUser);
   if (permissions) perms.globalPermissions[targetEmail] = { role: 'employee', permissions };
-  
+
   writeJSON(FILES.users, users);
   writeJSON(FILES.permissions, perms);
   res.json({ success: true, user: newUser });
 });
 
 // Entitäten
-app.get('/api/entitaeten', (req, res) => {
-  const { email } = req.query;
+app.get('/api/entitaeten', authenticateToken, (req, res) => {
+  const email = req.user.email; // SECURITY FIX: Use authenticated user
   const data = readJSON(FILES.entitaeten);
-  if (!email) return res.json({ entitaeten: data });
-  
+
   const perms = readJSON(FILES.permissions);
   const isGF = perms.globalPermissions[email]?.role === 'geschaeftsfuehrer';
-  
+
   if (isGF) {
     const users = readJSON(FILES.users);
     const currentUser = users.find(u => u.email === email);
@@ -387,14 +496,14 @@ app.get('/api/entitaeten', (req, res) => {
     });
     return res.json({ entitaeten: filtered });
   }
-  
+
   const userEntities = data.filter(e => {
     const managers = e.managers || (e.manager ? [e.manager] : []);
     return managers.includes(email);
   });
   res.json({ entitaeten: userEntities });
 });
-app.post('/api/entitaeten', validate(schemas.entity), (req, res) => {
+app.post('/api/entitaeten', authenticateToken, validate(schemas.entity), (req, res) => {
   const { name, manager, managers, type } = req.body;
   if (!name) return res.status(400).json({ error: 'Name fehlt' });
   const entityManagers = managers && Array.isArray(managers) ? managers : (manager ? [manager] : []);
@@ -406,7 +515,7 @@ app.post('/api/entitaeten', validate(schemas.entity), (req, res) => {
   writeJSON(FILES.entitaeten, data);
   res.status(201).json({ entity: item });
 });
-app.put('/api/entitaeten/:id', (req, res) => {
+app.put('/api/entitaeten/:id', authenticateToken, (req, res) => {
   let data = readJSON(FILES.entitaeten);
   const idx = data.findIndex(e => e.id === req.params.id);
   if (idx === -1) return res.status(404).json({ error: 'Nicht gefunden' });
@@ -414,7 +523,7 @@ app.put('/api/entitaeten/:id', (req, res) => {
   writeJSON(FILES.entitaeten, data);
   res.json({ entity: data[idx] });
 });
-app.delete('/api/entitaeten/:id', (req, res) => {
+app.delete('/api/entitaeten/:id', authenticateToken, (req, res) => {
   writeJSON(FILES.entitaeten, readJSON(FILES.entitaeten).filter(e => e.id !== req.params.id));
   const perms = readJSON(FILES.permissions);
   delete perms.entityPermissions[req.params.id];
@@ -423,7 +532,7 @@ app.delete('/api/entitaeten/:id', (req, res) => {
 });
 
 // Permissions
-app.get('/api/permissions/user/:email', (req, res) => {
+app.get('/api/permissions/user/:email', authenticateToken, (req, res) => {
   const perms = readJSON(FILES.permissions);
   const userPerms = { global: perms.globalPermissions[req.params.email] || null, entities: {} };
   Object.keys(perms.entityPermissions || {}).forEach(entityId => {
@@ -433,27 +542,28 @@ app.get('/api/permissions/user/:email', (req, res) => {
   });
   res.json({ permissions: userPerms });
 });
-app.post('/api/permissions/global', (req, res) => {
-  const { adminEmail, targetEmail, permissions } = req.body;
-  if (!adminEmail || !targetEmail || !permissions) return res.status(400).json({ error: 'Parameter fehlen' });
+app.post('/api/permissions/global', authenticateToken, (req, res) => {
+  const adminEmail = req.user.email; // SECURITY FIX: Use authenticated user
+  const { targetEmail, permissions } = req.body;
+  if (!targetEmail || !permissions) return res.status(400).json({ error: 'Parameter fehlen' });
   const perms = readJSON(FILES.permissions);
   if (perms.globalPermissions[adminEmail]?.role !== 'geschaeftsfuehrer') return res.status(403).json({ error: 'Nur Geschäftsführer' });
   perms.globalPermissions[targetEmail] = permissions;
   writeJSON(FILES.permissions, perms);
   res.json({ success: true });
 });
-app.post('/api/permissions/entity', (req, res) => {
-  const { adminEmail, entityId, targetEmail, permissions } = req.body;
-  if (!adminEmail || !entityId || !targetEmail || !permissions) return res.status(400).json({ error: 'Parameter fehlen' });
+app.post('/api/permissions/entity', authenticateToken, (req, res) => {
+  const adminEmail = req.user.email; // SECURITY FIX: Use authenticated user
+  const { entityId, targetEmail, permissions } = req.body;
+  if (!entityId || !targetEmail || !permissions) return res.status(400).json({ error: 'Parameter fehlen' });
   const perms = readJSON(FILES.permissions);
   if (!perms.entityPermissions[entityId]) perms.entityPermissions[entityId] = {};
   perms.entityPermissions[entityId][targetEmail] = permissions;
   writeJSON(FILES.permissions, perms);
   res.json({ success: true });
 });
-app.get('/api/permissions/all', (req, res) => {
-  const { email } = req.query;
-  if (!email) return res.status(400).json({ error: 'E-Mail fehlt' });
+app.get('/api/permissions/all', authenticateToken, (req, res) => {
+  const email = req.user.email; // SECURITY FIX: Use authenticated user
   const perms = readJSON(FILES.permissions);
   const users = readJSON(FILES.users);
   
@@ -494,10 +604,10 @@ app.get('/api/permissions/all', (req, res) => {
   
   res.json({ users: result, entityPermissions: filteredEntityPermissions });
 });
-app.delete('/api/permissions/:type/:email', (req, res) => {
+app.delete('/api/permissions/:type/:email', authenticateToken, (req, res) => {
   const { type, email } = req.params;
-  const { adminEmail, entityId } = req.query;
-  if (!adminEmail) return res.status(400).json({ error: 'Admin fehlt' });
+  const adminEmail = req.user.email; // SECURITY FIX: Use authenticated user
+  const { entityId } = req.query;
   const perms = readJSON(FILES.permissions);
   
   if (type === 'global') {
@@ -508,9 +618,10 @@ app.delete('/api/permissions/:type/:email', (req, res) => {
   writeJSON(FILES.permissions, perms);
   res.json({ ok: true });
 });
-app.post('/api/permissions/invite', (req, res) => {
-  const { adminEmail, targetEmail, entityId, permissions } = req.body;
-  if (!adminEmail || !targetEmail || !entityId || !permissions) return res.status(400).json({ error: 'Parameter fehlen' });
+app.post('/api/permissions/invite', authenticateToken, (req, res) => {
+  const adminEmail = req.user.email; // SECURITY FIX: Use authenticated user
+  const { targetEmail, entityId, permissions } = req.body;
+  if (!targetEmail || !entityId || !permissions) return res.status(400).json({ error: 'Parameter fehlen' });
   const perms = readJSON(FILES.permissions);
   const invitation = { id: Date.now().toString(), from: adminEmail, to: targetEmail, entityId, permissions, createdAt: new Date().toISOString(), status: 'pending' };
   perms.invitations = perms.invitations || [];
@@ -520,8 +631,8 @@ app.post('/api/permissions/invite', (req, res) => {
 });
 
 // Bookings
-app.get('/api/bookings', (req, res) => res.json({ bookings: readJSON(FILES.bookings) }));
-app.post('/api/bookings', (req, res) => {
+app.get('/api/bookings', authenticateToken, (req, res) => res.json({ bookings: readJSON(FILES.bookings) }));
+app.post('/api/bookings', authenticateToken, (req, res) => {
   const data = readJSON(FILES.bookings);
   const item = { id: Date.now().toString(), ...req.body, createdAt: new Date().toISOString() };
   data.push(item);
@@ -530,7 +641,7 @@ app.post('/api/bookings', (req, res) => {
 });
 
 // KPIs - Real calculations from actual data
-app.get('/api/kpis', (req, res) => {
+app.get('/api/kpis', authenticateToken, (req, res) => {
   try {
     const { companyId } = req.query;
 
@@ -647,17 +758,17 @@ app.get('/api/kpis', (req, res) => {
     res.status(500).json({ error: 'Fehler beim Berechnen der KPIs', kpis: {} });
   }
 });
-app.post('/api/reports', (req, res) => res.json({ report: { id: Date.now().toString(), ...req.body } }));
-app.post('/api/export/pdf', (req, res) => res.json({ url: '/export/report.pdf' }));
-app.post('/api/export/excel', (req, res) => res.json({ url: '/export/report.xlsx' }));
-app.get('/api/abonnement', (req, res) => res.json({ abonnement: { status: 'active', plan: 'Starter', price: 49 } }));
-app.put('/api/abonnement', (req, res) => res.json({ ok: true }));
-app.get('/api/einstellungen', (req, res) => res.json({ settings: {} }));
-app.put('/api/einstellungen', (req, res) => res.json({ ok: true }));
+app.post('/api/reports', authenticateToken, (req, res) => res.json({ report: { id: Date.now().toString(), ...req.body } }));
+app.post('/api/export/pdf', authenticateToken, (req, res) => res.json({ url: '/export/report.pdf' }));
+app.post('/api/export/excel', authenticateToken, (req, res) => res.json({ url: '/export/report.xlsx' }));
+app.get('/api/abonnement', authenticateToken, (req, res) => res.json({ abonnement: { status: 'active', plan: 'Starter', price: 49 } }));
+app.put('/api/abonnement', authenticateToken, (req, res) => res.json({ ok: true }));
+app.get('/api/einstellungen', authenticateToken, (req, res) => res.json({ settings: {} }));
+app.put('/api/einstellungen', authenticateToken, (req, res) => res.json({ ok: true }));
 
 // ========== FORDERUNGEN KATEGORIEN API ==========
 // GET - Alle Forderungskategorien abrufen
-app.get('/api/forderungen-kategorien', (req, res) => {
+app.get('/api/forderungen-kategorien', authenticateToken, (req, res) => {
   try {
     const kategorien = readJSON(FILES.forderungenKategorien);
     res.json(kategorien);
@@ -668,7 +779,7 @@ app.get('/api/forderungen-kategorien', (req, res) => {
 });
 
 // POST - Neue Forderungskategorie erstellen
-app.post('/api/forderungen-kategorien', (req, res) => {
+app.post('/api/forderungen-kategorien', authenticateToken, (req, res) => {
   try {
     const kategorien = readJSON(FILES.forderungenKategorien);
     const { name, description, color, icon } = req.body;
@@ -704,7 +815,7 @@ app.post('/api/forderungen-kategorien', (req, res) => {
 });
 
 // PUT - Forderungskategorie aktualisieren
-app.put('/api/forderungen-kategorien/:id', (req, res) => {
+app.put('/api/forderungen-kategorien/:id', authenticateToken, (req, res) => {
   try {
     const kategorien = readJSON(FILES.forderungenKategorien);
     const { id } = req.params;
@@ -742,7 +853,7 @@ app.put('/api/forderungen-kategorien/:id', (req, res) => {
 });
 
 // DELETE - Forderungskategorie löschen
-app.delete('/api/forderungen-kategorien/:id', (req, res) => {
+app.delete('/api/forderungen-kategorien/:id', authenticateToken, (req, res) => {
   try {
     const kategorien = readJSON(FILES.forderungenKategorien);
     const forderungen = readJSON(FILES.forderungen);
@@ -779,7 +890,7 @@ app.delete('/api/forderungen-kategorien/:id', (req, res) => {
 
 // ========== ZAHLUNGEN KATEGORIEN API ==========
 // GET - Alle Zahlungskategorien abrufen
-app.get('/api/zahlungen-kategorien', (req, res) => {
+app.get('/api/zahlungen-kategorien', authenticateToken, (req, res) => {
   try {
     const kategorien = readJSON(FILES.zahlungenKategorien);
     res.json(kategorien);
@@ -790,7 +901,7 @@ app.get('/api/zahlungen-kategorien', (req, res) => {
 });
 
 // POST - Neue Zahlungskategorie erstellen
-app.post('/api/zahlungen-kategorien', (req, res) => {
+app.post('/api/zahlungen-kategorien', authenticateToken, (req, res) => {
   try {
     const kategorien = readJSON(FILES.zahlungenKategorien);
     const { name, description, color, icon, priority } = req.body;
@@ -827,7 +938,7 @@ app.post('/api/zahlungen-kategorien', (req, res) => {
 });
 
 // PUT - Zahlungskategorie aktualisieren
-app.put('/api/zahlungen-kategorien/:id', (req, res) => {
+app.put('/api/zahlungen-kategorien/:id', authenticateToken, (req, res) => {
   try {
     const kategorien = readJSON(FILES.zahlungenKategorien);
     const { id } = req.params;
@@ -866,7 +977,7 @@ app.put('/api/zahlungen-kategorien/:id', (req, res) => {
 });
 
 // DELETE - Zahlungskategorie löschen
-app.delete('/api/zahlungen-kategorien/:id', (req, res) => {
+app.delete('/api/zahlungen-kategorien/:id', authenticateToken, (req, res) => {
   try {
     const kategorien = readJSON(FILES.zahlungenKategorien);
     const zahlungen = readJSON(FILES.zahlungen);
@@ -902,7 +1013,7 @@ app.delete('/api/zahlungen-kategorien/:id', (req, res) => {
 });
 
 // ========== LIQUIDITÄTSANALYSE NACH KATEGORIEN ==========
-app.get('/api/liquiditaet/kategorien-analyse', (req, res) => {
+app.get('/api/liquiditaet/kategorien-analyse', authenticateToken, (req, res) => {
   try {
     const forderungen = readJSON(FILES.forderungen);
     const kategorien = readJSON(FILES.forderungenKategorien);
