@@ -325,7 +325,7 @@
 
         .table-header {
             display: grid;
-            grid-template-columns: 40px 180px 120px 100px 120px 120px 100px 140px;
+            grid-template-columns: 40px 180px 120px 100px 120px 80px 120px 100px 140px;
             padding: 15px 20px;
             background: #F9FAFB;
             border-bottom: 1px solid var(--light-gray);
@@ -338,7 +338,7 @@
 
         .payment-row {
             display: grid;
-            grid-template-columns: 40px 180px 120px 100px 120px 120px 100px 140px;
+            grid-template-columns: 40px 180px 120px 100px 120px 80px 120px 100px 140px;
             padding: 16px 20px;
             border-bottom: 1px solid #F3F4F6;
             align-items: center;
@@ -1678,7 +1678,7 @@
 
         @media (max-width: 1200px) {
             .table-header, .payment-row {
-                grid-template-columns: 40px 160px 110px 90px 110px 110px 90px 120px;
+                grid-template-columns: 40px 160px 110px 90px 110px 70px 110px 90px 120px;
             }
         }
 
@@ -1895,6 +1895,7 @@
             <div>Kategorie</div>
             <div>Zahlungsart</div>
             <div>Fälligkeit</div>
+            <div>MwSt.</div>
             <div>Skonto</div>
             <div>Betrag</div>
             <div></div>
@@ -1912,6 +1913,7 @@
                 <div class="date-main" style="color: var(--error);">05.12.2025</div>
                 <div class="date-sub" style="color: var(--error);">Überfällig</div>
             </div>
+            <div><span class="badge" style="background: var(--light-gray); color: var(--navy); border: 1px solid var(--border-gray);">19%</span></div>
             <div class="skonto-info">
                 <div class="skonto-amount">-49€</div>
                 <div class="skonto-deadline">bis heute</div>
@@ -1936,6 +1938,7 @@
                 <div class="date-main">10.12.2025</div>
                 <div class="date-sub">In 2 Tagen</div>
             </div>
+            <div><span class="badge" style="background: var(--light-gray); color: var(--navy); border: 1px solid var(--border-gray);">19%</span></div>
             <div class="skonto-info">
                 <div class="skonto-amount">-24€</div>
                 <div class="skonto-deadline">bis 10.12.</div>
@@ -1960,6 +1963,7 @@
                 <div class="date-main" style="color: var(--teal);">01.12.2025</div>
                 <div class="date-sub" style="color: var(--teal);">Bezahlt</div>
             </div>
+            <div><span class="badge" style="background: var(--light-gray); color: var(--navy); border: 1px solid var(--border-gray);">19%</span></div>
             <div>—</div>
             <div class="amount">320€</div>
             <div>
@@ -1979,6 +1983,7 @@
                 <div class="date-main">22.12.2025</div>
                 <div class="date-sub">In 14 Tagen</div>
             </div>
+            <div><span class="badge" style="background: var(--light-gray); color: var(--navy); border: 1px solid var(--border-gray);">7%</span></div>
             <div class="skonto-info">
                 <div class="skonto-amount">-178€</div>
                 <div class="skonto-deadline" style="color: var(--error);">verpasst</div>
@@ -2003,6 +2008,7 @@
                 <div class="date-main">01.01.2026</div>
                 <div class="date-sub">In 24 Tagen</div>
             </div>
+            <div><span class="badge" style="background: var(--light-gray); color: var(--navy); border: 1px solid var(--border-gray);">19%</span></div>
             <div>—</div>
             <div class="amount">3.500€</div>
             <div class="action-buttons">
@@ -2149,12 +2155,26 @@
                             <div style="font-size: 16px; font-weight: 700; color: var(--navy);" id="paymentVendor">-</div>
                         </div>
                         <div style="text-align: right;">
-                            <div style="font-size: 12px; color: var(--gray); text-transform: uppercase; margin-bottom: 4px; font-weight: 600;">Betrag</div>
+                            <div style="font-size: 12px; color: var(--gray); text-transform: uppercase; margin-bottom: 4px; font-weight: 600;">Brutto Betrag</div>
                             <div style="font-size: 20px; font-weight: 800; color: var(--teal); font-family: 'Roboto Mono', monospace;" id="paymentAmount">-</div>
                         </div>
                     </div>
-                    <div style="font-size: 12px; color: var(--gray);">
+                    <div style="font-size: 12px; color: var(--gray); margin-bottom: 12px;">
                         Rechnung: <span style="font-weight: 600; color: var(--navy);" id="paymentInvoice">-</span>
+                    </div>
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding-top: 12px; border-top: 1px solid var(--light-gray);">
+                        <div>
+                            <div style="font-size: 11px; color: var(--gray);">Netto</div>
+                            <div style="font-size: 13px; font-weight: 600; color: var(--navy); font-family: 'Roboto Mono', monospace;" id="paymentNetto">-</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 11px; color: var(--gray);">MwSt.</div>
+                            <div style="font-size: 13px; font-weight: 600; color: var(--navy);" id="paymentTax">-</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 11px; color: var(--gray);">Steuerbetrag</div>
+                            <div style="font-size: 13px; font-weight: 600; color: var(--teal); font-family: 'Roboto Mono', monospace;" id="paymentTaxAmount">-</div>
+                        </div>
                     </div>
                 </div>
 
