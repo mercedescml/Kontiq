@@ -1,11 +1,10 @@
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;color:#0A2540;background:#F8FAFC;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
-.container{max-width:1400px;margin:0 auto;padding:32px}
-.header{margin-bottom:32px}
-.header h1{font-size:32px;font-weight:800;letter-spacing:-0.8px;margin-bottom:8px;color:#0A2540}
-.header p{color:#6B7280;font-size:16px;line-height:1.6}
-.layout{display:grid;grid-template-columns:280px 1fr;gap:32px;align-items:start}
+.settings-view{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;color:#0A2540;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+.settings-view .container{max-width:1400px;margin:0 auto;padding:0}
+.settings-view .header{margin-bottom:32px}
+.settings-view .header h1{font-size:32px;font-weight:800;letter-spacing:-0.8px;margin-bottom:8px;color:#0A2540}
+.settings-view .header p{color:#6B7280;font-size:16px;line-height:1.6}
+.settings-view .layout{display:grid;grid-template-columns:280px 1fr;gap:32px;align-items:start}
 .sidebar{position:sticky;top:32px;background:white;border-radius:16px;padding:24px;box-shadow:0 4px 16px rgba(0,0,0,0.06);border:1px solid rgba(229,231,235,0.8)}
 .nav-item{display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:10px;cursor:pointer;transition:all 0.2s;font-size:15px;font-weight:500;color:#6B7280;margin-bottom:4px}
 .nav-item:hover{background:#F1F5F9;color:#0A2540}
@@ -133,6 +132,7 @@ textarea{resize:vertical;min-height:100px}
   }
 }
 </style>
+<div class="settings-view">
 <div class="container">
 <div class="header">
 <h1>Einstellungen</h1>
@@ -1008,6 +1008,7 @@ Automatische Abmeldung
 <div class="modal-footer">
 <button class="btn btn-secondary" onclick="closeRoleModal()">Abbrechen</button>
 <button class="btn btn-primary" onclick="createRole()">Rolle erstellen</button>
+</div>
 </div>
 </div>
 </div>
