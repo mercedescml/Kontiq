@@ -46,7 +46,9 @@ const FILES = {
   kosten: path.join(DATA_DIR, 'kosten.json'),
   forderungen: path.join(DATA_DIR, 'forderungen.json'),
   bankkonten: path.join(DATA_DIR, 'bankkonten.json'),
-  bookings: path.join(DATA_DIR, 'bookings.json')
+  bookings: path.join(DATA_DIR, 'bookings.json'),
+  invoices: path.join(DATA_DIR, 'invoices.json'),
+  clients: path.join(DATA_DIR, 'clients.json')
 };
 
 // ========== PASSWORD HASHING WITH BCRYPT ==========
@@ -1212,6 +1214,197 @@ app.get('/api/liquiditaet/kategorien-analyse', authenticateToken, (req, res) => 
     console.error('Error calculating kategorie analyse:', error);
     res.status(500).json({ error: 'Fehler bei der Kategorieanalyse' });
   }
+});
+
+// ========== E-RECHNUNG / FACTURATION SYSTÈME ==========
+
+// Clients Management
+app.get('/api/clients', authenticateToken, (req, res) => {
+  const clients = readJSON(FILES.clients);
+  const userEmail = req.user.email;
+
+  // Filter clients by company
+  const users = readJSON(FILES.users);
+  const currentUser = users.find(u => u.email === userEmail);
+  const filtered = clients.filter(c => c.companyId === currentUser?.company);
+
+  res.json({ clients: filtered });
+});
+
+app.post('/api/clients', authenticateToken, (req, res) => {
+  const { name, email, address, taxId, language } = req.body;
+  if (!name || !email) return res.status(400).json({ error: 'Name und E-Mail erforderlich' });
+
+  const clients = readJSON(FILES.clients);
+  const users = readJSON(FILES.users);
+  const currentUser = users.find(u => u.email === req.user.email);
+
+  // Generate access token for client portal
+  const crypto = require('crypto');
+  const accessToken = crypto.randomBytes(32).toString('hex');
+
+  const client = {
+    id: Date.now().toString(),
+    name,
+    email,
+    address: address || '',
+    taxId: taxId || '',
+    language: language || 'de',
+    accessToken,
+    companyId: currentUser?.company,
+    createdBy: req.user.email,
+    createdAt: new Date().toISOString()
+  };
+
+  clients.push(client);
+  writeJSON(FILES.clients, clients);
+  res.status(201).json({ client });
+});
+
+// Invoices / E-Rechnung
+app.get('/api/invoices', authenticateToken, (req, res) => {
+  const invoices = readJSON(FILES.invoices);
+  const userEmail = req.user.email;
+
+  // Filter invoices by company
+  const users = readJSON(FILES.users);
+  const currentUser = users.find(u => u.email === userEmail);
+  const filtered = invoices.filter(inv => inv.companyId === currentUser?.company);
+
+  res.json({ invoices: filtered });
+});
+
+app.post('/api/invoices', authenticateToken, (req, res) => {
+  const { clientId, items, dueDate, notes, invoiceNumber } = req.body;
+  if (!clientId || !items || !items.length) {
+    return res.status(400).json({ error: 'Client und mindestens ein Artikel erforderlich' });
+  }
+
+  const invoices = readJSON(FILES.invoices);
+  const clients = readJSON(FILES.clients);
+  const users = readJSON(FILES.users);
+  const currentUser = users.find(u => u.email === req.user.email);
+  const client = clients.find(c => c.id === clientId);
+
+  if (!client) return res.status(404).json({ error: 'Client nicht gefunden' });
+
+  // Calculate totals
+  let subtotal = 0;
+  let totalVat = 0;
+  const processedItems = items.map(item => {
+    const amount = parseFloat(item.quantity) * parseFloat(item.price);
+    const vat = amount * (parseFloat(item.vatRate) / 100);
+    subtotal += amount;
+    totalVat += vat;
+    return {
+      ...item,
+      amount,
+      vat
+    };
+  });
+
+  const total = subtotal + totalVat;
+
+  // Generate invoice number if not provided
+  const invNumber = invoiceNumber || `INV-${Date.now()}`;
+
+  const invoice = {
+    id: Date.now().toString(),
+    invoiceNumber: invNumber,
+    clientId,
+    clientName: client.name,
+    clientEmail: client.email,
+    items: processedItems,
+    subtotal,
+    totalVat,
+    total,
+    dueDate: dueDate || new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+    notes: notes || '',
+    status: 'draft', // draft, sent, paid, overdue, cancelled
+    companyId: currentUser?.company,
+    createdBy: req.user.email,
+    createdAt: new Date().toISOString(),
+    sentAt: null,
+    paidAt: null
+  };
+
+  invoices.push(invoice);
+  writeJSON(FILES.invoices, invoices);
+  res.status(201).json({ invoice });
+});
+
+app.put('/api/invoices/:id', authenticateToken, (req, res) => {
+  const invoices = readJSON(FILES.invoices);
+  const idx = invoices.findIndex(inv => inv.id === req.params.id);
+
+  if (idx === -1) return res.status(404).json({ error: 'Rechnung nicht gefunden' });
+
+  invoices[idx] = {
+    ...invoices[idx],
+    ...req.body,
+    id: req.params.id,
+    updatedAt: new Date().toISOString()
+  };
+
+  writeJSON(FILES.invoices, invoices);
+  res.json({ invoice: invoices[idx] });
+});
+
+app.post('/api/invoices/:id/send', authenticateToken, (req, res) => {
+  const invoices = readJSON(FILES.invoices);
+  const invoice = invoices.find(inv => inv.id === req.params.id);
+
+  if (!invoice) return res.status(404).json({ error: 'Rechnung nicht gefunden' });
+
+  // Update status to sent
+  invoice.status = 'sent';
+  invoice.sentAt = new Date().toISOString();
+
+  writeJSON(FILES.invoices, invoices);
+
+  // TODO: Send actual email when email service is configured
+  console.log(`[EMAIL] Rechnung ${invoice.invoiceNumber} an ${invoice.clientEmail} gesendet`);
+
+  res.json({
+    success: true,
+    message: `Rechnung ${invoice.invoiceNumber} wurde gesendet`,
+    invoice
+  });
+});
+
+app.delete('/api/invoices/:id', authenticateToken, (req, res) => {
+  const invoices = readJSON(FILES.invoices);
+  const invoice = invoices.find(inv => inv.id === req.params.id);
+
+  if (!invoice) return res.status(404).json({ error: 'Rechnung nicht gefunden' });
+
+  // Only allow deletion of draft invoices
+  if (invoice.status !== 'draft') {
+    return res.status(400).json({ error: 'Nur Entwürfe können gelöscht werden' });
+  }
+
+  const filtered = invoices.filter(inv => inv.id !== req.params.id);
+  writeJSON(FILES.invoices, filtered);
+  res.json({ ok: true });
+});
+
+// Client Portal (public route with token auth)
+app.get('/api/client-portal/:token', (req, res) => {
+  const clients = readJSON(FILES.clients);
+  const client = clients.find(c => c.accessToken === req.params.token);
+
+  if (!client) return res.status(404).json({ error: 'Ungültiger Zugangslink' });
+
+  const invoices = readJSON(FILES.invoices);
+  const clientInvoices = invoices.filter(inv => inv.clientId === client.id);
+
+  res.json({
+    client: {
+      name: client.name,
+      email: client.email
+    },
+    invoices: clientInvoices
+  });
 });
 
 // SPA fallback
