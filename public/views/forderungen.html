@@ -829,6 +829,177 @@
         display: none !important;
     }
 }
+
+/* ===== SKONTO-OPTIMIERUNG WIDGET ===== */
+.skonto-widget {
+    background: linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 100%);
+    border: 2px solid var(--teal);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: 0 4px 16px rgba(14, 177, 122, 0.15);
+}
+
+.skonto-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.skonto-title {
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--navy);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.skonto-icon {
+    font-size: 24px;
+}
+
+.skonto-total-savings {
+    text-align: right;
+}
+
+.skonto-total-label {
+    font-size: 11px;
+    color: var(--gray);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    font-weight: 600;
+}
+
+.skonto-total-amount {
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--teal);
+    font-family: 'Roboto Mono', monospace;
+    letter-spacing: -0.5px;
+}
+
+.skonto-recommendations {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 16px;
+}
+
+.skonto-card {
+    background: white;
+    border: 1px solid rgba(14, 177, 122, 0.2);
+    border-radius: 10px;
+    padding: 18px;
+    transition: all 0.2s;
+    cursor: pointer;
+}
+
+.skonto-card:hover {
+    border-color: var(--teal);
+    box-shadow: 0 4px 12px rgba(14, 177, 122, 0.2);
+    transform: translateY(-2px);
+}
+
+.skonto-card.urgent {
+    border-left: 4px solid var(--error);
+    background: rgba(220, 38, 38, 0.02);
+}
+
+.skonto-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
+}
+
+.skonto-client {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--navy);
+}
+
+.skonto-invoice-number {
+    font-size: 11px;
+    color: var(--gray);
+}
+
+.skonto-deadline {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--error);
+    background: rgba(220, 38, 38, 0.1);
+    padding: 4px 8px;
+    border-radius: 6px;
+}
+
+.skonto-details {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.skonto-detail {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.skonto-detail-label {
+    font-size: 10px;
+    color: var(--gray);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+}
+
+.skonto-detail-value {
+    font-size: 15px;
+    font-weight: 700;
+    font-family: 'Roboto Mono', monospace;
+}
+
+.skonto-detail-value.savings {
+    color: var(--teal);
+    font-size: 18px;
+}
+
+.skonto-action {
+    padding-top: 12px;
+    border-top: 1px solid rgba(107, 114, 128, 0.1);
+}
+
+.skonto-recommendation-text {
+    font-size: 12px;
+    color: var(--gray);
+    line-height: 1.5;
+    margin-bottom: 10px;
+}
+
+.skonto-recommendation-text strong {
+    color: var(--teal);
+    font-weight: 700;
+}
+
+.btn-skonto-pay {
+    width: 100%;
+    padding: 10px;
+    background: var(--teal);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-skonto-pay:hover {
+    background: #059669;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(14, 177, 122, 0.3);
+}
 </style>
 
 <div class="page-header">
@@ -870,6 +1041,23 @@
         <div class="stat-label">Diese Woche fällig</div>
         <div class="stat-value">5</div>
         <div class="stat-meta">14.800€</div>
+    </div>
+</div>
+
+<!-- SKONTO-OPTIMIERUNG WIDGET -->
+<div class="skonto-widget" id="skontoWidget" style="display: none;">
+    <div class="skonto-header">
+        <div class="skonto-title">
+            <span class="skonto-icon">💰</span>
+            <span>Skonto-Optimierung: Intelligente Empfehlungen</span>
+        </div>
+        <div class="skonto-total-savings">
+            <div class="skonto-total-label">Potenzielle Einsparung</div>
+            <div class="skonto-total-amount" id="skontoTotalSavings">0€</div>
+        </div>
+    </div>
+    <div class="skonto-recommendations" id="skontoRecommendations">
+        <!-- Dynamically populated by JavaScript -->
     </div>
 </div>
 
@@ -1808,6 +1996,168 @@ Mit freundlichen Grüßen</textarea>
             maximumFractionDigits: 2
         }).format(amount) + '€';
     }
+
+    // ======================
+    // SKONTO-OPTIMIERUNG WIDGET
+    // ======================
+    function calculateSkontoRecommendations() {
+        // Filter forderungen with skonto that are not paid
+        const skontoOpportunities = allForderungen.filter(f => {
+            const skonto = parseFloat(f.skonto) || 0;
+            const isPaid = f.status === 'bezahlt' || f.paid === true;
+            return !isPaid && skonto > 0 && f.skonto_deadline;
+        });
+
+        if (skontoOpportunities.length === 0) {
+            document.getElementById('skontoWidget').style.display = 'none';
+            return;
+        }
+
+        // Calculate recommendations
+        const recommendations = skontoOpportunities.map(f => {
+            const amount = parseFloat(f.amount) || 0;
+            const skontoRate = parseFloat(f.skonto) || 0;
+            const skontoSavings = amount * (skontoRate / 100);
+            const amountAfterSkonto = amount - skontoSavings;
+
+            // Calculate days until skonto deadline
+            const today = new Date();
+            const deadline = new Date(f.skonto_deadline);
+            const daysUntilDeadline = Math.ceil((deadline - today) / (1000 * 60 * 60 * 24));
+
+            // Calculate credit cost if we borrow money to pay early
+            const creditDays = 30; // Assume 30-day credit
+            const creditRate = 6.5; // Annual rate %
+            const creditCost = amountAfterSkonto * (creditRate / 100) * (creditDays / 365);
+
+            const netSavings = skontoSavings - creditCost;
+            const roiPercent = (netSavings / amount) * 100;
+
+            return {
+                ...f,
+                skontoSavings,
+                amountAfterSkonto,
+                creditCost,
+                netSavings,
+                roiPercent,
+                daysUntilDeadline,
+                urgency: daysUntilDeadline <= 3 ? 'urgent' : daysUntilDeadline <= 7 ? 'soon' : 'normal'
+            };
+        });
+
+        // Sort by ROI (highest first) and urgency
+        recommendations.sort((a, b) => {
+            if (a.urgency === 'urgent' && b.urgency !== 'urgent') return -1;
+            if (b.urgency === 'urgent' && a.urgency !== 'urgent') return 1;
+            return b.roiPercent - a.roiPercent;
+        });
+
+        // Render recommendations
+        renderSkontoWidget(recommendations);
+    }
+
+    function renderSkontoWidget(recommendations) {
+        const widget = document.getElementById('skontoWidget');
+        const container = document.getElementById('skontoRecommendations');
+        const totalSavingsEl = document.getElementById('skontoTotalSavings');
+
+        // Calculate total potential savings
+        const totalSavings = recommendations.reduce((sum, r) => sum + r.netSavings, 0);
+        totalSavingsEl.textContent = formatCurrency(totalSavings);
+
+        // Show widget
+        widget.style.display = 'block';
+
+        // Render top 4 recommendations
+        const topRecommendations = recommendations.slice(0, 4);
+
+        container.innerHTML = topRecommendations.map(r => {
+            const urgentClass = r.urgency === 'urgent' ? 'urgent' : '';
+            const deadlineText = r.daysUntilDeadline <= 0
+                ? 'ABGELAUFEN'
+                : r.daysUntilDeadline === 1
+                ? 'Morgen'
+                : `${r.daysUntilDeadline} Tage`;
+
+            return `
+                <div class="skonto-card ${urgentClass}" onclick="paySkontoInvoice('${r.id}', '${r.invoice_number}')">
+                    <div class="skonto-card-header">
+                        <div>
+                            <div class="skonto-client">${r.client_name || 'N/A'}</div>
+                            <div class="skonto-invoice-number">Rechnung ${r.invoice_number || 'N/A'}</div>
+                        </div>
+                        <div class="skonto-deadline">${deadlineText}</div>
+                    </div>
+
+                    <div class="skonto-details">
+                        <div class="skonto-detail">
+                            <div class="skonto-detail-label">Rechnungsbetrag</div>
+                            <div class="skonto-detail-value">${formatCurrency(r.amount)}</div>
+                        </div>
+                        <div class="skonto-detail">
+                            <div class="skonto-detail-label">Skonto ${r.skonto}%</div>
+                            <div class="skonto-detail-value">-${formatCurrency(r.skontoSavings)}</div>
+                        </div>
+                        <div class="skonto-detail">
+                            <div class="skonto-detail-label">Kreditkosten (30T)</div>
+                            <div class="skonto-detail-value">+${formatCurrency(r.creditCost)}</div>
+                        </div>
+                        <div class="skonto-detail">
+                            <div class="skonto-detail-label">Netto Einsparung</div>
+                            <div class="skonto-detail-value savings">${formatCurrency(r.netSavings)}</div>
+                        </div>
+                    </div>
+
+                    <div class="skonto-action">
+                        <div class="skonto-recommendation-text">
+                            <strong>💡 Empfehlung:</strong> Zahlen Sie jetzt ${formatCurrency(r.amountAfterSkonto)}
+                            und sparen Sie netto ${formatCurrency(r.netSavings)} (ROI: ${r.roiPercent.toFixed(1)}%)
+                        </div>
+                        <button class="btn-skonto-pay" onclick="event.stopPropagation(); paySkontoInvoice('${r.id}', '${r.invoice_number}')">
+                            Jetzt mit Skonto zahlen
+                        </button>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    function paySkontoInvoice(invoiceId, invoiceNumber) {
+        const invoice = allForderungen.find(f => f.id === invoiceId);
+        if (!invoice) {
+            alert('Rechnung nicht gefunden');
+            return;
+        }
+
+        const amount = parseFloat(invoice.amount) || 0;
+        const skontoRate = parseFloat(invoice.skonto) || 0;
+        const skontoSavings = amount * (skontoRate / 100);
+        const amountAfterSkonto = amount - skontoSavings;
+
+        const confirm = window.confirm(
+            `Rechnung ${invoiceNumber} mit Skonto bezahlen?\n\n` +
+            `Ursprungsbetrag: ${formatCurrency(amount)}\n` +
+            `Skonto ${skontoRate}%: -${formatCurrency(skontoSavings)}\n` +
+            `Zu zahlen: ${formatCurrency(amountAfterSkonto)}\n\n` +
+            `💰 Sie sparen: ${formatCurrency(skontoSavings)}`
+        );
+
+        if (confirm) {
+            // TODO: Integrate with payment system
+            alert(`✅ Zahlung von ${formatCurrency(amountAfterSkonto)} wird vorbereitet.\n\nDiese Funktion wird mit dem Zahlungssystem integriert.`);
+
+            // Mark as paid (you would call API here)
+            // For now, just reload
+            loadForderungen();
+        }
+    }
+
+    // Update loadForderungen to also calculate skonto recommendations
+    const originalLoadForderungen = loadForderungen;
+    loadForderungen = async function() {
+        await originalLoadForderungen();
+        calculateSkontoRecommendations();
+    };
 
     // Load forderungen on page load
     if (document.readyState === 'loading') {
