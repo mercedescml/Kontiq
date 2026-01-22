@@ -304,6 +304,16 @@
         background: rgba(220, 38, 38, 0.08);
     }
 
+    .btn-icon.btn-send {
+        border-color: var(--teal);
+        color: var(--teal);
+    }
+
+    .btn-icon.btn-send:hover {
+        background: rgba(14, 177, 122, 0.08);
+        border-color: var(--teal);
+    }
+
     /* Analysis Section */
     .analysis-section {
         background: var(--white);
@@ -1759,11 +1769,37 @@ Mit freundlichen Grüßen</textarea>
                     <div><span class="badge ${paymentClass}">${paymentMethod}</span></div>
                     <div class="action-buttons">
                         ${!isPaid ? `<button class="btn-icon" onclick="openReminder('${forderung.client_name}')">Erinner.</button>` : ''}
+                        ${!isPaid && !forderung.sent ? `<button class="btn-icon btn-send" onclick="sendEInvoice('${forderung.id}', '${forderung.invoice_number}')">📧 Senden</button>` : ''}
                         <button class="btn-icon" onclick="editInvoice('${forderung.invoice_number}')">Bearb.</button>
                     </div>
                 </div>
             `;
         }).join('');
+    }
+
+    // Send E-Invoice
+    async function sendEInvoice(forderungId, invoiceNumber) {
+        if (!confirm(`E-Rechnung ${invoiceNumber} per E-Mail versenden?`)) return;
+
+        try {
+            const token = localStorage.getItem('kontiq_token');
+            const res = await fetch(`/api/invoices/${forderungId}/send`, {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+
+            const data = await res.json();
+
+            if (res.ok) {
+                alert(`✅ ${data.message || 'E-Rechnung wurde versendet!'}`);
+                loadForderungen(); // Reload to update status
+            } else {
+                alert('❌ Fehler: ' + (data.error || 'Unbekannter Fehler'));
+            }
+        } catch (err) {
+            console.error('Error sending E-Invoice:', err);
+            alert('❌ Fehler beim Versenden der E-Rechnung');
+        }
     }
 
     function formatCurrency(amount) {

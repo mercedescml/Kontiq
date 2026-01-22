@@ -1351,24 +1351,26 @@ app.put('/api/invoices/:id', authenticateToken, (req, res) => {
 });
 
 app.post('/api/invoices/:id/send', authenticateToken, (req, res) => {
-  const invoices = readJSON(FILES.invoices);
-  const invoice = invoices.find(inv => inv.id === req.params.id);
+  // Send E-Invoice for a Forderung
+  const forderungen = readJSON(FILES.forderungen);
+  const forderung = forderungen.find(f => f.id === req.params.id);
 
-  if (!invoice) return res.status(404).json({ error: 'Rechnung nicht gefunden' });
+  if (!forderung) return res.status(404).json({ error: 'Rechnung nicht gefunden' });
 
-  // Update status to sent
-  invoice.status = 'sent';
-  invoice.sentAt = new Date().toISOString();
+  // Mark as sent
+  forderung.sent = true;
+  forderung.sentAt = new Date().toISOString();
+  forderung.sentBy = req.user.email;
 
-  writeJSON(FILES.invoices, invoices);
+  writeJSON(FILES.forderungen, forderungen);
 
   // TODO: Send actual email when email service is configured
-  console.log(`[EMAIL] Rechnung ${invoice.invoiceNumber} an ${invoice.clientEmail} gesendet`);
+  console.log(`[E-RECHNUNG] Rechnung ${forderung.invoice_number} an ${forderung.client_name} (${forderung.client_email || 'keine E-Mail'}) gesendet`);
 
   res.json({
     success: true,
-    message: `Rechnung ${invoice.invoiceNumber} wurde gesendet`,
-    invoice
+    message: `E-Rechnung ${forderung.invoice_number} wurde versendet`,
+    forderung
   });
 });
 
@@ -1393,10 +1395,34 @@ app.get('/api/client-portal/:token', (req, res) => {
   const clients = readJSON(FILES.clients);
   const client = clients.find(c => c.accessToken === req.params.token);
 
-  if (!client) return res.status(404).json({ error: 'Ungültiger Zugangslink' });
+  if (!client) {
+    // Fallback: try to find by email (simple client portal access)
+    const forderungen = readJSON(FILES.forderungen);
+    const clientEmail = req.params.token;
 
-  const invoices = readJSON(FILES.invoices);
-  const clientInvoices = invoices.filter(inv => inv.clientId === client.id);
+    // Find forderungen for this client email
+    const clientInvoices = forderungen.filter(f =>
+      f.client_email && f.client_email.toLowerCase() === clientEmail.toLowerCase()
+    );
+
+    if (clientInvoices.length === 0) {
+      return res.status(404).json({ error: 'Ungültiger Zugangslink' });
+    }
+
+    return res.json({
+      client: {
+        name: clientInvoices[0].client_name,
+        email: clientEmail
+      },
+      invoices: clientInvoices
+    });
+  }
+
+  // Client exists with access token
+  const forderungen = readJSON(FILES.forderungen);
+  const clientInvoices = forderungen.filter(f =>
+    f.client_email && f.client_email.toLowerCase() === client.email.toLowerCase()
+  );
 
   res.json({
     client: {
@@ -1404,6 +1430,46 @@ app.get('/api/client-portal/:token', (req, res) => {
       email: client.email
     },
     invoices: clientInvoices
+  });
+});
+
+// Generate client portal link
+app.get('/api/forderungen/:id/portal-link', authenticateToken, (req, res) => {
+  const forderungen = readJSON(FILES.forderungen);
+  const forderung = forderungen.find(f => f.id === req.params.id);
+
+  if (!forderung) return res.status(404).json({ error: 'Rechnung nicht gefunden' });
+
+  const clients = readJSON(FILES.clients);
+  let client = clients.find(c => c.email === forderung.client_email);
+
+  // Create client if doesn't exist
+  if (!client && forderung.client_email) {
+    const crypto = require('crypto');
+    const accessToken = crypto.randomBytes(32).toString('hex');
+
+    const users = readJSON(FILES.users);
+    const currentUser = users.find(u => u.email === req.user.email);
+
+    client = {
+      id: Date.now().toString(),
+      name: forderung.client_name,
+      email: forderung.client_email,
+      accessToken,
+      companyId: currentUser?.company,
+      createdBy: req.user.email,
+      createdAt: new Date().toISOString()
+    };
+
+    clients.push(client);
+    writeJSON(FILES.clients, clients);
+  }
+
+  const portalUrl = `${req.protocol}://${req.get('host')}/client-portal.html?token=${client?.accessToken || forderung.client_email}`;
+
+  res.json({
+    portalUrl,
+    client: client || { name: forderung.client_name, email: forderung.client_email }
   });
 });
 
