@@ -1503,11 +1503,14 @@ if (!user) {
             updateHeader();
             initializeEntitySelector();
 
-            // Load initial view
-            const savedView = localStorage.getItem('kontiq_current_view') || 'dashboard';
-            const hashView = window.location.hash.substring(1);
-            const initialView = hashView || savedView;
-            navigateTo(initialView);
+            // ALWAYS load Dashboard first on page load (ignore hash and saved view)
+            // Clear hash from URL
+            if (window.location.hash) {
+                history.replaceState(null, null, ' ');
+            }
+
+            // Always start with dashboard
+            navigateTo('dashboard');
 
             // Periodic check to ensure header stays visible
             setInterval(updateHeader, 5000);
