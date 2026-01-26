@@ -48,7 +48,8 @@ const FILES = {
   bankkonten: path.join(DATA_DIR, 'bankkonten.json'),
   bookings: path.join(DATA_DIR, 'bookings.json'),
   invoices: path.join(DATA_DIR, 'invoices.json'),
-  clients: path.join(DATA_DIR, 'clients.json')
+  clients: path.join(DATA_DIR, 'clients.json'),
+  factures: path.join(DATA_DIR, 'factures.json')
 };
 
 // ========== PASSWORD HASHING WITH BCRYPT ==========
@@ -1471,6 +1472,90 @@ app.get('/api/forderungen/:id/portal-link', authenticateToken, (req, res) => {
     portalUrl,
     client: client || { name: forderung.client_name, email: forderung.client_email }
   });
+});
+
+// ========== FACTURES ROUTES (Rechnungen Module) ==========
+
+// Get all factures
+app.get('/api/factures', authenticateToken, (req, res) => {
+  const data = readJSON(FILES.factures);
+  res.json(data);
+});
+
+// Create new facture
+app.post('/api/factures', authenticateToken, (req, res) => {
+  const factures = readJSON(FILES.factures).factures || [];
+
+  const newFacture = {
+    id: `FAC-${Date.now()}`,
+    ...req.body,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  };
+
+  factures.push(newFacture);
+  writeJSON(FILES.factures, { factures });
+
+  res.status(201).json(newFacture);
+});
+
+// Update facture
+app.put('/api/factures/:id', authenticateToken, (req, res) => {
+  const data = readJSON(FILES.factures);
+  const factures = data.factures || [];
+  const index = factures.findIndex(f => f.id === req.params.id);
+
+  if (index === -1) {
+    return res.status(404).json({ error: 'Facture non trouvée' });
+  }
+
+  factures[index] = {
+    ...factures[index],
+    ...req.body,
+    updatedAt: new Date().toISOString()
+  };
+
+  writeJSON(FILES.factures, { factures });
+  res.json(factures[index]);
+});
+
+// Approve facture (received invoice)
+app.post('/api/factures/:id/approve', authenticateToken, (req, res) => {
+  const data = readJSON(FILES.factures);
+  const factures = data.factures || [];
+  const facture = factures.find(f => f.id === req.params.id);
+
+  if (!facture) {
+    return res.status(404).json({ error: 'Facture non trouvée' });
+  }
+
+  if (facture.type !== 'received') {
+    return res.status(400).json({ error: 'Seules les factures reçues peuvent être approuvées' });
+  }
+
+  facture.status = 'approved';
+  facture.approved_by = req.user.email;
+  facture.approved_at = new Date().toISOString();
+  facture.updatedAt = new Date().toISOString();
+
+  writeJSON(FILES.factures, { factures });
+  res.json(facture);
+});
+
+// Delete facture
+app.delete('/api/factures/:id', authenticateToken, (req, res) => {
+  const data = readJSON(FILES.factures);
+  let factures = data.factures || [];
+  const initialLength = factures.length;
+
+  factures = factures.filter(f => f.id !== req.params.id);
+
+  if (factures.length === initialLength) {
+    return res.status(404).json({ error: 'Facture non trouvée' });
+  }
+
+  writeJSON(FILES.factures, { factures });
+  res.json({ message: 'Facture supprimée avec succès' });
 });
 
 // SPA fallback
