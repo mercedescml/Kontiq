@@ -273,9 +273,7 @@
 }
 
 .btn-icon {
-    width: 32px;
-    height: 32px;
-    padding: 0;
+    padding: 6px 12px;
     border: none;
     border-radius: 6px;
     background: var(--light-gray);
@@ -285,7 +283,11 @@
     align-items: center;
     justify-content: center;
     transition: all 0.2s;
-    font-size: 14px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    white-space: nowrap;
 }
 
 .btn-icon:hover {
@@ -471,20 +473,20 @@
 </style>
 
 <div class="module-header">
-    <h1>📄 Rechnungen</h1>
+    <h1>Rechnungen</h1>
     <p>Gestion centralisée de toutes vos factures reçues et envoyées</p>
 </div>
 
 <!-- Tabs Navigation -->
 <div class="rechnungen-tabs">
     <button class="tab-btn active" data-tab="received">
-        📥 Factures Reçues
+        Factures Reçues
     </button>
     <button class="tab-btn" data-tab="sent">
-        📤 Factures Envoyées
+        Factures Envoyées
     </button>
     <button class="tab-btn" data-tab="settings">
-        ⚙️ Paramètres Email
+        Paramètres Email
     </button>
 </div>
 
@@ -647,11 +649,11 @@
 <!-- Tab: Paramètres Email -->
 <div class="tab-content" id="tab-settings">
     <div class="email-settings">
-        <h3>⚙️ Configuration de la réception de factures</h3>
+        <h3>Configuration de la réception de factures</h3>
         <p>Choisissez comment vous souhaitez recevoir vos factures fournisseurs dans Kontiq</p>
 
         <div class="alert alert-info">
-            <span>ℹ️</span>
+            <span>Info</span>
             <div>
                 <strong>Fonctionnalité en développement</strong><br>
                 La synchronisation automatique des emails sera disponible prochainement.
@@ -660,7 +662,7 @@
         </div>
 
         <div class="settings-option" onclick="selectOption('kontiq-email')">
-            <div class="option-title">📧 Email Dédié Kontiq (Recommandé)</div>
+            <div class="option-title">Email Dédié Kontiq (Recommandé)</div>
             <div class="option-description">
                 Transférez vos factures à <strong>factures@kontiq.ch</strong> ou configurez un transfert automatique.
                 Kontiq détectera et importera automatiquement vos factures PDF.
@@ -668,7 +670,7 @@
         </div>
 
         <div class="settings-option" onclick="selectOption('imap-sync')">
-            <div class="option-title">🔗 Synchronisation IMAP</div>
+            <div class="option-title">Synchronisation IMAP</div>
             <div class="option-description">
                 Connectez votre boîte mail Gmail, Outlook ou autre via IMAP.
                 Kontiq synchronisera automatiquement les factures depuis un dossier spécifique.
@@ -676,7 +678,7 @@
         </div>
 
         <div class="settings-option" onclick="selectOption('manual')">
-            <div class="option-title">📤 Upload Manuel</div>
+            <div class="option-title">Upload Manuel</div>
             <div class="option-description">
                 Uploadez vos factures PDF manuellement. Idéal pour tester le système
                 ou si vous préférez garder le contrôle total.
@@ -706,7 +708,7 @@
                 <input type="text" placeholder="Factures" id="imap-folder" value="Factures">
             </div>
 
-            <button class="btn-primary">💾 Sauvegarder la configuration</button>
+            <button class="btn-primary">Sauvegarder la configuration</button>
         </div>
     </div>
 </div>

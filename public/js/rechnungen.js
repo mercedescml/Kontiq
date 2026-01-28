@@ -47,7 +47,6 @@ function displayReceivedInvoices(factures) {
   if (factures.length === 0) {
     container.innerHTML = `
       <div class="empty-state">
-        <div class="empty-state-icon">📭</div>
         <div class="empty-state-text">Aucune facture reçue</div>
         <div class="empty-state-subtext">Les factures de vos fournisseurs apparaîtront ici</div>
       </div>
@@ -77,10 +76,10 @@ function displayReceivedInvoices(factures) {
           <span class="status-badge status-${facture.status}">${getStatusLabel(facture.status)}</span>
         </div>
         <div class="invoice-actions">
-          <button class="btn-icon btn-view" title="Voir" onclick="viewInvoice('${facture.id}')">👁️</button>
-          <button class="btn-icon btn-download" title="Télécharger" onclick="downloadInvoice('${facture.id}')">⬇️</button>
+          <button class="btn-icon btn-view" title="Voir" onclick="viewInvoice('${facture.id}')">Voir</button>
+          <button class="btn-icon btn-download" title="Télécharger" onclick="downloadInvoice('${facture.id}')">PDF</button>
           ${facture.status === 'pending' ? `
-            <button class="btn-icon btn-approve" title="Approuver" onclick="approveInvoice('${facture.id}')">✓</button>
+            <button class="btn-icon btn-approve" title="Approuver" onclick="approveInvoice('${facture.id}')">OK</button>
           ` : ''}
         </div>
       </div>
@@ -100,7 +99,6 @@ function displaySentInvoices(factures) {
   if (factures.length === 0) {
     container.innerHTML = `
       <div class="empty-state">
-        <div class="empty-state-icon">📤</div>
         <div class="empty-state-text">Aucune facture envoyée</div>
         <div class="empty-state-subtext">Les factures envoyées à vos clients apparaîtront ici</div>
       </div>
@@ -127,10 +125,10 @@ function displaySentInvoices(factures) {
           <span class="status-badge status-${facture.status}">${getStatusLabel(facture.status)}</span>
         </div>
         <div class="invoice-actions">
-          <button class="btn-icon btn-view" title="Voir" onclick="viewInvoice('${facture.id}')">👁️</button>
-          <button class="btn-icon btn-download" title="Télécharger PDF" onclick="downloadInvoice('${facture.id}')">📄</button>
+          <button class="btn-icon btn-view" title="Voir" onclick="viewInvoice('${facture.id}')">Voir</button>
+          <button class="btn-icon btn-download" title="Télécharger PDF" onclick="downloadInvoice('${facture.id}')">PDF</button>
           ${facture.portal_token ? `
-            <button class="btn-icon" title="Portail client" onclick="openClientPortal('${facture.portal_token}')">🔗</button>
+            <button class="btn-icon" title="Portail client" onclick="openClientPortal('${facture.portal_token}')">Link</button>
           ` : ''}
         </div>
       </div>
