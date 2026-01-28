@@ -88,32 +88,32 @@ async function loadZahlungenKategorien() {
  * Affiche les paiements
  */
 function displayPayments(payments) {
-  const container = document.querySelector('.payments-list') || 
+  const container = document.querySelector('.payments-list') ||
                    document.querySelector('[data-payments-container]');
-  
+
   if (!container) return;
 
   if (payments.length === 0) {
-    container.innerHTML = '<p style="text-align: center; color: #6B7280;">Keine Zahlungen gefunden</p>';
+    container.innerHTML = '<div class="empty-state"><p>Keine Zahlungen gefunden</p></div>';
     return;
   }
 
-  let html = '<table style="width: 100%; border-collapse: collapse;">';
-  html += '<thead><tr style="border-bottom: 2px solid #E5E7EB;">';
-  html += '<th style="text-align: left; padding: 10px;">Datum</th>';
-  html += '<th style="text-align: left; padding: 10px;">Empfänger</th>';
-  html += '<th style="text-align: left; padding: 10px;">Betrag</th>';
-  html += '<th style="text-align: left; padding: 10px;">Kategorie</th>';
-  html += '<th style="text-align: left; padding: 10px;">Status</th>';
-  html += '<th style="text-align: left; padding: 10px;">Aktion</th>';
+  let html = '<table class="data-table">';
+  html += '<thead><tr>';
+  html += '<th>Datum</th>';
+  html += '<th>Empfänger</th>';
+  html += '<th>Betrag</th>';
+  html += '<th>Kategorie</th>';
+  html += '<th>Status</th>';
+  html += '<th>Aktion</th>';
   html += '</tr></thead><tbody>';
 
   payments.forEach(payment => {
-    const statusColor = {
-      'pending': '#F59E0B',
-      'completed': '#10B981',
-      'failed': '#EF4444'
-    }[payment.status] || '#6B7280';
+    const statusClass = {
+      'pending': 'pending',
+      'completed': 'completed',
+      'failed': 'failed'
+    }[payment.status] || 'pending';
 
     // Get category name
     const kategorie = zahlungenKategorien.find(k => k.id === payment.category);
@@ -121,20 +121,20 @@ function displayPayments(payments) {
     const kategorieColor = kategorie ? kategorie.color : '#9e9e9e';
 
     html += `
-      <tr style="border-bottom: 1px solid #E5E7EB;">
-        <td style="padding: 10px;">${payment.date || '-'}</td>
-        <td style="padding: 10px;">${payment.supplier || '-'}</td>
-        <td style="padding: 10px;">CHF ${payment.amount?.toFixed(2) || '0.00'}</td>
-        <td style="padding: 10px;">
-          <span style="background: ${kategorieColor}; color: white; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 600;">
+      <tr>
+        <td>${payment.date || '-'}</td>
+        <td>${payment.supplier || '-'}</td>
+        <td class="amount">CHF ${payment.amount?.toFixed(2) || '0.00'}</td>
+        <td>
+          <span class="category-badge" style="background: ${kategorieColor};">
             ${kategorieName}
           </span>
         </td>
-        <td style="padding: 10px;"><span style="color: ${statusColor}; font-weight: 600;">${payment.status}</span></td>
-        <td style="padding: 10px; display: flex; gap: 5px;">
-          <button class="btn btn-secondary" onclick="editPayment('${payment.id}')" style="padding: 5px 10px; font-size: 12px;">Bearbeiten</button>
+        <td><span class="status-badge ${statusClass}">${payment.status}</span></td>
+        <td class="actions">
+          <button class="btn btn-secondary" onclick="editPayment('${payment.id}')">Bearbeiten</button>
           ${payment.status === 'pending' ? `
-            <button class="btn btn-primary" onclick="openVerschieben('${payment.id}')" style="padding: 5px 10px; font-size: 12px; background: #F59E0B;">Verschieben</button>
+            <button class="btn btn-warning" onclick="openVerschieben('${payment.id}')">Verschieben</button>
           ` : ''}
         </td>
       </tr>

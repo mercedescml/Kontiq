@@ -48,40 +48,51 @@ async function loadForderungen() {
 }
 
 /**
- * Affiche les créances
+ * Affiche les créances (using data-table CSS classes)
  */
 function displayForderungen(forderungen) {
-  const container = document.querySelector('.forderungen-list') || 
+  const container = document.querySelector('.forderungen-list') ||
                    document.querySelector('[data-forderungen-container]');
-  
+
   if (!container) return;
 
   if (forderungen.length === 0) {
-    container.innerHTML = '<p style="text-align: center; color: #6B7280;">Keine Forderungen gefunden</p>';
+    container.innerHTML = '<div class="empty-state"><p>Keine Forderungen gefunden</p></div>';
     return;
   }
 
-  let html = '<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 15px;">';
-  
+  let html = '<table class="data-table">';
+  html += '<thead><tr>';
+  html += '<th>Kunde</th>';
+  html += '<th>Betrag</th>';
+  html += '<th>Fälligkeitsdatum</th>';
+  html += '<th>Rechnungsdatum</th>';
+  html += '<th>Status</th>';
+  html += '<th>Aktion</th>';
+  html += '</tr></thead><tbody>';
+
   forderungen.forEach(f => {
-    const statusColor = {
-      'open': '#F59E0B',
-      'paid': '#10B981',
-      'overdue': '#EF4444'
-    }[f.status] || '#6B7280';
+    const statusClass = {
+      'open': 'open',
+      'paid': 'paid',
+      'overdue': 'overdue'
+    }[f.status] || 'open';
 
     html += `
-      <div style="background: white; padding: 15px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
-        <h4 style="margin: 0 0 10px 0; color: #0A2540;">${f.client_name || 'Kunde'}</h4>
-        <p style="margin: 5px 0; color: #6B7280;"><strong>Betrag:</strong> CHF ${f.amount?.toFixed(2) || '0.00'}</p>
-        <p style="margin: 5px 0; color: #6B7280;"><strong>Fällig:</strong> ${f.due_date || '-'}</p>
-        <p style="margin: 5px 0;"><strong>Status:</strong> <span style="color: ${statusColor}; font-weight: 600;">${f.status}</span></p>
-        <button class="btn btn-secondary" onclick="editForderung('${f.id}')" style="margin-top: 10px; width: 100%; padding: 8px;">Bearbeiten</button>
-      </div>
+      <tr>
+        <td><strong>${f.client_name || 'Kunde'}</strong></td>
+        <td class="amount">CHF ${f.amount?.toFixed(2) || '0.00'}</td>
+        <td>${f.due_date || '-'}</td>
+        <td>${f.invoice_date || '-'}</td>
+        <td><span class="status-badge ${statusClass}">${f.status}</span></td>
+        <td class="actions">
+          <button class="btn btn-secondary" onclick="editForderung('${f.id}')">Bearbeiten</button>
+        </td>
+      </tr>
     `;
   });
 
-  html += '</div>';
+  html += '</tbody></table>';
   container.innerHTML = html;
 }
 

@@ -113,39 +113,46 @@ async function loadBankkonten() {
 }
 
 /**
- * Affiche les comptes bancaires
+ * Affiche les comptes bancaires (using data-table CSS classes)
  */
 function displayBankkonten(konten) {
-  const container = document.querySelector('.bankkonten-grid') || 
+  const container = document.querySelector('.bankkonten-grid') ||
                    document.querySelector('[data-bankkonten-container]');
-  
+
   if (!container) return;
 
   if (konten.length === 0) {
-    container.innerHTML = '<p style="text-align: center; color: #6B7280;">Keine Bankkonten gefunden</p>';
+    container.innerHTML = '<div class="empty-state"><p>Keine Bankkonten gefunden</p></div>';
     return;
   }
 
-  let html = '<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px;">';
-  
+  let html = '<table class="data-table">';
+  html += '<thead><tr>';
+  html += '<th>Name</th>';
+  html += '<th>IBAN</th>';
+  html += '<th>Bank</th>';
+  html += '<th>Saldo</th>';
+  html += '<th>Typ</th>';
+  html += '<th>Aktion</th>';
+  html += '</tr></thead><tbody>';
+
   konten.forEach(k => {
     html += `
-      <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); border-left: 4px solid #10B981;">
-        <h4 style="margin: 0 0 10px 0; color: #0A2540;">${k.name || 'Konto'}</h4>
-        <p style="margin: 5px 0; color: #6B7280;"><strong>IBAN:</strong> ${k.iban || '-'}</p>
-        <p style="margin: 5px 0; color: #6B7280;"><strong>Bank:</strong> ${k.bank || '-'}</p>
-        <p style="margin: 10px 0 15px 0; font-size: 24px; color: #0A2540; font-weight: 700;">
-          CHF ${k.balance?.toFixed(2) || '0.00'}
-        </p>
-        <div style="display: flex; gap: 10px;">
-          <button class="btn btn-secondary" onclick="editBankkonto('${k.id}')" style="flex: 1; padding: 8px; font-size: 12px;">Bearbeiten</button>
-          <button class="btn btn-secondary" onclick="deleteBankkonto('${k.id}')" style="flex: 1; padding: 8px; font-size: 12px; background: #EF4444; color: white;">Löschen</button>
-        </div>
-      </div>
+      <tr>
+        <td><strong>${k.name || 'Konto'}</strong></td>
+        <td>${k.iban || '-'}</td>
+        <td>${k.bank || '-'}</td>
+        <td class="amount">CHF ${k.balance?.toFixed(2) || '0.00'}</td>
+        <td>${k.type || 'primary'}</td>
+        <td class="actions">
+          <button class="btn btn-secondary" onclick="editBankkonto('${k.id}')">Bearbeiten</button>
+          <button class="btn btn-danger" onclick="deleteBankkonto('${k.id}')">Löschen</button>
+        </td>
+      </tr>
     `;
   });
 
-  html += '</div>';
+  html += '</tbody></table>';
   container.innerHTML = html;
 }
 

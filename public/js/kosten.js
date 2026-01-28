@@ -53,35 +53,35 @@ async function loadKosten() {
  * Affiche les coûts
  */
 function displayKosten(kosten) {
-  const container = document.querySelector('.kosten-list') || 
+  const container = document.querySelector('.kosten-list') ||
                    document.querySelector('[data-kosten-container]');
-  
+
   if (!container) return;
 
   if (kosten.length === 0) {
-    container.innerHTML = '<p style="text-align: center; color: #6B7280;">Keine Kosten gefunden</p>';
+    container.innerHTML = '<div class="empty-state"><p>Keine Kosten gefunden</p></div>';
     return;
   }
 
-  let html = '<table style="width: 100%; border-collapse: collapse;">';
-  html += '<thead><tr style="border-bottom: 2px solid #E5E7EB;">';
-  html += '<th style="text-align: left; padding: 10px;">Kategorie</th>';
-  html += '<th style="text-align: left; padding: 10px;">Beschreibung</th>';
-  html += '<th style="text-align: left; padding: 10px;">Betrag</th>';
-  html += '<th style="text-align: left; padding: 10px;">Datum</th>';
-  html += '<th style="text-align: left; padding: 10px;">Aktion</th>';
+  let html = '<table class="data-table">';
+  html += '<thead><tr>';
+  html += '<th>Kategorie</th>';
+  html += '<th>Beschreibung</th>';
+  html += '<th>Betrag</th>';
+  html += '<th>Datum</th>';
+  html += '<th>Aktion</th>';
   html += '</tr></thead><tbody>';
 
   kosten.forEach(k => {
     html += `
-      <tr style="border-bottom: 1px solid #E5E7EB;">
-        <td style="padding: 10px;">${k.category || '-'}</td>
-        <td style="padding: 10px;">${k.description || '-'}</td>
-        <td style="padding: 10px;">CHF ${k.amount?.toFixed(2) || '0.00'}</td>
-        <td style="padding: 10px;">${k.date || '-'}</td>
-        <td style="padding: 10px;">
-          <button class="btn btn-secondary" onclick="editKosten('${k.id}')" style="padding: 5px 10px; font-size: 12px; margin-right: 5px;">Bearbeiten</button>
-          <button class="btn btn-secondary" onclick="deleteKosten('${k.id}')" style="padding: 5px 10px; font-size: 12px; background: #EF4444; color: white;">Löschen</button>
+      <tr>
+        <td>${k.category || '-'}</td>
+        <td>${k.description || '-'}</td>
+        <td class="amount">CHF ${k.amount?.toFixed(2) || '0.00'}</td>
+        <td>${k.date || '-'}</td>
+        <td class="actions">
+          <button class="btn btn-secondary" onclick="editKosten('${k.id}')">Bearbeiten</button>
+          <button class="btn btn-danger" onclick="deleteKosten('${k.id}')">Löschen</button>
         </td>
       </tr>
     `;

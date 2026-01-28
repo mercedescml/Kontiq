@@ -282,6 +282,44 @@ button.btn-secondary:hover {
   border-color: var(--gray);
 }
 
+/* Danger Button */
+.btn-danger,
+button.btn-danger {
+  background: var(--error);
+  color: var(--white);
+  border: 1px solid var(--error);
+}
+
+.btn-danger:hover,
+button.btn-danger:hover {
+  background: #B91C1C;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-danger:active {
+  transform: translateY(0);
+}
+
+/* Warning Button */
+.btn-warning,
+button.btn-warning {
+  background: var(--warning);
+  color: var(--white);
+  border: 1px solid var(--warning);
+}
+
+.btn-warning:hover,
+button.btn-warning:hover {
+  background: #D97706;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-warning:active {
+  transform: translateY(0);
+}
+
 /* Success Button */
 .btn-success,
 button.btn-success {
@@ -735,6 +773,144 @@ select.entity-form-select {
   .grid-3,
   .grid-4 {
     grid-template-columns: 1fr;
+  }
+}
+
+/* ============================================================================
+   DATA TABLES - Unified table styling
+   ========================================================================== */
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--white);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.data-table thead {
+  background: var(--light-gray);
+}
+
+.data-table thead tr {
+  border-bottom: 2px solid var(--border-gray);
+}
+
+.data-table th {
+  text-align: left;
+  padding: 12px 16px;
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--gray);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.data-table tbody tr {
+  border-bottom: 1px solid var(--border-gray);
+  transition: background var(--transition-fast);
+}
+
+.data-table tbody tr:hover {
+  background: var(--light-gray);
+}
+
+.data-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.data-table td {
+  padding: 14px 16px;
+  color: var(--black);
+  font-size: 14px;
+}
+
+.data-table td.amount {
+  font-weight: 600;
+  font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
+}
+
+.data-table .actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.data-table .actions button {
+  padding: 6px 12px;
+  font-size: 12px;
+}
+
+/* Status badges */
+.status-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.status-badge.pending,
+.status-badge.open {
+  background: #FEF3C7;
+  color: #92400E;
+}
+
+.status-badge.completed,
+.status-badge.paid {
+  background: #D1FAE5;
+  color: #065F46;
+}
+
+.status-badge.failed,
+.status-badge.overdue {
+  background: #FEE2E2;
+  color: #991B1B;
+}
+
+/* Category badges */
+.category-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  color: white;
+}
+
+/* Empty state */
+.empty-state {
+  text-align: center;
+  padding: 48px 24px;
+  color: var(--gray);
+}
+
+.empty-state p {
+  font-size: 15px;
+  margin: 0;
+}
+
+/* Mobile responsiveness for tables */
+@media (max-width: 768px) {
+  .data-table {
+    font-size: 13px;
+  }
+
+  .data-table th,
+  .data-table td {
+    padding: 10px 12px;
+  }
+
+  .data-table .actions {
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .data-table .actions button {
+    width: 100%;
   }
 }
 
