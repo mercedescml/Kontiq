@@ -372,5 +372,5 @@ function openVerschieben(paymentId) {
  */
 document.addEventListener('DOMContentLoaded', () => {
   console.log('Zahlungen page loaded');
-  loadPayments();
+  loadZahlungen();
 });
