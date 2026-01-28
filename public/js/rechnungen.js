@@ -17,7 +17,7 @@ async function loadRechnungen() {
       }
     });
 
-    if (!response.ok) throw new Error('Erreur de chargement');
+    if (!response.ok) throw new Error('Ladefehler');
 
     const data = await response.json();
     allFactures = data.factures || [];
@@ -32,8 +32,8 @@ async function loadRechnungen() {
     // Remplir les filtres
     populateFilters();
   } catch (error) {
-    console.error('Erreur:', error);
-    APP.notify && APP.notify('Erreur lors du chargement des factures', 'error');
+    console.error('Fehler:', error);
+    APP.notify && APP.notify('Fehler beim Laden der Rechnungen', 'error');
   }
 }
 
@@ -47,8 +47,8 @@ function displayReceivedInvoices(factures) {
   if (factures.length === 0) {
     container.innerHTML = `
       <div class="empty-state">
-        <div class="empty-state-text">Aucune facture reçue</div>
-        <div class="empty-state-subtext">Les factures de vos fournisseurs apparaîtront ici</div>
+        <div class="empty-state-text">Keine Rechnungen empfangen</div>
+        <div class="empty-state-subtext">Lieferantenrechnungen werden hier angezeigt</div>
       </div>
     `;
     return;
@@ -76,10 +76,10 @@ function displayReceivedInvoices(factures) {
           <span class="status-badge status-${facture.status}">${getStatusLabel(facture.status)}</span>
         </div>
         <div class="invoice-actions">
-          <button class="btn-icon btn-view" title="Voir" onclick="viewInvoice('${facture.id}')">Voir</button>
-          <button class="btn-icon btn-download" title="Télécharger" onclick="downloadInvoice('${facture.id}')">PDF</button>
+          <button class="btn-icon btn-view" title="Ansehen" onclick="viewInvoice('${facture.id}')">Ansehen</button>
+          <button class="btn-icon btn-download" title="Herunterladen" onclick="downloadInvoice('${facture.id}')">PDF</button>
           ${facture.status === 'pending' ? `
-            <button class="btn-icon btn-approve" title="Approuver" onclick="approveInvoice('${facture.id}')">OK</button>
+            <button class="btn-icon btn-approve" title="Genehmigen" onclick="approveInvoice('${facture.id}')">OK</button>
           ` : ''}
         </div>
       </div>
@@ -99,8 +99,8 @@ function displaySentInvoices(factures) {
   if (factures.length === 0) {
     container.innerHTML = `
       <div class="empty-state">
-        <div class="empty-state-text">Aucune facture envoyée</div>
-        <div class="empty-state-subtext">Les factures envoyées à vos clients apparaîtront ici</div>
+        <div class="empty-state-text">Keine Rechnungen gesendet</div>
+        <div class="empty-state-subtext">An Kunden gesendete Rechnungen werden hier angezeigt</div>
       </div>
     `;
     return;
@@ -125,10 +125,10 @@ function displaySentInvoices(factures) {
           <span class="status-badge status-${facture.status}">${getStatusLabel(facture.status)}</span>
         </div>
         <div class="invoice-actions">
-          <button class="btn-icon btn-view" title="Voir" onclick="viewInvoice('${facture.id}')">Voir</button>
-          <button class="btn-icon btn-download" title="Télécharger PDF" onclick="downloadInvoice('${facture.id}')">PDF</button>
+          <button class="btn-icon btn-view" title="Ansehen" onclick="viewInvoice('${facture.id}')">Ansehen</button>
+          <button class="btn-icon btn-download" title="PDF herunterladen" onclick="downloadInvoice('${facture.id}')">PDF</button>
           ${facture.portal_token ? `
-            <button class="btn-icon" title="Portail client" onclick="openClientPortal('${facture.portal_token}')">Link</button>
+            <button class="btn-icon" title="Kundenportal" onclick="openClientPortal('${facture.portal_token}')">Link</button>
           ` : ''}
         </div>
       </div>
@@ -297,11 +297,11 @@ function formatDate(dateString) {
  */
 function getStatusLabel(status) {
   const labels = {
-    'pending': 'En attente',
-    'approved': 'Approuvée',
-    'paid': 'Payée',
-    'sent': 'Envoyée',
-    'rejected': 'Rejetée'
+    'pending': 'Ausstehend',
+    'approved': 'Genehmigt',
+    'paid': 'Bezahlt',
+    'sent': 'Gesendet',
+    'rejected': 'Abgelehnt'
   };
   return labels[status] || status;
 }
@@ -313,11 +313,11 @@ function viewInvoice(id) {
   const facture = allFactures.find(f => f.id === id);
   if (!facture) return;
 
-  alert(`Détails de la facture ${facture.invoice_number}\n\n` +
-        `Montant: CHF ${facture.total.toFixed(2)}\n` +
-        `Description: ${facture.description || 'N/A'}\n` +
-        `Statut: ${getStatusLabel(facture.status)}\n\n` +
-        `Fonctionnalité de visualisation complète à venir...`);
+  alert(`Details zur Rechnung ${facture.invoice_number}\n\n` +
+        `Betrag: CHF ${facture.total.toFixed(2)}\n` +
+        `Beschreibung: ${facture.description || 'N/A'}\n` +
+        `Status: ${getStatusLabel(facture.status)}\n\n` +
+        `Vollständige Ansichtsfunktion folgt in Kürze...`);
 }
 
 /**
@@ -330,7 +330,7 @@ function downloadInvoice(id) {
   if (facture.pdf_url) {
     window.open(facture.pdf_url, '_blank');
   } else {
-    alert('PDF non disponible pour cette facture');
+    alert('PDF für diese Rechnung nicht verfügbar');
   }
 }
 
@@ -338,7 +338,7 @@ function downloadInvoice(id) {
  * Approuver une facture reçue
  */
 async function approveInvoice(id) {
-  if (!confirm('Approuver cette facture ?')) return;
+  if (!confirm('Diese Rechnung genehmigen?')) return;
 
   try {
     const response = await fetch(`/api/factures/${id}/approve`, {
@@ -349,13 +349,13 @@ async function approveInvoice(id) {
       }
     });
 
-    if (!response.ok) throw new Error('Erreur lors de l\'approbation');
+    if (!response.ok) throw new Error('Fehler bei der Genehmigung');
 
-    APP.notify && APP.notify('Facture approuvée avec succès', 'success');
+    APP.notify && APP.notify('Rechnung erfolgreich genehmigt', 'success');
     loadRechnungen();
   } catch (error) {
-    console.error('Erreur:', error);
-    APP.notify && APP.notify('Erreur lors de l\'approbation', 'error');
+    console.error('Fehler:', error);
+    APP.notify && APP.notify('Fehler bei der Genehmigung', 'error');
   }
 }
 

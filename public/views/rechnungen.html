@@ -474,19 +474,19 @@
 
 <div class="module-header">
     <h1>Rechnungen</h1>
-    <p>Gestion centralisée de toutes vos factures reçues et envoyées</p>
+    <p>Zentrale Verwaltung aller empfangenen und gesendeten Rechnungen</p>
 </div>
 
 <!-- Tabs Navigation -->
 <div class="rechnungen-tabs">
     <button class="tab-btn active" data-tab="received">
-        Factures Reçues
+        Empfangene Rechnungen
     </button>
     <button class="tab-btn" data-tab="sent">
-        Factures Envoyées
+        Gesendete Rechnungen
     </button>
     <button class="tab-btn" data-tab="settings">
-        Paramètres Email
+        Email-Einstellungen
     </button>
 </div>
 
@@ -494,74 +494,74 @@
 <div class="tab-content active" id="tab-received">
     <div class="stats-bar">
         <div class="stat-card">
-            <div class="stat-label">Total Reçues</div>
+            <div class="stat-label">Insgesamt Empfangen</div>
             <div class="stat-value" id="stat-received-total">0</div>
-            <div class="stat-meta">Factures fournisseurs</div>
+            <div class="stat-meta">Lieferantenrechnungen</div>
         </div>
         <div class="stat-card">
-            <div class="stat-label">En Attente</div>
+            <div class="stat-label">Ausstehend</div>
             <div class="stat-value" id="stat-received-pending">0</div>
-            <div class="stat-meta" style="color: #F59E0B;">À approuver</div>
+            <div class="stat-meta" style="color: #F59E0B;">Zu genehmigen</div>
         </div>
         <div class="stat-card">
-            <div class="stat-label">Approuvées</div>
+            <div class="stat-label">Genehmigt</div>
             <div class="stat-value" id="stat-received-approved">0</div>
-            <div class="stat-meta" style="color: #3B82F6;">En attente paiement</div>
+            <div class="stat-meta" style="color: #3B82F6;">Zahlung ausstehend</div>
         </div>
         <div class="stat-card">
-            <div class="stat-label">Payées</div>
+            <div class="stat-label">Bezahlt</div>
             <div class="stat-value" id="stat-received-paid">0</div>
-            <div class="stat-meta" style="color: var(--teal);">Ce mois</div>
+            <div class="stat-meta" style="color: var(--teal);">Diesen Monat</div>
         </div>
     </div>
 
     <div class="filter-section">
         <div class="filter-grid">
             <div class="filter-group">
-                <label class="filter-label">Période</label>
+                <label class="filter-label">Zeitraum</label>
                 <select id="filter-received-period">
-                    <option value="all">Toutes</option>
-                    <option value="current-month" selected>Mois en cours</option>
-                    <option value="last-month">Mois dernier</option>
-                    <option value="current-year">Année en cours</option>
+                    <option value="all">Alle</option>
+                    <option value="current-month" selected>Aktueller Monat</option>
+                    <option value="last-month">Letzter Monat</option>
+                    <option value="current-year">Aktuelles Jahr</option>
                 </select>
             </div>
             <div class="filter-group">
-                <label class="filter-label">Fournisseur</label>
+                <label class="filter-label">Lieferant</label>
                 <select id="filter-received-supplier">
-                    <option value="all">Tous</option>
+                    <option value="all">Alle</option>
                 </select>
             </div>
             <div class="filter-group">
-                <label class="filter-label">Catégorie</label>
+                <label class="filter-label">Kategorie</label>
                 <select id="filter-received-category">
-                    <option value="all">Toutes</option>
+                    <option value="all">Alle</option>
                 </select>
             </div>
             <div class="filter-group">
-                <label class="filter-label">Statut</label>
+                <label class="filter-label">Status</label>
                 <select id="filter-received-status">
-                    <option value="all">Tous</option>
-                    <option value="pending">En attente</option>
-                    <option value="approved">Approuvées</option>
-                    <option value="paid">Payées</option>
-                    <option value="rejected">Rejetées</option>
+                    <option value="all">Alle</option>
+                    <option value="pending">Ausstehend</option>
+                    <option value="approved">Genehmigt</option>
+                    <option value="paid">Bezahlt</option>
+                    <option value="rejected">Abgelehnt</option>
                 </select>
             </div>
-            <button class="btn-primary" onclick="applyFilters('received')">Filtrer</button>
+            <button class="btn-primary" onclick="applyFilters('received')">Filtern</button>
         </div>
     </div>
 
     <div class="invoices-table">
         <div class="table-header">
-            <div>N° Facture</div>
-            <div>Fournisseur</div>
-            <div>Date</div>
-            <div>Échéance</div>
-            <div>Montant</div>
-            <div>Catégorie</div>
-            <div>Statut</div>
-            <div>Actions</div>
+            <div>Rechnungsnr.</div>
+            <div>Lieferant</div>
+            <div>Datum</div>
+            <div>Fälligkeit</div>
+            <div>Betrag</div>
+            <div>Kategorie</div>
+            <div>Status</div>
+            <div>Aktionen</div>
         </div>
         <div id="received-invoices-list">
             <!-- Les factures reçues seront chargées ici par JavaScript -->
@@ -573,72 +573,72 @@
 <div class="tab-content" id="tab-sent">
     <div class="stats-bar">
         <div class="stat-card">
-            <div class="stat-label">Total Envoyées</div>
+            <div class="stat-label">Insgesamt Gesendet</div>
             <div class="stat-value" id="stat-sent-total">0</div>
-            <div class="stat-meta">Factures clients</div>
+            <div class="stat-meta">Kundenrechnungen</div>
         </div>
         <div class="stat-card">
-            <div class="stat-label">Envoyées</div>
+            <div class="stat-label">Gesendet</div>
             <div class="stat-value" id="stat-sent-sent">0</div>
-            <div class="stat-meta" style="color: #3B82F6;">En attente paiement</div>
+            <div class="stat-meta" style="color: #3B82F6;">Zahlung ausstehend</div>
         </div>
         <div class="stat-card">
-            <div class="stat-label">Montant Total</div>
+            <div class="stat-label">Gesamtbetrag</div>
             <div class="stat-value" id="stat-sent-amount">CHF 0</div>
-            <div class="stat-meta">À recevoir</div>
+            <div class="stat-meta">Zu erhalten</div>
         </div>
         <div class="stat-card">
-            <div class="stat-label">Payées</div>
+            <div class="stat-label">Bezahlt</div>
             <div class="stat-value" id="stat-sent-paid">0</div>
-            <div class="stat-meta" style="color: var(--teal);">Ce mois</div>
+            <div class="stat-meta" style="color: var(--teal);">Diesen Monat</div>
         </div>
     </div>
 
     <div class="filter-section">
         <div class="filter-grid">
             <div class="filter-group">
-                <label class="filter-label">Période</label>
+                <label class="filter-label">Zeitraum</label>
                 <select id="filter-sent-period">
-                    <option value="all">Toutes</option>
-                    <option value="current-month" selected>Mois en cours</option>
-                    <option value="last-month">Mois dernier</option>
-                    <option value="current-year">Année en cours</option>
+                    <option value="all">Alle</option>
+                    <option value="current-month" selected>Aktueller Monat</option>
+                    <option value="last-month">Letzter Monat</option>
+                    <option value="current-year">Aktuelles Jahr</option>
                 </select>
             </div>
             <div class="filter-group">
-                <label class="filter-label">Client</label>
+                <label class="filter-label">Kunde</label>
                 <select id="filter-sent-client">
-                    <option value="all">Tous</option>
+                    <option value="all">Alle</option>
                 </select>
             </div>
             <div class="filter-group">
-                <label class="filter-label">Catégorie</label>
+                <label class="filter-label">Kategorie</label>
                 <select id="filter-sent-category">
-                    <option value="all">Toutes</option>
+                    <option value="all">Alle</option>
                 </select>
             </div>
             <div class="filter-group">
-                <label class="filter-label">Statut</label>
+                <label class="filter-label">Status</label>
                 <select id="filter-sent-status">
-                    <option value="all">Tous</option>
-                    <option value="sent">Envoyées</option>
-                    <option value="paid">Payées</option>
+                    <option value="all">Alle</option>
+                    <option value="sent">Gesendet</option>
+                    <option value="paid">Bezahlt</option>
                 </select>
             </div>
-            <button class="btn-primary" onclick="applyFilters('sent')">Filtrer</button>
+            <button class="btn-primary" onclick="applyFilters('sent')">Filtern</button>
         </div>
     </div>
 
     <div class="invoices-table">
         <div class="table-header">
-            <div>N° Facture</div>
-            <div>Client</div>
-            <div>Date</div>
-            <div>Échéance</div>
-            <div>Montant</div>
-            <div>Catégorie</div>
-            <div>Statut</div>
-            <div>Actions</div>
+            <div>Rechnungsnr.</div>
+            <div>Kunde</div>
+            <div>Datum</div>
+            <div>Fälligkeit</div>
+            <div>Betrag</div>
+            <div>Kategorie</div>
+            <div>Status</div>
+            <div>Aktionen</div>
         </div>
         <div id="sent-invoices-list">
             <!-- Les factures envoyées seront chargées ici par JavaScript -->
@@ -649,66 +649,62 @@
 <!-- Tab: Paramètres Email -->
 <div class="tab-content" id="tab-settings">
     <div class="email-settings">
-        <h3>Configuration de la réception de factures</h3>
-        <p>Choisissez comment vous souhaitez recevoir vos factures fournisseurs dans Kontiq</p>
+        <h3>Konfiguration des Rechnungsempfangs</h3>
+        <p>Wählen Sie, wie Sie Ihre Lieferantenrechnungen in Kontiq empfangen möchten</p>
 
         <div class="alert alert-info">
             <span>Info</span>
             <div>
-                <strong>Fonctionnalité en développement</strong><br>
-                La synchronisation automatique des emails sera disponible prochainement.
-                Pour l'instant, vous pouvez uploader vos factures manuellement dans le module Kosten.
+                <strong>Funktion in Entwicklung</strong><br>
+                Die automatische E-Mail-Synchronisation wird in Kürze verfügbar sein. Derzeit können Sie Ihre Rechnungen manuell im Kosten-Modul hochladen.
             </div>
         </div>
 
         <div class="settings-option" onclick="selectOption('kontiq-email')">
-            <div class="option-title">Email Dédié Kontiq (Recommandé)</div>
+            <div class="option-title">Dedizierte Kontiq-E-Mail (Empfohlen)</div>
             <div class="option-description">
-                Transférez vos factures à <strong>factures@kontiq.ch</strong> ou configurez un transfert automatique.
-                Kontiq détectera et importera automatiquement vos factures PDF.
+                Leiten Sie Ihre Rechnungen an <strong>rechnungen@kontiq.ch</strong> weiter oder konfigurieren Sie eine automatische Weiterleitung. Kontiq erkennt und importiert Ihre PDF-Rechnungen automatisch.
             </div>
         </div>
 
         <div class="settings-option" onclick="selectOption('imap-sync')">
-            <div class="option-title">Synchronisation IMAP</div>
+            <div class="option-title">IMAP-Synchronisation</div>
             <div class="option-description">
-                Connectez votre boîte mail Gmail, Outlook ou autre via IMAP.
-                Kontiq synchronisera automatiquement les factures depuis un dossier spécifique.
+                Verbinden Sie Ihr Gmail, Outlook oder anderes Postfach via IMAP. Kontiq synchronisiert automatisch Rechnungen aus einem bestimmten Ordner.
             </div>
         </div>
 
         <div class="settings-option" onclick="selectOption('manual')">
-            <div class="option-title">Upload Manuel</div>
+            <div class="option-title">Manueller Upload</div>
             <div class="option-description">
-                Uploadez vos factures PDF manuellement. Idéal pour tester le système
-                ou si vous préférez garder le contrôle total.
+                Laden Sie Ihre PDF-Rechnungen manuell hoch. Ideal zum Testen des Systems oder wenn Sie die volle Kontrolle behalten möchten.
             </div>
         </div>
 
         <div id="imap-config" style="display: none; margin-top: 24px; padding: 24px; background: #F9FAFB; border-radius: 12px;">
-            <h4 style="margin-bottom: 16px; font-size: 16px; color: var(--navy);">Configuration IMAP</h4>
+            <h4 style="margin-bottom: 16px; font-size: 16px; color: var(--navy);">IMAP-Konfiguration</h4>
 
             <div class="form-group">
-                <label>Serveur IMAP</label>
+                <label>IMAP-Server</label>
                 <input type="text" placeholder="imap.gmail.com" id="imap-host">
             </div>
 
             <div class="form-group">
                 <label>Email</label>
-                <input type="email" placeholder="votre@email.com" id="imap-email">
+                <input type="email" placeholder="ihre@email.com" id="imap-email">
             </div>
 
             <div class="form-group">
-                <label>Mot de passe</label>
+                <label>Passwort</label>
                 <input type="password" placeholder="••••••••" id="imap-password">
             </div>
 
             <div class="form-group">
-                <label>Dossier des factures</label>
-                <input type="text" placeholder="Factures" id="imap-folder" value="Factures">
+                <label>Rechnungsordner</label>
+                <input type="text" placeholder="Rechnungen" id="imap-folder" value="Rechnungen">
             </div>
 
-            <button class="btn-primary">Sauvegarder la configuration</button>
+            <button class="btn-primary">Konfiguration speichern</button>
         </div>
     </div>
 </div>
