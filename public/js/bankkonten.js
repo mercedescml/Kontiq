@@ -84,48 +84,32 @@ async function initBankkonten() {
 }
 
 /**
- * Charge tous les comptes - avec cache et filtrage par entité
+ * Charge tous les comptes - avec cache et filtrage par entité (using generic helper)
  */
 async function loadBankkonten() {
-  try {
-    // Utiliser le cache si disponible
-    let data;
-    if (typeof DataPreloader !== 'undefined' && DataPreloader.cache.has('bankkonten')) {
-      data = DataPreloader.cache.get('bankkonten');
-    } else {
-      data = await API.bankkonten.getAll();
-    }
+  // Load data using cache helper (without display function - we'll handle filtering first)
+  let allBankkonten = await loadDataWithCache('bankkonten', null, 'bankkonten');
 
-    let allBankkonten = data.bankkonten || [];
+  // Filter based on user role
+  if (currentUser && currentUser.role !== 'geschaeftsfuehrer') {
+    // Manager only sees accounts for their entities
+    const userEntities = currentEntities.filter(e =>
+      e.manager === currentUser.email ||
+      (e.managers && e.managers.includes(currentUser.email))
+    );
+    const userEntityIds = userEntities.map(e => e.id);
 
-    // Filter based on user role
-    if (currentUser) {
-      const isGeschaeftsfuehrer = currentUser.role === 'geschaeftsfuehrer';
-
-      if (!isGeschaeftsfuehrer) {
-        // Manager only sees accounts for their entities
-        const userEntities = currentEntities.filter(e =>
-          e.manager === currentUser.email ||
-          (e.managers && e.managers.includes(currentUser.email))
-        );
-        const userEntityIds = userEntities.map(e => e.id);
-
-        allBankkonten = allBankkonten.filter(k =>
-          k.entityIds && (
-            k.entityIds.includes('all') ||
-            k.entityIds.some(id => userEntityIds.includes(id))
-          )
-        );
-      }
-      // Geschäftsführer sees all accounts
-    }
-
-    currentBankkonten = allBankkonten;
-    displayBankkonten(currentBankkonten);
-  } catch (error) {
-    APP.notify('Fehler beim Laden der Bankkonten', 'error');
-    console.error(error);
+    allBankkonten = allBankkonten.filter(k =>
+      k.entityIds && (
+        k.entityIds.includes('all') ||
+        k.entityIds.some(id => userEntityIds.includes(id))
+      )
+    );
   }
+  // Geschäftsführer sees all accounts
+
+  currentBankkonten = allBankkonten;
+  displayBankkonten(currentBankkonten);
 }
 
 /**

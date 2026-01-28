@@ -59,28 +59,15 @@ let currentPayments = [];
 let zahlungenKategorien = [];
 
 /**
- * Charge tous les paiements - avec cache
+ * Charge tous les paiements - avec cache (using generic helper)
  */
 async function loadZahlungen() {
-  try {
-    // Load kategorien first if not loaded
-    if (zahlungenKategorien.length === 0) {
-      await loadZahlungenKategorien();
-    }
-
-    // Utiliser le cache si disponible pour affichage instantané
-    let data;
-    if (typeof DataPreloader !== 'undefined' && DataPreloader.cache.has('zahlungen')) {
-      data = DataPreloader.cache.get('zahlungen');
-    } else {
-      data = await API.zahlungen.getAll();
-    }
-    currentPayments = data.zahlungen || [];
-    displayPayments(currentPayments);
-  } catch (error) {
-    APP.notify('Fehler beim Laden der Zahlungen', 'error');
-    console.error(error);
+  // Load kategorien first if not loaded
+  if (zahlungenKategorien.length === 0) {
+    await loadZahlungenKategorien();
   }
+
+  currentPayments = await loadDataWithCache('zahlungen', displayPayments, 'zahlungen');
 }
 
 /**
@@ -208,92 +195,51 @@ async function editPayment(id) {
 }
 
 /**
- * Creates payment modal if it doesn't exist
+ * Creates payment modal if it doesn't exist (using generic helper)
  */
 function createPaymentModal() {
-  const modal = document.createElement('div');
-  modal.id = 'paymentModal';
-  modal.style.cssText = 'display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 9999; align-items: center; justify-content: center;';
+  // Build category options dynamically
+  const categoryOptions = [{ value: '', label: 'Keine Kategorie' }].concat(
+    zahlungenKategorien.map(k => ({ value: k.id, label: k.name }))
+  );
 
-  const kategorienOptions = zahlungenKategorien.map(k =>
-    `<option value="${k.id}">${k.name}</option>`
-  ).join('');
-
-  modal.innerHTML = `
-    <div style="background: white; padding: 24px; border-radius: 12px; max-width: 600px; width: 90%; max-height: 90vh; overflow-y: auto;">
-      <h3 class="modal-title" style="margin: 0 0 20px 0;">Zahlung bearbeiten</h3>
-      <form onsubmit="savePayment(event)">
-        <input type="hidden" id="paymentId">
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-          <div style="grid-column: span 2; margin-bottom: 0;">
-            <label style="display: block; margin-bottom: 8px; font-weight: 600;">Empfänger</label>
-            <input type="text" id="paymentRecipient" required style="width: 100%; padding: 10px; border: 1px solid #E5E7EB; border-radius: 8px;">
-          </div>
-          <div style="margin-bottom: 0;">
-            <label style="display: block; margin-bottom: 8px; font-weight: 600;">Betrag</label>
-            <input type="number" id="paymentAmount" step="0.01" required style="width: 100%; padding: 10px; border: 1px solid #E5E7EB; border-radius: 8px;">
-          </div>
-          <div style="margin-bottom: 0;">
-            <label style="display: block; margin-bottom: 8px; font-weight: 600;">Kategorie</label>
-            <select id="paymentCategory" style="width: 100%; padding: 10px; border: 1px solid #E5E7EB; border-radius: 8px;">
-              <option value="">Keine Kategorie</option>
-              ${kategorienOptions}
-            </select>
-          </div>
-          <div style="margin-bottom: 0;">
-            <label style="display: block; margin-bottom: 8px; font-weight: 600;">Datum</label>
-            <input type="date" id="paymentDate" required style="width: 100%; padding: 10px; border: 1px solid #E5E7EB; border-radius: 8px;">
-          </div>
-          <div style="margin-bottom: 0;">
-            <label style="display: block; margin-bottom: 8px; font-weight: 600;">Fälligkeitsdatum</label>
-            <input type="date" id="paymentDueDate" style="width: 100%; padding: 10px; border: 1px solid #E5E7EB; border-radius: 8px;">
-          </div>
-          <div style="margin-bottom: 0;">
-            <label style="display: block; margin-bottom: 8px; font-weight: 600;">Skonto (%)</label>
-            <input type="number" id="paymentSkonto" step="0.1" min="0" max="100" style="width: 100%; padding: 10px; border: 1px solid #E5E7EB; border-radius: 8px;" placeholder="z.B. 2">
-          </div>
-          <div style="margin-bottom: 0;">
-            <label style="display: block; margin-bottom: 8px; font-weight: 600;">Skonto-Frist</label>
-            <input type="date" id="paymentSkontoDeadline" style="width: 100%; padding: 10px; border: 1px solid #E5E7EB; border-radius: 8px;">
-          </div>
-          <div style="grid-column: span 2; margin-bottom: 0;">
-            <label style="display: block; margin-bottom: 8px; font-weight: 600;">Status</label>
-            <select id="paymentStatus" style="width: 100%; padding: 10px; border: 1px solid #E5E7EB; border-radius: 8px;">
-              <option value="pending">Ausstehend</option>
-              <option value="completed">Abgeschlossen</option>
-              <option value="failed">Fehlgeschlagen</option>
-            </select>
-          </div>
-          <div style="grid-column: span 2; margin-bottom: 0;">
-            <label style="display: block; margin-bottom: 8px; font-weight: 600;">Beschreibung</label>
-            <textarea id="paymentDescription" rows="3" style="width: 100%; padding: 10px; border: 1px solid #E5E7EB; border-radius: 8px;"></textarea>
-          </div>
-        </div>
-        <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
-          <button type="button" onclick="closePaymentModal()" style="padding: 10px 20px; border: 1px solid #E5E7EB; background: white; border-radius: 8px; cursor: pointer;">Abbrechen</button>
-          <button type="submit" style="padding: 10px 20px; background: #0EB17A; color: white; border: none; border-radius: 8px; cursor: pointer;">Speichern</button>
-        </div>
-      </form>
-    </div>
-  `;
-
-  document.body.appendChild(modal);
-  return modal;
+  return createGenericModal({
+    id: 'paymentModal',
+    title: 'Zahlung bearbeiten',
+    idFieldName: 'paymentId',
+    maxWidth: '600px',
+    singleColumn: false,
+    fields: [
+      { id: 'paymentRecipient', label: 'Empfänger', type: 'text', required: true, fullWidth: true },
+      { id: 'paymentAmount', label: 'Betrag', type: 'number', step: '0.01', required: true },
+      { id: 'paymentCategory', label: 'Kategorie', type: 'select', options: categoryOptions },
+      { id: 'paymentDate', label: 'Datum', type: 'date', required: true },
+      { id: 'paymentDueDate', label: 'Fälligkeitsdatum', type: 'date' },
+      { id: 'paymentSkonto', label: 'Skonto (%)', type: 'number', step: '0.1', min: 0, max: 100, placeholder: 'z.B. 2' },
+      { id: 'paymentSkontoDeadline', label: 'Skonto-Frist', type: 'date' },
+      {
+        id: 'paymentStatus',
+        label: 'Status',
+        type: 'select',
+        fullWidth: true,
+        options: [
+          { value: 'pending', label: 'Ausstehend' },
+          { value: 'completed', label: 'Abgeschlossen' },
+          { value: 'failed', label: 'Fehlgeschlagen' }
+        ]
+      },
+      { id: 'paymentDescription', label: 'Beschreibung', type: 'textarea', rows: 3, fullWidth: true }
+    ],
+    onSubmit: 'savePayment',
+    onClose: 'closePaymentModal'
+  });
 }
 
 /**
- * Closes payment modal
+ * Closes payment modal (using generic helper)
  */
 function closePaymentModal() {
-  const modal = document.getElementById('paymentModal');
-  if (modal) modal.style.display = 'none';
-
-  // Reset form
-  const form = modal?.querySelector('form');
-  if (form) form.reset();
-
-  const idField = document.getElementById('paymentId');
-  if (idField) idField.value = '';
+  closeGenericModal('paymentModal', 'paymentId');
 }
 
 /**
