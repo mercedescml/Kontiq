@@ -277,8 +277,18 @@ function openBankModal(id = null) {
 function closeBankModal() {
   const modal = document.getElementById('bankModal');
   const overlay = document.getElementById('bankOverlay');
+
+  // Remove active classes
   if (modal) modal.classList.remove('active');
   if (overlay) overlay.classList.remove('active');
+
+  // Reset form
+  const form = modal?.querySelector('form');
+  if (form) form.reset();
+
+  // Clear ID field
+  const idField = document.getElementById('accountId');
+  if (idField) idField.value = '';
 }
 
 /**
@@ -356,15 +366,6 @@ function createBankModal() {
 
   document.body.appendChild(modal);
   return modal;
-}
-
-function closeBankModal() {
-  const modal = document.getElementById('bankModal');
-  if (modal) modal.style.display = 'none';
-  const form = modal?.querySelector('form');
-  if (form) form.reset();
-  const idField = document.getElementById('accountId');
-  if (idField) idField.value = '';
 }
 
 /**
