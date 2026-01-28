@@ -41,23 +41,10 @@ async function saveForderung(event) {
 let currentForderungen = [];
 
 /**
- * Charge tous les créances - avec cache
+ * Charge tous les créances - avec cache (using generic helper)
  */
 async function loadForderungen() {
-  try {
-    // Utiliser le cache si disponible
-    let data;
-    if (typeof DataPreloader !== 'undefined' && DataPreloader.cache.has('forderungen')) {
-      data = DataPreloader.cache.get('forderungen');
-    } else {
-      data = await API.forderungen.getAll();
-    }
-    currentForderungen = data.forderungen || [];
-    displayForderungen(currentForderungen);
-  } catch (error) {
-    APP.notify('Fehler beim Laden der Forderungen', 'error');
-    console.error(error);
-  }
+  currentForderungen = await loadDataWithCache('forderungen', displayForderungen, 'forderungen');
 }
 
 /**
@@ -133,54 +120,35 @@ async function editForderung(id) {
 }
 
 function createForderungModal() {
-  const modal = document.createElement('div');
-  modal.id = 'forderungModal';
-  modal.style.cssText = 'display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 9999; align-items: center; justify-content: center;';
-
-  modal.innerHTML = `
-    <div style="background: white; padding: 24px; border-radius: 12px; max-width: 500px; width: 90%;">
-      <h3 class="modal-title">Forderung bearbeiten</h3>
-      <form onsubmit="saveForderung(event)">
-        <input type="hidden" id="forderungId">
-        <div style="margin-bottom: 16px;">
-          <label style="display: block; margin-bottom: 8px; font-weight: 600;">Kunde</label>
-          <input type="text" id="forderungCustomer" required style="width: 100%; padding: 10px; border: 1px solid #E5E7EB; border-radius: 8px;">
-        </div>
-        <div style="margin-bottom: 16px;">
-          <label style="display: block; margin-bottom: 8px; font-weight: 600;">Betrag</label>
-          <input type="number" id="forderungAmount" step="0.01" required style="width: 100%; padding: 10px; border: 1px solid #E5E7EB; border-radius: 8px;">
-        </div>
-        <div style="margin-bottom: 16px;">
-          <label style="display: block; margin-bottom: 8px; font-weight: 600;">Fälligkeitsdatum</label>
-          <input type="date" id="forderungDueDate" required style="width: 100%; padding: 10px; border: 1px solid #E5E7EB; border-radius: 8px;">
-        </div>
-        <div style="margin-bottom: 16px;">
-          <label style="display: block; margin-bottom: 8px; font-weight: 600;">Status</label>
-          <select id="forderungStatus" style="width: 100%; padding: 10px; border: 1px solid #E5E7EB; border-radius: 8px;">
-            <option value="open">Offen</option>
-            <option value="paid">Bezahlt</option>
-            <option value="overdue">Überfällig</option>
-          </select>
-        </div>
-        <div style="display: flex; gap: 10px; justify-content: flex-end;">
-          <button type="button" onclick="closeForderungModal()" style="padding: 10px 20px; border: 1px solid #E5E7EB; background: white; border-radius: 8px; cursor: pointer;">Abbrechen</button>
-          <button type="submit" style="padding: 10px 20px; background: #0EB17A; color: white; border: none; border-radius: 8px; cursor: pointer;">Speichern</button>
-        </div>
-      </form>
-    </div>
-  `;
-
-  document.body.appendChild(modal);
-  return modal;
+  return createGenericModal({
+    id: 'forderungModal',
+    title: 'Forderung bearbeiten',
+    idFieldName: 'forderungId',
+    maxWidth: '500px',
+    singleColumn: true,
+    fields: [
+      { id: 'forderungCustomer', label: 'Kunde', type: 'text', required: true },
+      { id: 'forderungAmount', label: 'Betrag', type: 'number', step: '0.01', required: true },
+      { id: 'forderungDueDate', label: 'Fälligkeitsdatum', type: 'date', required: true },
+      {
+        id: 'forderungStatus',
+        label: 'Status',
+        type: 'select',
+        required: false,
+        options: [
+          { value: 'open', label: 'Offen' },
+          { value: 'paid', label: 'Bezahlt' },
+          { value: 'overdue', label: 'Überfällig' }
+        ]
+      }
+    ],
+    onSubmit: 'saveForderung',
+    onClose: 'closeForderungModal'
+  });
 }
 
 function closeForderungModal() {
-  const modal = document.getElementById('forderungModal');
-  if (modal) modal.style.display = 'none';
-  const form = modal?.querySelector('form');
-  if (form) form.reset();
-  const idField = document.getElementById('forderungId');
-  if (idField) idField.value = '';
+  closeGenericModal('forderungModal', 'forderungId');
 }
 
 /**
