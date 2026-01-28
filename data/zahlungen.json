@@ -8,13 +8,13 @@
     "steuer_betrag": 399.16,
     "brutto_betrag": 2500.00,
     "date": "2026-01-10",
-    "dueDate": "2026-01-20",
+    "due_date": "2026-01-20",
     "status": "pending",
     "description": "Neue Büroausstattung - 3 Schreibtische und Stühle",
     "category": "ZKAT-012",
     "skonto": 2,
-    "skontoDeadline": "2026-01-15",
-    "createdAt": "2026-01-05T10:00:00.000Z"
+    "skonto_deadline": "2026-01-15",
+    "created_at": "2026-01-05T10:00:00.000Z"
   },
   {
     "id": "ZAH-002",
@@ -25,13 +25,13 @@
     "steuer_betrag": 142.10,
     "brutto_betrag": 890.00,
     "date": "2026-01-12",
-    "dueDate": "2026-01-25",
+    "due_date": "2026-01-25",
     "status": "pending",
     "description": "Microsoft 365 Business - Jahresabonnement",
     "category": "ZKAT-005",
     "skonto": 3,
-    "skontoDeadline": "2026-01-18",
-    "createdAt": "2026-01-05T11:30:00.000Z"
+    "skonto_deadline": "2026-01-18",
+    "created_at": "2026-01-05T11:30:00.000Z"
   },
   {
     "id": "ZAH-003",
@@ -42,13 +42,13 @@
     "steuer_betrag": 199.58,
     "brutto_betrag": 1250.00,
     "date": "2026-01-08",
-    "dueDate": "2026-01-22",
+    "due_date": "2026-01-22",
     "status": "pending",
     "description": "Stromrechnung Q4 2025",
     "category": "ZKAT-004",
     "skonto": 0,
-    "skontoDeadline": null,
-    "createdAt": "2026-01-02T09:00:00.000Z"
+    "skonto_deadline": null,
+    "created_at": "2026-01-02T09:00:00.000Z"
   },
   {
     "id": "ZAH-004",
@@ -59,13 +59,13 @@
     "steuer_betrag": 981.31,
     "brutto_betrag": 15000.00,
     "date": "2026-01-15",
-    "dueDate": "2026-02-05",
+    "due_date": "2026-02-05",
     "status": "pending",
     "description": "Materialien für Projekt Alpha - Lieferung 1",
     "category": "ZKAT-001",
     "skonto": 2.5,
-    "skontoDeadline": "2026-01-25",
-    "createdAt": "2026-01-05T14:00:00.000Z"
+    "skonto_deadline": "2026-01-25",
+    "created_at": "2026-01-05T14:00:00.000Z"
   },
   {
     "id": "ZAH-005",
@@ -76,13 +76,13 @@
     "steuer_betrag": 558.82,
     "brutto_betrag": 3500.00,
     "date": "2026-01-01",
-    "dueDate": "2026-01-31",
+    "due_date": "2026-01-31",
     "status": "pending",
     "description": "Miete Büroräume - Januar 2026",
     "category": "ZKAT-003",
     "skonto": 0,
-    "skontoDeadline": null,
-    "createdAt": "2025-12-28T08:00:00.000Z"
+    "skonto_deadline": null,
+    "created_at": "2025-12-28T08:00:00.000Z"
   },
   {
     "id": "ZAH-006",
@@ -93,12 +93,12 @@
     "steuer_betrag": 670.59,
     "brutto_betrag": 4200.00,
     "date": "2025-12-20",
-    "dueDate": "2025-12-31",
+    "due_date": "2025-12-31",
     "status": "completed",
     "description": "Werbekampagne Dezember - Konzept & Umsetzung",
     "category": "ZKAT-006",
     "skonto": 3,
-    "skontoDeadline": "2025-12-26",
-    "createdAt": "2025-12-15T16:00:00.000Z"
+    "skonto_deadline": "2025-12-26",
+    "created_at": "2025-12-15T16:00:00.000Z"
   }
 ]

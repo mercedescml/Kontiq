@@ -8,12 +8,12 @@ async function savePayment(event) {
   const supplier = document.getElementById('paymentRecipient').value.trim();
   const amount = parseFloat(document.getElementById('paymentAmount').value) || 0;
   const date = document.getElementById('paymentDate').value;
-  const dueDate = document.getElementById('paymentDueDate')?.value || date;
+  const due_date = document.getElementById('paymentDueDate')?.value || date;
   const status = document.getElementById('paymentStatus').value || 'pending';
   const description = document.getElementById('paymentDescription')?.value || '';
   const category = document.getElementById('paymentCategory')?.value || null;
   const skonto = parseFloat(document.getElementById('paymentSkonto')?.value) || 0;
-  const skontoDeadline = document.getElementById('paymentSkontoDeadline')?.value || null;
+  const skonto_deadline = document.getElementById('paymentSkontoDeadline')?.value || null;
 
   if (!supplier || !date) {
     APP.notify('Alle Felder sind erforderlich', 'error');
@@ -24,12 +24,12 @@ async function savePayment(event) {
     supplier,
     amount,
     date,
-    dueDate,
+    due_date,
     status,
     description,
     category,
     skonto,
-    skontoDeadline
+    skonto_deadline
   };
 
   try {
@@ -191,12 +191,12 @@ async function editPayment(id) {
   if (recipientField) recipientField.value = payment.supplier || '';
   if (amountField) amountField.value = payment.amount || '';
   if (dateField) dateField.value = payment.date || '';
-  if (dueDateField) dueDateField.value = payment.dueDate || payment.date || '';
+  if (dueDateField) dueDateField.value = payment.due_date || payment.date || '';
   if (statusField) statusField.value = payment.status || 'pending';
   if (descriptionField) descriptionField.value = payment.description || '';
   if (categoryField) categoryField.value = payment.category || '';
   if (skontoField) skontoField.value = payment.skonto || '';
-  if (skontoDeadlineField) skontoDeadlineField.value = payment.skontoDeadline || '';
+  if (skontoDeadlineField) skontoDeadlineField.value = payment.skonto_deadline || '';
 
   // Update modal title
   const modalTitle = document.querySelector('#paymentModal .modal-title');
@@ -352,7 +352,7 @@ function openVerschieben(paymentId) {
   // Ensure payment has required fields for simulator
   const paymentForSimulator = {
     ...payment,
-    dueDate: payment.dueDate || payment.date,
+    due_date: payment.due_date || payment.date,
     supplier: payment.supplier,
     description: payment.description || payment.supplier
   };

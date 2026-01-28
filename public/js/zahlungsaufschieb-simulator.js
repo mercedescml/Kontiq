@@ -55,14 +55,14 @@ class ZahlungsaufschiebenSimulator {
 
         this.selectedPayments.forEach(payment => {
             const amount = parseFloat(payment.amount) || 0;
-            const originalDueDate = new Date(payment.dueDate);
+            const originalDueDate = new Date(payment.due_date);
             const newDueDate = new Date(today);
             newDueDate.setDate(newDueDate.getDate() + daysToPostpone);
 
             // Skonto-Verlust berechnen
             let skontoLost = 0;
-            if (payment.skonto && payment.skontoDeadline) {
-                const skontoDeadline = new Date(payment.skontoDeadline);
+            if (payment.skonto && payment.skonto_deadline) {
+                const skontoDeadline = new Date(payment.skonto_deadline);
                 if (newDueDate > skontoDeadline) {
                     skontoLost = amount * (parseFloat(payment.skonto) / 100);
                 }
@@ -343,12 +343,12 @@ class ZahlungsaufschiebenSimulator {
                     </div>
                     <div class="detail-row">
                         <span class="label">Ursprüngliches Fälligkeitsdatum:</span>
-                        <span class="value">${new Date(payment.dueDate).toLocaleDateString('de-DE')}</span>
+                        <span class="value">${new Date(payment.due_date).toLocaleDateString('de-DE')}</span>
                     </div>
                     ${payment.skonto ? `
                         <div class="detail-row skonto">
                             <span class="label">Skonto verfügbar:</span>
-                            <span class="value">${payment.skonto}% bis ${new Date(payment.skontoDeadline).toLocaleDateString('de-DE')}</span>
+                            <span class="value">${payment.skonto}% bis ${new Date(payment.skonto_deadline).toLocaleDateString('de-DE')}</span>
                         </div>
                     ` : ''}
                     ${payment.category ? `
