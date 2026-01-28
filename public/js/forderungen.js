@@ -5,17 +5,17 @@ async function saveForderung(event) {
   event.preventDefault();
 
   const id = document.getElementById('forderungId')?.value;
-  const customer = document.getElementById('forderungCustomer').value.trim();
+  const client_name = document.getElementById('forderungCustomer').value.trim();
   const amount = parseFloat(document.getElementById('forderungAmount').value) || 0;
-  const dueDate = document.getElementById('forderungDueDate').value;
+  const due_date = document.getElementById('forderungDueDate').value;
   const status = document.getElementById('forderungStatus').value || 'open';
 
-  if (!customer || !dueDate) {
+  if (!client_name || !due_date) {
     APP.notify('Alle Felder sind erforderlich', 'error');
     return;
   }
 
-  const data = { customer, amount, dueDate, status };
+  const data = { client_name, amount, due_date, status };
 
   try {
     if (id) {
@@ -85,9 +85,9 @@ function displayForderungen(forderungen) {
 
     html += `
       <div style="background: white; padding: 15px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
-        <h4 style="margin: 0 0 10px 0; color: #0A2540;">${f.customer || 'Kunde'}</h4>
+        <h4 style="margin: 0 0 10px 0; color: #0A2540;">${f.client_name || 'Kunde'}</h4>
         <p style="margin: 5px 0; color: #6B7280;"><strong>Betrag:</strong> CHF ${f.amount?.toFixed(2) || '0.00'}</p>
-        <p style="margin: 5px 0; color: #6B7280;"><strong>Fällig:</strong> ${f.dueDate || '-'}</p>
+        <p style="margin: 5px 0; color: #6B7280;"><strong>Fällig:</strong> ${f.due_date || '-'}</p>
         <p style="margin: 5px 0;"><strong>Status:</strong> <span style="color: ${statusColor}; font-weight: 600;">${f.status}</span></p>
         <button class="btn btn-secondary" onclick="editForderung('${f.id}')" style="margin-top: 10px; width: 100%; padding: 8px;">Bearbeiten</button>
       </div>
@@ -120,9 +120,9 @@ async function editForderung(id) {
   const statusField = document.getElementById('forderungStatus');
 
   if (idField) idField.value = forderung.id;
-  if (customerField) customerField.value = forderung.customer || '';
+  if (customerField) customerField.value = forderung.client_name || '';
   if (amountField) amountField.value = forderung.amount || '';
-  if (dueDateField) dueDateField.value = forderung.dueDate || '';
+  if (dueDateField) dueDateField.value = forderung.due_date || '';
   if (statusField) statusField.value = forderung.status || 'open';
 
   const modalTitle = modal.querySelector('.modal-title');
