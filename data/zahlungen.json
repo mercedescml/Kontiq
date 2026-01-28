@@ -1,7 +1,6 @@
 [
   {
     "id": "ZAH-001",
-    "recipient": "Büromöbel Schmidt GmbH",
     "supplier": "Büromöbel Schmidt GmbH",
     "amount": 2500.00,
     "netto_betrag": 2100.84,
@@ -19,7 +18,6 @@
   },
   {
     "id": "ZAH-002",
-    "recipient": "Softwarelizenz AG",
     "supplier": "Softwarelizenz AG",
     "amount": 890.00,
     "netto_betrag": 747.90,
@@ -37,7 +35,6 @@
   },
   {
     "id": "ZAH-003",
-    "recipient": "Stromversorger Energie Plus",
     "supplier": "Stromversorger Energie Plus",
     "amount": 1250.00,
     "netto_betrag": 1050.42,
@@ -55,7 +52,6 @@
   },
   {
     "id": "ZAH-004",
-    "recipient": "Wareneinkauf Großhandel GmbH",
     "supplier": "Wareneinkauf Großhandel GmbH",
     "amount": 15000.00,
     "netto_betrag": 14018.69,
@@ -73,7 +69,6 @@
   },
   {
     "id": "ZAH-005",
-    "recipient": "Immobilien Meier KG",
     "supplier": "Immobilien Meier KG",
     "amount": 3500.00,
     "netto_betrag": 2941.18,
@@ -91,7 +86,6 @@
   },
   {
     "id": "ZAH-006",
-    "recipient": "Marketing Agentur Creative Pro",
     "supplier": "Marketing Agentur Creative Pro",
     "amount": 4200.00,
     "netto_betrag": 3529.41,

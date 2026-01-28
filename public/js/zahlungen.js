@@ -5,7 +5,7 @@ async function savePayment(event) {
   event.preventDefault();
 
   const id = document.getElementById('paymentId')?.value;
-  const recipient = document.getElementById('paymentRecipient').value.trim();
+  const supplier = document.getElementById('paymentRecipient').value.trim();
   const amount = parseFloat(document.getElementById('paymentAmount').value) || 0;
   const date = document.getElementById('paymentDate').value;
   const dueDate = document.getElementById('paymentDueDate')?.value || date;
@@ -15,13 +15,13 @@ async function savePayment(event) {
   const skonto = parseFloat(document.getElementById('paymentSkonto')?.value) || 0;
   const skontoDeadline = document.getElementById('paymentSkontoDeadline')?.value || null;
 
-  if (!recipient || !date) {
+  if (!supplier || !date) {
     APP.notify('Alle Felder sind erforderlich', 'error');
     return;
   }
 
   const data = {
-    recipient,
+    supplier,
     amount,
     date,
     dueDate,
@@ -29,8 +29,7 @@ async function savePayment(event) {
     description,
     category,
     skonto,
-    skontoDeadline,
-    supplier: recipient
+    skontoDeadline
   };
 
   try {
@@ -137,7 +136,7 @@ function displayPayments(payments) {
     html += `
       <tr style="border-bottom: 1px solid #E5E7EB;">
         <td style="padding: 10px;">${payment.date || '-'}</td>
-        <td style="padding: 10px;">${payment.recipient || payment.supplier || '-'}</td>
+        <td style="padding: 10px;">${payment.supplier || '-'}</td>
         <td style="padding: 10px;">CHF ${payment.amount?.toFixed(2) || '0.00'}</td>
         <td style="padding: 10px;">
           <span style="background: ${kategorieColor}; color: white; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 600;">
@@ -189,7 +188,7 @@ async function editPayment(id) {
   const skontoDeadlineField = document.getElementById('paymentSkontoDeadline');
 
   if (idField) idField.value = payment.id;
-  if (recipientField) recipientField.value = payment.recipient || payment.supplier || '';
+  if (recipientField) recipientField.value = payment.supplier || '';
   if (amountField) amountField.value = payment.amount || '';
   if (dateField) dateField.value = payment.date || '';
   if (dueDateField) dueDateField.value = payment.dueDate || payment.date || '';
@@ -354,8 +353,8 @@ function openVerschieben(paymentId) {
   const paymentForSimulator = {
     ...payment,
     dueDate: payment.dueDate || payment.date,
-    supplier: payment.supplier || payment.recipient,
-    description: payment.description || payment.recipient
+    supplier: payment.supplier,
+    description: payment.description || payment.supplier
   };
 
   // Use the global zahlungsSimulator from zahlungsaufschieb-simulator.js
