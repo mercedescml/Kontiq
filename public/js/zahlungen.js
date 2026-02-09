@@ -75,7 +75,13 @@ async function loadZahlungen() {
  */
 async function loadZahlungenKategorien() {
   try {
-    const response = await fetch('/api/zahlungen-kategorien');
+    const token = localStorage.getItem('token');
+    const response = await fetch('/api/zahlungen-kategorien', {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    });
     if (!response.ok) throw new Error('Fehler beim Laden der Kategorien');
     zahlungenKategorien = await response.json();
   } catch (error) {

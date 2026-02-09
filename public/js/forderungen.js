@@ -46,7 +46,13 @@ let forderungenKategorien = [];
  */
 async function loadForderungenKategorien() {
   try {
-    const response = await fetch('/api/forderungen-kategorien');
+    const token = localStorage.getItem('token');
+    const response = await fetch('/api/forderungen-kategorien', {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    });
     if (!response.ok) throw new Error('Fehler beim Laden der Kategorien');
     forderungenKategorien = await response.json();
   } catch (error) {
