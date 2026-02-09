@@ -251,7 +251,11 @@ function createCrudRoutes(resource, file, options = {}) {
 
     const userId = req.query.userId;
     // SECURITY FIX: Only return data for authenticated user
-    const filtered = userId ? data.filter(x => x.userId === userId) : data.filter(x => x.userId === req.user.email);
+    // Show items that belong to the user OR sample data without userId (for demo)
+    const userEmail = req.user.email;
+    const filtered = userId
+      ? data.filter(x => x.userId === userId || !x.userId)
+      : data.filter(x => x.userId === userEmail || !x.userId);
     res.json({ [resource]: filtered });
   });
 
