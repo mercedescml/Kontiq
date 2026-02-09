@@ -39,11 +39,31 @@ async function saveForderung(event) {
  */
 
 let currentForderungen = [];
+let forderungenKategorien = [];
+
+/**
+ * Load receivable categories
+ */
+async function loadForderungenKategorien() {
+  try {
+    const response = await fetch('/api/forderungen-kategorien');
+    if (!response.ok) throw new Error('Fehler beim Laden der Kategorien');
+    forderungenKategorien = await response.json();
+  } catch (error) {
+    console.error('Error loading forderungen kategorien:', error);
+    forderungenKategorien = [];
+  }
+}
 
 /**
  * Charge tous les créances - avec cache (using generic helper)
  */
 async function loadForderungen() {
+  // Load kategorien first if not loaded
+  if (forderungenKategorien.length === 0) {
+    await loadForderungenKategorien();
+  }
+
   currentForderungen = await loadDataWithCache('forderungen', displayForderungen, 'forderungen');
 }
 
