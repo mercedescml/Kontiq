@@ -77,7 +77,7 @@ function displayKosten(kosten) {
       <tr>
         <td>${k.category || '-'}</td>
         <td>${k.description || '-'}</td>
-        <td class="amount">CHF ${k.amount?.toFixed(2) || '0.00'}</td>
+        <td class="amount">€${k.amount?.toFixed(2) || '0.00'}</td>
         <td>${k.date || '-'}</td>
         <td class="actions">
           <button class="btn btn-secondary" onclick="editKosten('${k.id}')">Bearbeiten</button>

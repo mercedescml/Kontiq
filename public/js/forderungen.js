@@ -107,7 +107,7 @@ function displayForderungen(forderungen) {
     html += `
       <tr>
         <td><strong>${f.client_name || 'Kunde'}</strong></td>
-        <td class="amount">CHF ${f.amount?.toFixed(2) || '0.00'}</td>
+        <td class="amount">€${f.amount?.toFixed(2) || '0.00'}</td>
         <td>${f.due_date || '-'}</td>
         <td>${f.invoice_date || '-'}</td>
         <td><span class="status-badge ${statusClass}">${f.status}</span></td>

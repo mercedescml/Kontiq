@@ -142,7 +142,7 @@ function displayBankkonten(konten) {
         <td><strong>${k.name || 'Konto'}</strong></td>
         <td>${k.iban || '-'}</td>
         <td>${k.bank || '-'}</td>
-        <td class="amount">CHF ${k.balance?.toFixed(2) || '0.00'}</td>
+        <td class="amount">€${k.balance?.toFixed(2) || '0.00'}</td>
         <td>${k.type || 'primary'}</td>
         <td class="actions">
           <button class="btn btn-secondary" onclick="editBankkonto('${k.id}')">Bearbeiten</button>

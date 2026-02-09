@@ -130,7 +130,7 @@ function displayPayments(payments) {
       <tr>
         <td>${payment.date || '-'}</td>
         <td>${payment.supplier || '-'}</td>
-        <td class="amount">CHF ${payment.amount?.toFixed(2) || '0.00'}</td>
+        <td class="amount">€${payment.amount?.toFixed(2) || '0.00'}</td>
         <td>
           <span class="category-badge" style="background: ${kategorieColor};">
             ${kategorieName}

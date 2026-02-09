@@ -68,7 +68,7 @@ function displayReceivedInvoices(factures) {
         </div>
         <div class="invoice-date">${formatDate(facture.date)}</div>
         <div class="invoice-date">${formatDate(facture.due_date)}</div>
-        <div class="invoice-amount">CHF ${facture.total.toFixed(2)}</div>
+        <div class="invoice-amount">€${facture.total.toFixed(2)}</div>
         <div>
           <span class="invoice-category">${facture.category || 'Non catégorisé'}</span>
         </div>
@@ -117,7 +117,7 @@ function displaySentInvoices(factures) {
         </div>
         <div class="invoice-date">${formatDate(facture.date)}</div>
         <div class="invoice-date">${formatDate(facture.due_date)}</div>
-        <div class="invoice-amount">CHF ${facture.total.toFixed(2)}</div>
+        <div class="invoice-amount">€${facture.total.toFixed(2)}</div>
         <div>
           <span class="invoice-category">${facture.category || 'Service'}</span>
         </div>
@@ -162,7 +162,7 @@ function updateStats() {
   const totalAmount = sentInvoices
     .filter(f => f.status === 'sent')
     .reduce((sum, f) => sum + (f.total || 0), 0);
-  document.getElementById('stat-sent-amount').textContent = `CHF ${totalAmount.toFixed(2)}`;
+  document.getElementById('stat-sent-amount').textContent = `€${totalAmount.toFixed(2)}`;
 
   document.getElementById('stat-sent-paid').textContent =
     sentInvoices.filter(f => f.status === 'paid').length;
@@ -314,7 +314,7 @@ function viewInvoice(id) {
   if (!facture) return;
 
   alert(`Details zur Rechnung ${facture.invoice_number}\n\n` +
-        `Betrag: CHF ${facture.total.toFixed(2)}\n` +
+        `Betrag: €${facture.total.toFixed(2)}\n` +
         `Beschreibung: ${facture.description || 'N/A'}\n` +
         `Status: ${getStatusLabel(facture.status)}\n\n` +
         `Vollständige Ansichtsfunktion folgt in Kürze...`);

@@ -27,7 +27,7 @@ async function openCreditSimulator() {
         </div>
         <div class="modal-body">
           <div style="margin-bottom: 15px;">
-            <label>Kreditbetrag (CHF):</label>
+            <label>Kreditbetrag (€):</label>
             <input type="number" id="creditAmount" placeholder="0.00" style="width: 100%; padding: 8px; margin-top: 5px; border: 1px solid #E5E7EB; border-radius: 4px;">
           </div>
           <div style="margin-bottom: 15px;">
@@ -92,8 +92,8 @@ async function calculateCreditSimulation() {
     resultDiv.style.display = 'block';
     resultDiv.innerHTML = `
       <h4 style="margin-top: 0; color: #0A2540;">Ergebnis:</h4>
-      <p><strong>Kreditkosten:</strong> CHF ${creditCost.toFixed(2)}</p>
-      <p><strong>Skontobetrag:</strong> CHF ${discountAmount.toFixed(2)}</p>
+      <p><strong>Kreditkosten:</strong> €${creditCost.toFixed(2)}</p>
+      <p><strong>Skontobetrag:</strong> €${discountAmount.toFixed(2)}</p>
       <p style="padding: 10px; background: white; border-left: 4px solid #10B981; margin-top: 15px;">
         <strong>Empfehlung:</strong> ${result.recommendation}
       </p>
