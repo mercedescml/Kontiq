@@ -356,6 +356,8 @@
                     if (j.token) {
                         localStorage.setItem('token', j.token);
                     }
+                    // Set initial view to dashboard on login
+                    localStorage.setItem('kontiq_last_view', 'dashboard');
                     // check server-side onboarding
                     try {
                         const r2 = await fetch('/api/onboarding?email=' + encodeURIComponent(email));
