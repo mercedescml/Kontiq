@@ -10,7 +10,13 @@ let currentBookings = [];
  */
 async function loadBookings() {
   try {
-    const response = await fetch('/api/bookings');
+    const token = localStorage.getItem('token');
+    const response = await fetch('/api/bookings', {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    });
     const data = await response.json();
     currentBookings = data.bookings || [];
 

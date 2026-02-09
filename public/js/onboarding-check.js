@@ -14,7 +14,13 @@
         try {
             const user = JSON.parse(localStorage.getItem('kontiq_user') || '{}');
             if (!user || !user.email) return;
-            const res = await fetch('/api/onboarding?email=' + encodeURIComponent(user.email));
+            const token = localStorage.getItem('token');
+            const res = await fetch('/api/onboarding?email=' + encodeURIComponent(user.email), {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
             if (!res.ok) return;
             const result = await res.json();
             if (result && result.data && result.data.status !== 'complete') {

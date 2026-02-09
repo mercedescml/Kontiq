@@ -308,9 +308,13 @@ async function addUserToEntity() {
   });
   
   try {
+    const token = localStorage.getItem('token');
     const res = await fetch(`${API_BASE}/api/permissions/entity`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
       body: JSON.stringify({
         adminEmail: currentUser.email,
         entityId: currentEntityId,
@@ -336,10 +340,15 @@ async function addUserToEntity() {
 
 async function removeEntityUser(entityId, userEmail) {
   if (!confirm(`Möchten Sie den Zugriff für diesen Benutzer wirklich entfernen?`)) return;
-  
+
   try {
+    const token = localStorage.getItem('token');
     const res = await fetch(`${API_BASE}/api/permissions/entity/${userEmail}?adminEmail=${currentUser.email}&entityId=${entityId}`, {
-      method: 'DELETE'
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
     });
     
     if (res.ok) {

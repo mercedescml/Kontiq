@@ -1,13 +1,11 @@
-const CACHE_NAME = 'kontiq-cache-v1';
+const CACHE_NAME = 'kontiq-cache-v2';
 const urlsToCache = [
   '/',
   '/index.html',
   '/css/global-harmonized.css',
   '/js/app.js',
   '/js/modal-manager.js',
-  '/js/close-button-fixer.js',
-  '/js/form-harmonizer.js',
-  '/js/clickability-fixer.js',
+  '/js/ui-helpers.js',
   '/js/performance-optimizer.js'
 ];
 

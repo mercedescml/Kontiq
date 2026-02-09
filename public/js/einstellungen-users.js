@@ -18,8 +18,14 @@ async function loadPermissionsData() {
   try {
     // Load permissions
     const url = `/api/permissions/all?email=${encodeURIComponent(currentUser.email)}`;
+    const token = localStorage.getItem('token');
 
-    const permsRes = await fetch(url);
+    const permsRes = await fetch(url, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    });
 
     if (!permsRes.ok) {
       throw new Error(`HTTP ${permsRes.status}: ${permsRes.statusText}`);
@@ -41,7 +47,12 @@ async function loadPermissionsData() {
     populateUsersTable();
     
     // Load entities - only for current user
-    const entitiesRes = await fetch(`/api/entitaeten?email=${encodeURIComponent(currentUser.email)}`);
+    const entitiesRes = await fetch(`/api/entitaeten?email=${encodeURIComponent(currentUser.email)}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    });
     if (entitiesRes.ok) {
       const entData = await entitiesRes.json();
       allEntities = entData.entitaeten || [];
@@ -371,9 +382,13 @@ async function sendInvite(event) {
 
   try {
     // Create user with hierarchical permissions
+    const token = localStorage.getItem('token');
     const res = await fetch(`${API_BASE}/api/users/invite`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
       body: JSON.stringify({
         adminEmail: currentUser.email,
         targetEmail: email,
@@ -635,9 +650,13 @@ async function saveUserPermissions(email) {
   );
 
   try {
+    const token = localStorage.getItem('token');
     const res = await fetch(`${API_BASE}/api/permissions/global`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
       body: JSON.stringify({
         adminEmail: currentUser.email,
         targetEmail: email,

@@ -16,7 +16,13 @@ class KategorienAnalyse {
             if (filters.endDate) params.append('endDate', filters.endDate);
             if (filters.status) params.append('status', filters.status);
 
-            const response = await fetch(`/api/liquiditaet/kategorien-analyse?${params}`);
+            const token = localStorage.getItem('token');
+            const response = await fetch(`/api/liquiditaet/kategorien-analyse?${params}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
             if (!response.ok) throw new Error('Fehler beim Laden der Analyse');
 
             this.data = await response.json();

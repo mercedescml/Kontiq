@@ -69,7 +69,19 @@ const DataPreloader = {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), timeout);
 
-        const response = await fetch(url, { signal: controller.signal });
+        // Get JWT token for authentication
+        const token = localStorage.getItem('token');
+        const headers = {
+          'Content-Type': 'application/json'
+        };
+        if (token) {
+          headers['Authorization'] = `Bearer ${token}`;
+        }
+
+        const response = await fetch(url, {
+          signal: controller.signal,
+          headers: headers
+        });
         clearTimeout(timeoutId);
 
         if (response.ok) {

@@ -42,9 +42,13 @@ async function saveProfile(event) {
   const phone = document.getElementById('profilePhone').value.trim();
 
   try {
+    const token = localStorage.getItem('token');
     const response = await fetch('/api/users/profile', {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
       body: JSON.stringify({
         email: currentUser.email,
         firstName,
@@ -92,9 +96,13 @@ async function changePassword(event) {
   }
 
   try {
+    const token = localStorage.getItem('token');
     const response = await fetch('/api/users/change-password', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
       body: JSON.stringify({
         email: currentUser.email,
         currentPassword,

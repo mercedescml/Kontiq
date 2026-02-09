@@ -113,9 +113,13 @@ function openKategorieAssignModal(forderungId, currentKategorieId = null) {
 async function selectKategorie(kategorieId, forderungId) {
     try {
         // Update forderung with kategorie
+        const token = localStorage.getItem('token');
         const response = await fetch(`/api/forderungen/${forderungId}`, {
             method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
             body: JSON.stringify({ kategorie: kategorieId || null })
         });
 
