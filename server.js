@@ -418,7 +418,18 @@ app.post('/api/users/register', validate(schemas.user), async (req, res) => {
     };
     writeJSON(FILES.permissions, perms);
     console.log(`[INSCRIPTION] Nouvel utilisateur: ${user.email} | Nom: ${user.name} | Société: ${user.company} | Date: ${user.createdAt}`);
-    res.status(201).json({ user: { email: user.email, name: user.name, company: user.company } });
+
+    // Generate JWT token for immediate login after registration (expires in 24 hours)
+    const token = jwt.sign(
+      { email: user.email, name: user.name, company: user.company },
+      JWT_SECRET,
+      { expiresIn: '24h' }
+    );
+
+    res.status(201).json({
+      user: { email: user.email, name: user.name, company: user.company },
+      token
+    });
   } catch (error) {
     console.error('Registration error:', error);
     res.status(500).json({ error: 'Fehler bei der Registrierung' });

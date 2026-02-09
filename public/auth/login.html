@@ -352,6 +352,10 @@
                 try { j = JSON.parse(text); } catch(e) { j = null }
                 if (res.ok && j && j.user) {
                     localStorage.setItem('kontiq_user', JSON.stringify({ email: j.user.email, name: j.user.name, company: j.user.company, loggedIn: true }));
+                    // Store JWT token for API authentication
+                    if (j.token) {
+                        localStorage.setItem('token', j.token);
+                    }
                     // check server-side onboarding
                     try {
                         const r2 = await fetch('/api/onboarding?email=' + encodeURIComponent(email));
