@@ -1,8 +1,10 @@
 /**
- * Sauvegarde un coût depuis le formulaire
+ * Sauvegarde un coût depuis le formulaire (create or update)
  */
 async function saveKosten(event) {
   event.preventDefault();
+
+  const id = document.getElementById('kostenId')?.value;
   const category = document.getElementById('kostenCategory').value.trim();
   const description = document.getElementById('kostenDescription').value.trim();
   const amount = parseFloat(document.getElementById('kostenAmount').value) || 0;
@@ -14,9 +16,18 @@ async function saveKosten(event) {
   }
 
   const data = { category, description, amount, date };
+
   try {
-    await addKosten(data);
-    APP.notify('Kosten gespeichert', 'success');
+    if (id) {
+      // Update existing cost
+      await API.kosten.update(id, data);
+      APP.notify('Kosten aktualisiert', 'success');
+    } else {
+      // Create new cost
+      await API.kosten.create(data);
+      APP.notify('Kosten erstellt', 'success');
+    }
+
     closePlanModal && closePlanModal();
     loadKosten();
   } catch (error) {
@@ -32,57 +43,45 @@ async function saveKosten(event) {
 let currentKosten = [];
 
 /**
- * Charge tous les coûts - avec cache
+ * Charge tous les coûts - avec cache (using generic helper)
  */
 async function loadKosten() {
-  try {
-    // Utiliser le cache si disponible pour affichage instantané
-    let data;
-    if (typeof DataPreloader !== 'undefined' && DataPreloader.cache.has('kosten')) {
-      data = DataPreloader.cache.get('kosten');
-    } else {
-      data = await API.kosten.getAll();
-    }
-    currentKosten = data.kosten || [];
-    displayKosten(currentKosten);
-  } catch (error) {
-    APP.notify('Fehler beim Laden der Kosten', 'error');
-    console.error(error);
-  }
+  currentKosten = await loadDataWithCache('kosten', displayKosten, 'kosten');
 }
 
 /**
  * Affiche les coûts
  */
 function displayKosten(kosten) {
-  const container = document.querySelector('.kosten-list') || 
+  const container = document.querySelector('.kosten-list') ||
                    document.querySelector('[data-kosten-container]');
-  
+
   if (!container) return;
 
   if (kosten.length === 0) {
-    container.innerHTML = '<p style="text-align: center; color: #6B7280;">Keine Kosten gefunden</p>';
+    container.innerHTML = '<div class="empty-state"><p>Keine Kosten gefunden</p></div>';
     return;
   }
 
-  let html = '<table style="width: 100%; border-collapse: collapse;">';
-  html += '<thead><tr style="border-bottom: 2px solid #E5E7EB;">';
-  html += '<th style="text-align: left; padding: 10px;">Kategorie</th>';
-  html += '<th style="text-align: left; padding: 10px;">Beschreibung</th>';
-  html += '<th style="text-align: left; padding: 10px;">Betrag</th>';
-  html += '<th style="text-align: left; padding: 10px;">Datum</th>';
-  html += '<th style="text-align: left; padding: 10px;">Aktion</th>';
+  let html = '<table class="data-table">';
+  html += '<thead><tr>';
+  html += '<th>Kategorie</th>';
+  html += '<th>Beschreibung</th>';
+  html += '<th>Betrag</th>';
+  html += '<th>Datum</th>';
+  html += '<th>Aktion</th>';
   html += '</tr></thead><tbody>';
 
   kosten.forEach(k => {
     html += `
-      <tr style="border-bottom: 1px solid #E5E7EB;">
-        <td style="padding: 10px;">${k.category || '-'}</td>
-        <td style="padding: 10px;">${k.description || '-'}</td>
-        <td style="padding: 10px;">CHF ${k.amount?.toFixed(2) || '0.00'}</td>
-        <td style="padding: 10px;">${k.date || '-'}</td>
-        <td style="padding: 10px;">
-          <button class="btn btn-secondary" onclick="deleteKosten('${k.id}')" style="padding: 5px 10px; font-size: 12px; background: #EF4444; color: white;">Löschen</button>
+      <tr>
+        <td>${k.category || '-'}</td>
+        <td>${k.description || '-'}</td>
+        <td class="amount">€${k.amount?.toFixed(2) || '0.00'}</td>
+        <td>${k.date || '-'}</td>
+        <td class="actions">
+          <button class="btn btn-secondary" onclick="editKosten('${k.id}')">Bearbeiten</button>
+          <button class="btn btn-danger" onclick="deleteKosten('${k.id}')">Löschen</button>
         </td>
       </tr>
     `;
@@ -90,6 +89,75 @@ function displayKosten(kosten) {
 
   html += '</tbody></table>';
   container.innerHTML = html;
+}
+
+/**
+ * Edit existing cost - opens modal with data
+ */
+async function editKosten(id) {
+  const kosten = currentKosten.find(k => k.id === id);
+  if (!kosten) {
+    APP.notify('Kosten nicht gefunden', 'error');
+    return;
+  }
+
+  // Find or create modal
+  let modal = document.getElementById('kostenModal') || document.getElementById('planModal');
+  if (!modal) {
+    console.warn('Kosten modal not found, creating basic modal');
+    modal = createKostenModal();
+  }
+
+  // Fill form with kosten data
+  const idField = document.getElementById('kostenId');
+  const categoryField = document.getElementById('kostenCategory');
+  const descriptionField = document.getElementById('kostenDescription');
+  const amountField = document.getElementById('kostenAmount');
+  const dateField = document.getElementById('kostenDate');
+
+  if (idField) idField.value = kosten.id;
+  if (categoryField) categoryField.value = kosten.category || '';
+  if (descriptionField) descriptionField.value = kosten.description || '';
+  if (amountField) amountField.value = kosten.amount || '';
+  if (dateField) dateField.value = kosten.date || '';
+
+  // Update modal title
+  const modalTitle = modal.querySelector('.modal-title') || modal.querySelector('h3');
+  if (modalTitle) modalTitle.textContent = 'Kosten bearbeiten';
+
+  // Show modal
+  modal.style.display = 'flex';
+  if (categoryField) categoryField.focus();
+}
+
+/**
+ * Creates kosten modal if it doesn't exist (using generic helper)
+ */
+function createKostenModal() {
+  return createGenericModal({
+    id: 'kostenModal',
+    title: 'Kosten bearbeiten',
+    idFieldName: 'kostenId',
+    maxWidth: '500px',
+    singleColumn: true,
+    fields: [
+      { id: 'kostenCategory', label: 'Kategorie', type: 'text', required: true },
+      { id: 'kostenDescription', label: 'Beschreibung', type: 'text', required: true },
+      { id: 'kostenAmount', label: 'Betrag', type: 'number', step: '0.01', required: true },
+      { id: 'kostenDate', label: 'Datum', type: 'date', required: true }
+    ],
+    onSubmit: 'saveKosten',
+    onClose: 'closePlanModal'
+  });
+}
+
+/**
+ * Closes kosten modal (using generic helper)
+ */
+function closePlanModal() {
+  closeGenericModal('kostenModal', 'kostenId');
+  // Also try to close planModal if it exists (for backward compatibility)
+  closeGenericModal('planModal', 'kostenId');
 }
 
 /**

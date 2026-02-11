@@ -8,7 +8,10 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Global Harmonized Styles -->
-    <link rel="stylesheet" href="/css/global-harmonized.css">
+    <link rel="stylesheet" href="/css/global-harmonized.css?v=20260119f">
+    <link rel="stylesheet" href="/css/kategorien-analyse.css?v=20260119f">
+    <!-- KONTIQ TYPOGRAPHY SYSTEM - Must be loaded LAST to override everything -->
+    <link rel="stylesheet" href="/css/kontiq-typography.css?v=20260119f">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         * {
@@ -933,8 +936,10 @@
                 <div class="nav-tab active" data-view="dashboard" onclick="navigateTo('dashboard')">Dashboard</div>
                 <div class="nav-tab" data-view="zahlungen" onclick="navigateTo('zahlungen')">Zahlungen</div>
                 <div class="nav-tab" data-view="forderungen" onclick="navigateTo('forderungen')">Forderungen</div>
+                <div class="nav-tab" data-view="rechnungen" onclick="navigateTo('rechnungen')">Rechnungen</div>
                 <div class="nav-tab" data-view="kosten" onclick="navigateTo('kosten')">Kosten</div>
                 <div class="nav-tab" data-view="liquiditat" onclick="navigateTo('liquiditat')">Liquidität</div>
+                <div class="nav-tab" data-view="steuern" onclick="navigateTo('steuern')">Steuern</div>
                 <div class="nav-tab" data-view="vertrage" onclick="navigateTo('vertrage')">Verträge</div>
                 <div class="nav-tab" data-view="kpis" onclick="navigateTo('kpis')">KPIs</div>
                 <div class="nav-tab" data-view="reports" onclick="navigateTo('reports')">Reports</div>
@@ -1010,7 +1015,48 @@ if (!user) {
                     document.body.appendChild(newScript);
                     document.body.removeChild(newScript);
                 });
-                
+
+                // Load external module script if exists
+                const moduleScript = document.getElementById(`script-${viewName}`);
+                if (!moduleScript) {
+                    const script = document.createElement('script');
+                    script.id = `script-${viewName}`;
+                    script.src = `/js/${viewName}.js?t=${Date.now()}`;
+                    script.onload = () => {
+                        // Call initialization function if it exists
+                        const initFunctions = {
+                            'dashboard': 'loadDashboard',
+                            'zahlungen': 'loadZahlungen',
+                            'kosten': 'loadKosten',
+                            'forderungen': 'loadForderungen',
+                            'bankkonten': 'initBankkonten',
+                            'entitaeten': 'loadEntitaeten',
+                            'vertrage': 'loadContracts'
+                        };
+                        const initFn = initFunctions[viewName];
+                        if (initFn && typeof window[initFn] === 'function') {
+                            window[initFn]();
+                        }
+                    };
+                    script.onerror = () => console.log(`No script for ${viewName}`);
+                    document.head.appendChild(script);
+                } else {
+                    // Script already loaded, just call init function
+                    const initFunctions = {
+                        'dashboard': 'loadDashboard',
+                        'zahlungen': 'loadZahlungen',
+                        'kosten': 'loadKosten',
+                        'forderungen': 'loadForderungen',
+                        'bankkonten': 'initBankkonten',
+                        'entitaeten': 'loadEntitaeten',
+                        'vertrage': 'loadContracts'
+                    };
+                    const initFn = initFunctions[viewName];
+                    if (initFn && typeof window[initFn] === 'function') {
+                        setTimeout(() => window[initFn](), 100);
+                    }
+                }
+
                 // Ensure header data stays visible
                 updateHeader();
                 
@@ -1019,12 +1065,6 @@ if (!user) {
                 console.error('Navigation error:', error);
             }
         }
-
-        // On page load, restore last view or default to dashboard
-        const savedView = localStorage.getItem('kontiq_current_view') || 'dashboard';
-        const hashView = window.location.hash.substring(1);
-        const initialView = hashView || savedView;
-        navigateTo(initialView);
     </script>
     
     <!-- Einstellungen Modal -->
@@ -1200,7 +1240,8 @@ if (!user) {
         function openModule(name) {
             const dd = document.getElementById('profileDropdown'); if (dd) dd.style.display = 'none';
             const ed = document.getElementById('entityDropdown'); if (ed) ed.classList.remove('active');
-            // Use SPA navigation function
+
+            // Use SPA navigation function for all views
             navigateTo(name);
         }
 
@@ -1458,10 +1499,19 @@ if (!user) {
         }
 
         // initial header update
-        document.addEventListener('DOMContentLoaded', function(){ 
-            updateHeader(); 
+        document.addEventListener('DOMContentLoaded', function(){
+            updateHeader();
             initializeEntitySelector();
-            
+
+            // ALWAYS load Dashboard first on page load (ignore hash and saved view)
+            // Clear hash from URL
+            if (window.location.hash) {
+                history.replaceState(null, null, ' ');
+            }
+
+            // Always start with dashboard
+            navigateTo('dashboard');
+
             // Periodic check to ensure header stays visible
             setInterval(updateHeader, 5000);
         });
@@ -2147,18 +2197,24 @@ if (!user) {
     </script>
     <!-- API Client and App Core -->
     <script src="/js/api-client.js"></script>
+    <script src="/js/permissions-manager.js"></script>
+    <!-- Einstellungen (Settings) Module Scripts -->
+    <script src="/js/einstellungen-profile.js"></script>
+    <script src="/js/einstellungen-users.js"></script>
+    <script src="/js/einstellungen-entities.js"></script>
     <script src="/js/app.js"></script>
     <!-- Data Preloader for instant data display -->
     <script src="/js/data-preloader.js"></script>
+    <!-- Generic Helper Functions for reducing code duplication -->
+    <script src="/js/helpers.js"></script>
     <!-- Performance Optimizer -->
     <script src="/js/performance-optimizer.js"></script>
     <!-- Modal Manager for Unified Modal Handling -->
     <script src="/js/modal-manager.js"></script>
-    <!-- Close Button Fixer -->
-    <script src="/js/close-button-fixer.js"></script>
-    <!-- Form Harmonizer -->
-    <script src="/js/form-harmonizer.js"></script>
-    <!-- Clickability Fixer -->
-    <script src="/js/clickability-fixer.js"></script>
+    <!-- UI Helpers (combines close-button-fixer, form-harmonizer, clickability-fixer) -->
+    <script src="/js/ui-helpers.js"></script>
+    <!-- Kategorien System -->
+    <script src="/js/forderungen-kategorien.js?v=20260119f"></script>
+    <script src="/js/kategorien-analyse.js?v=20260119f"></script>
 </body>
 </html>

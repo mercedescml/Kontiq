@@ -745,6 +745,9 @@
     </div>
 </div>
 
+<!-- KOSTEN LIST (Dynamically loaded) -->
+<div class="kosten-list" data-kosten-container></div>
+
 <!-- PLANNING SECTION -->
 <div class="planning-section">
     <div class="planning-header">
@@ -1212,7 +1215,7 @@
     }
 
     // Initialize Charts
-    setTimeout(() => {
+    function initializeKostenCharts() {
         // Costs Development Chart
         const costsCtx = document.getElementById('costsChart');
         if (costsCtx && typeof Chart !== 'undefined') {
@@ -1294,5 +1297,12 @@
 
         // Initialize impact chart
         updateImpactChart();
-    }, 100);
+    }
+
+    // Initialize charts when DOM is ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initializeKostenCharts);
+    } else {
+        initializeKostenCharts();
+    }
 </script>

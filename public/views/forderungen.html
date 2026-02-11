@@ -108,7 +108,7 @@
 
     .table-header {
         display: grid;
-        grid-template-columns: 40px 180px 120px 110px 110px 110px 120px 100px 140px;
+        grid-template-columns: 40px 180px 120px 110px 110px 110px 100px 140px 100px 140px;
         column-gap: 10px;
         padding: 15px 20px;
         background: #F9FAFB;
@@ -122,7 +122,7 @@
 
     .invoice-row {
         display: grid;
-        grid-template-columns: 40px 180px 120px 110px 110px 110px 120px 100px 140px;
+        grid-template-columns: 40px 180px 120px 110px 110px 110px 100px 140px 100px 140px;
         column-gap: 10px;
         padding: 16px 20px;
         border-bottom: 1px solid #F3F4F6;
@@ -178,8 +178,9 @@
     }
 
     .client-warning::before {
-        content: "⚠";
+        content: "!";
         font-size: 9px;
+        font-weight: 700;
     }
 
     .invoice-number {
@@ -227,6 +228,7 @@
         border-radius: 6px;
         font-size: 11px;
         font-weight: 600;
+        font-family: 'Inter', sans-serif;
     }
 
     .badge-offen {
@@ -301,6 +303,16 @@
 
     .btn-icon.warning:hover {
         background: rgba(220, 38, 38, 0.08);
+    }
+
+    .btn-icon.btn-send {
+        border-color: var(--teal);
+        color: var(--teal);
+    }
+
+    .btn-icon.btn-send:hover {
+        background: rgba(14, 177, 122, 0.08);
+        border-color: var(--teal);
     }
 
     /* Analysis Section */
@@ -749,6 +761,65 @@
     .history-item:last-child {
         border-bottom: none;
     }
+
+    /* Page Header Styles */
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 32px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid var(--light-gray);
+    }
+
+    .page-title {
+        font-size: 28px;
+        font-weight: 700;
+        color: var(--navy);
+        letter-spacing: -0.5px;
+        margin: 0;
+    }
+
+    .header-actions {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+    }
+
+    /* Button Styles */
+    .btn {
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        border: none;
+        font-family: inherit;
+    }
+
+    .btn-primary {
+        background: var(--teal);
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background: #059669;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(14, 177, 122, 0.3);
+    }
+
+    .btn-secondary {
+        background: white;
+        color: var(--navy);
+        border: 1.5px solid var(--light-gray);
+    }
+
+    .btn-secondary:hover {
+        border-color: var(--navy);
+        background: var(--light-bg);
+    }
+
 /* Masquer header/menu sur mobile */
 @media (max-width: 768px) {
     .sidebar,
@@ -758,6 +829,177 @@
     .page-header {
         display: none !important;
     }
+}
+
+/* ===== SKONTO-OPTIMIERUNG WIDGET ===== */
+.skonto-widget {
+    background: linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 100%);
+    border: 2px solid var(--teal);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: 0 4px 16px rgba(14, 177, 122, 0.15);
+}
+
+.skonto-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.skonto-title {
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--navy);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.skonto-icon {
+    font-size: 24px;
+}
+
+.skonto-total-savings {
+    text-align: right;
+}
+
+.skonto-total-label {
+    font-size: 11px;
+    color: var(--gray);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    font-weight: 600;
+}
+
+.skonto-total-amount {
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--teal);
+    font-family: 'Roboto Mono', monospace;
+    letter-spacing: -0.5px;
+}
+
+.skonto-recommendations {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 16px;
+}
+
+.skonto-card {
+    background: white;
+    border: 1px solid rgba(14, 177, 122, 0.2);
+    border-radius: 10px;
+    padding: 18px;
+    transition: all 0.2s;
+    cursor: pointer;
+}
+
+.skonto-card:hover {
+    border-color: var(--teal);
+    box-shadow: 0 4px 12px rgba(14, 177, 122, 0.2);
+    transform: translateY(-2px);
+}
+
+.skonto-card.urgent {
+    border-left: 4px solid var(--error);
+    background: rgba(220, 38, 38, 0.02);
+}
+
+.skonto-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
+}
+
+.skonto-client {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--navy);
+}
+
+.skonto-invoice-number {
+    font-size: 11px;
+    color: var(--gray);
+}
+
+.skonto-deadline {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--error);
+    background: rgba(220, 38, 38, 0.1);
+    padding: 4px 8px;
+    border-radius: 6px;
+}
+
+.skonto-details {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.skonto-detail {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.skonto-detail-label {
+    font-size: 10px;
+    color: var(--gray);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+}
+
+.skonto-detail-value {
+    font-size: 15px;
+    font-weight: 700;
+    font-family: 'Roboto Mono', monospace;
+}
+
+.skonto-detail-value.savings {
+    color: var(--teal);
+    font-size: 18px;
+}
+
+.skonto-action {
+    padding-top: 12px;
+    border-top: 1px solid rgba(107, 114, 128, 0.1);
+}
+
+.skonto-recommendation-text {
+    font-size: 12px;
+    color: var(--gray);
+    line-height: 1.5;
+    margin-bottom: 10px;
+}
+
+.skonto-recommendation-text strong {
+    color: var(--teal);
+    font-weight: 700;
+}
+
+.btn-skonto-pay {
+    width: 100%;
+    padding: 10px;
+    background: var(--teal);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-skonto-pay:hover {
+    background: #059669;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(14, 177, 122, 0.3);
 }
 </style>
 
@@ -803,49 +1045,63 @@
     </div>
 </div>
 
+<!-- SKONTO-OPTIMIERUNG WIDGET -->
+<div class="skonto-widget" id="skontoWidget" style="display: none;">
+    <div class="skonto-header">
+        <div class="skonto-title">
+            <span class="skonto-icon">💰</span>
+            <span>Skonto-Optimierung: Intelligente Empfehlungen</span>
+        </div>
+        <div class="skonto-total-savings">
+            <div class="skonto-total-label">Potenzielle Einsparung</div>
+            <div class="skonto-total-amount" id="skontoTotalSavings">0€</div>
+        </div>
+    </div>
+    <div class="skonto-recommendations" id="skontoRecommendations">
+        <!-- Dynamically populated by JavaScript -->
+    </div>
+</div>
+
 <!-- FILTERS -->
 <div class="filter-section">
     <div class="filter-grid">
         <div class="filter-group">
             <label class="filter-label">Status</label>
-            <select>
-                <option>Alle</option>
-                <option>Offen</option>
-                <option>Bezahlt</option>
-                <option>Überfällig</option>
-                <option>Mahnung versendet</option>
+            <select id="filter-status" onchange="applyFilters()">
+                <option value="">Alle</option>
+                <option value="open">Offen</option>
+                <option value="paid">Bezahlt</option>
+                <option value="overdue">Überfällig</option>
             </select>
         </div>
         <div class="filter-group">
-            <label class="filter-label">Kunde</label>
-            <select>
-                <option>Alle Kunden</option>
-                <option>Firma ABC GmbH</option>
-                <option>Tech Solutions AG</option>
-                <option>Handels Partner KG</option>
+            <label class="filter-label">Kategorie</label>
+            <select id="filter-kategorie" onchange="applyFilters()">
+                <option value="">Alle Kategorien</option>
             </select>
         </div>
         <div class="filter-group">
             <label class="filter-label">Zeitraum</label>
-            <select>
-                <option>Alle</option>
-                <option>Diese Woche</option>
-                <option>Dieser Monat</option>
-                <option>Dieses Quartal</option>
+            <select id="filter-period" onchange="applyFilters()">
+                <option value="">Alle</option>
+                <option value="week">Diese Woche</option>
+                <option value="month">Dieser Monat</option>
+                <option value="quarter">Dieses Quartal</option>
             </select>
         </div>
         <div class="filter-group">
             <label class="filter-label">Zahlungsart</label>
-            <select>
-                <option>Alle</option>
-                <option>Überweisung</option>
-                <option>Lastschrift</option>
-                <option>Bar</option>
+            <select id="filter-payment" onchange="applyFilters()">
+                <option value="">Alle</option>
+                <option value="bank_transfer">Überweisung</option>
+                <option value="direct_debit">Lastschrift</option>
+                <option value="cash">Bar</option>
+                <option value="paypal">PayPal</option>
             </select>
         </div>
         <div class="filter-group">
             <label class="filter-label">Suche</label>
-            <input type="text" placeholder="Kunde, Rechnung...">
+            <input type="text" id="filter-search" placeholder="Kunde, Rechnung..." oninput="applyFilters()">
         </div>
     </div>
 </div>
@@ -857,128 +1113,17 @@
         <div>Kunde</div>
         <div>Rechnung</div>
         <div>Betrag</div>
+        <div>MwSt.</div>
         <div>Erstellt</div>
         <div>Fällig</div>
         <div>Status</div>
+        <div>Kategorie</div>
         <div>Zahlungsart</div>
         <div>Aktionen</div>
     </div>
 
-    <div class="invoice-row overdue">
-        <div><input type="checkbox"></div>
-        <div class="client-info">
-            <div class="client-name">Firma ABC GmbH</div>
-            <div class="client-warning">Häufig verspätet</div>
-        </div>
-        <div class="invoice-number">#RE-2025-001</div>
-        <div class="amount">4.850€</div>
-        <div class="date-info">
-            <div class="date-main">15.11.2025</div>
-        </div>
-        <div class="date-info date-overdue">
-            <div class="date-main">05.12.2025</div>
-            <div class="date-sub">3 Tage überfällig</div>
-        </div>
-        <div>
-            <span class="badge badge-uberfällig">Überfällig</span>
-            <span class="badge badge-mahnung">1. Mahnung</span>
-        </div>
-        <div><span class="badge badge-uberweisung">Überw.</span></div>
-        <div class="action-buttons">
-            <button class="btn-icon warning" onclick="openReminder('ABC')">Mahn.</button>
-            <button class="btn-icon" onclick="editInvoice('RE-2025-001')">Bearb.</button>
-        </div>
-    </div>
-
-    <div class="invoice-row">
-        <div><input type="checkbox"></div>
-        <div class="client-info">
-            <div class="client-name">Tech Solutions AG</div>
-        </div>
-        <div class="invoice-number">#RE-2025-002</div>
-        <div class="amount">12.400€</div>
-        <div class="date-info">
-            <div class="date-main">20.11.2025</div>
-        </div>
-        <div class="date-info date-warning">
-            <div class="date-main">15.12.2025</div>
-            <div class="date-sub">In 7 Tagen</div>
-        </div>
-        <div><span class="badge badge-offen">Offen</span></div>
-        <div><span class="badge badge-lastschrift">Lastschr.</span></div>
-        <div class="action-buttons">
-            <button class="btn-icon" onclick="openReminder('Tech')">Erinner.</button>
-            <button class="btn-icon" onclick="editInvoice('RE-2025-002')">Bearb.</button>
-        </div>
-    </div>
-
-    <div class="invoice-row paid">
-        <div><input type="checkbox"></div>
-        <div class="client-info">
-            <div class="client-name">Handels Partner KG</div>
-        </div>
-        <div class="invoice-number">#RE-2025-003</div>
-        <div class="amount">3.200€</div>
-        <div class="date-info">
-            <div class="date-main">25.11.2025</div>
-        </div>
-        <div class="date-info date-success">
-            <div class="date-main">28.11.2025</div>
-            <div class="date-sub">Bezahlt: 27.11.</div>
-        </div>
-        <div><span class="badge badge-bezahlt">Bezahlt</span></div>
-        <div><span class="badge badge-uberweisung">Überw.</span></div>
-        <div class="action-buttons">
-            <button class="btn-icon" onclick="editInvoice('RE-2025-003')">Bearb.</button>
-        </div>
-    </div>
-
-    <div class="invoice-row overdue">
-        <div><input type="checkbox"></div>
-        <div class="client-info">
-            <div class="client-name">Bau Service GmbH</div>
-            <div class="client-warning">Lastschrift fehlgeschlagen</div>
-        </div>
-        <div class="invoice-number">#RE-2025-004</div>
-        <div class="amount">3.350€</div>
-        <div class="date-info">
-            <div class="date-main">28.11.2025</div>
-        </div>
-        <div class="date-info date-overdue">
-            <div class="date-main">01.12.2025</div>
-            <div class="date-sub">7 Tage überfällig</div>
-        </div>
-        <div>
-            <span class="badge badge-uberfällig">Überfällig</span>
-            <span class="badge badge-mahnung">2. Mahnung</span>
-        </div>
-        <div><span class="badge badge-lastschrift">Lastschr.</span></div>
-        <div class="action-buttons">
-            <button class="btn-icon warning" onclick="openReminder('Bau')">Mahn.</button>
-            <button class="btn-icon" onclick="editInvoice('RE-2025-004')">Bearb.</button>
-        </div>
-    </div>
-
-    <div class="invoice-row">
-        <div><input type="checkbox"></div>
-        <div class="client-info">
-            <div class="client-name">Retail Express KG</div>
-        </div>
-        <div class="invoice-number">#RE-2025-005</div>
-        <div class="amount">8.900€</div>
-        <div class="date-info">
-            <div class="date-main">01.12.2025</div>
-        </div>
-        <div class="date-info">
-            <div class="date-main">22.12.2025</div>
-            <div class="date-sub">In 14 Tagen</div>
-        </div>
-        <div><span class="badge badge-offen">Offen</span></div>
-        <div><span class="badge badge-bar">Bar</span></div>
-        <div class="action-buttons">
-            <button class="btn-icon" onclick="editInvoice('RE-2025-005')">Bearb.</button>
-        </div>
-    </div>
+    <!-- Invoice rows will be dynamically loaded here -->
+    <div id="forderungen-table-body" class="forderungen-list"></div>
 </div>
 
 <!-- ANALYSIS SECTION -->
@@ -1060,6 +1205,17 @@
 
             <div class="form-row">
                 <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-input" placeholder="kunde@beispiel.de">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Adresse</label>
+                    <input type="text" class="form-input" placeholder="Straße, PLZ, Stadt">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
                     <label class="form-label">Rechnungsdatum</label>
                     <input type="date" class="form-input" value="2025-12-08">
                 </div>
@@ -1103,7 +1259,6 @@
                         <label class="form-label">Gesamt</label>
                         <input type="number" class="form-input" readonly>
                     </div>
-                    <button class="btn-icon" style="margin-top: 22px; border-color: var(--error); color: var(--error);">×</button>
                 </div>
                 <button class="btn btn-secondary" style="margin-top: 10px;">+ Position</button>
             </div>
@@ -1380,221 +1535,3 @@ Mit freundlichen Grüßen</textarea>
     </div>
 </div>
 
-<script>
-    function openCreateInvoice() {
-        document.getElementById('createInvoiceModal').classList.add('active');
-    }
-
-    function closeCreateInvoice() {
-        document.getElementById('createInvoiceModal').classList.remove('active');
-    }
-
-    function openReminder(client) {
-        document.getElementById('reminderModal').classList.add('active');
-    }
-
-    function closeReminder() {
-        document.getElementById('reminderModal').classList.remove('active');
-    }
-
-    function openImport() {
-        document.getElementById('importModal').classList.add('active');
-    }
-
-    function closeImport() {
-        document.getElementById('importModal').classList.remove('active');
-    }
-
-    function selectImport(type) {
-        document.querySelectorAll('.import-method').forEach(el => el.classList.remove('active'));
-        event.target.closest('.import-method').classList.add('active');
-        
-        document.getElementById('pdfImport').style.display = 'none';
-        document.getElementById('excelImport').style.display = 'none';
-        document.getElementById('datevImport').style.display = 'none';
-        
-        document.getElementById(type + 'Import').style.display = 'block';
-    }
-
-    function updateMahnungCalculation() {
-        const type = document.getElementById('reminderType').value;
-        const calc = document.getElementById('mahnungCalc');
-        
-        if (type.includes('Mahnung')) {
-            calc.style.display = 'block';
-        } else {
-            calc.style.display = 'none';
-        }
-    }
-
-    // Edit Invoice Functions
-    const invoiceDatabase = {
-        'RE-2025-001': {
-            id: 'RE-2025-001',
-            client: 'ABC GmbH',
-            amount: 4850,
-            invoiceDate: '2025-11-15',
-            dueDate: '2025-12-05',
-            status: 'uberfällig',
-            paymentMethod: 'Überweisung',
-            skonto: 2,
-            skontoDeadline: '2025-11-25',
-            paidDate: '',
-            notes: '',
-            history: []
-        },
-        'RE-2025-002': {
-            id: 'RE-2025-002',
-            client: 'Tech Solutions AG',
-            amount: 12400,
-            invoiceDate: '2025-11-20',
-            dueDate: '2025-12-15',
-            status: 'offen',
-            paymentMethod: 'Lastschrift',
-            skonto: 0,
-            skontoDeadline: '',
-            paidDate: '',
-            notes: '',
-            history: []
-        },
-        'RE-2025-003': {
-            id: 'RE-2025-003',
-            client: 'Handels Partner KG',
-            amount: 3200,
-            invoiceDate: '2025-11-25',
-            dueDate: '2025-11-28',
-            status: 'bezahlt',
-            paymentMethod: 'Überweisung',
-            skonto: 0,
-            skontoDeadline: '',
-            paidDate: '2025-11-27',
-            notes: '',
-            history: []
-        },
-        'RE-2025-004': {
-            id: 'RE-2025-004',
-            client: 'Bau Service GmbH',
-            amount: 3350,
-            invoiceDate: '2025-11-28',
-            dueDate: '2025-12-01',
-            status: 'uberfällig',
-            paymentMethod: 'Lastschrift',
-            skonto: 0,
-            skontoDeadline: '',
-            paidDate: '',
-            notes: 'Lastschrift fehlgeschlagen',
-            history: []
-        },
-        'RE-2025-005': {
-            id: 'RE-2025-005',
-            client: 'Retail Express KG',
-            amount: 8900,
-            invoiceDate: '2025-12-01',
-            dueDate: '2025-12-22',
-            status: 'offen',
-            paymentMethod: 'Überweisung',
-            skonto: 3,
-            skontoDeadline: '2025-12-11',
-            paidDate: '',
-            notes: '',
-            history: []
-        }
-    };
-
-    function editInvoice(invoiceId) {
-        const invoice = invoiceDatabase[invoiceId];
-        if (!invoice) {
-            alert('Rechnung nicht gefunden');
-            return;
-        }
-
-        // Populate form
-        document.getElementById('editInvoiceId').value = invoice.id;
-        document.getElementById('editInvoiceNumber').value = invoice.id;
-        document.getElementById('editClientName').value = invoice.client;
-        document.getElementById('editAmount').value = invoice.amount;
-        document.getElementById('editStatus').value = invoice.status;
-        document.getElementById('editInvoiceDate').value = invoice.invoiceDate;
-        document.getElementById('editDueDate').value = invoice.dueDate;
-        document.getElementById('editPaymentMethod').value = invoice.paymentMethod;
-        document.getElementById('editSkonto').value = invoice.skonto;
-        document.getElementById('editSkontoDeadline').value = invoice.skontoDeadline;
-        document.getElementById('editPaidDate').value = invoice.paidDate;
-        document.getElementById('editNotes').value = invoice.notes;
-
-        // Show history
-        const historyDiv = document.getElementById('editHistory');
-        if (invoice.history && invoice.history.length > 0) {
-            historyDiv.innerHTML = invoice.history.map(h => 
-                `<div style="margin-bottom: 4px;">${h.date}: ${h.change} (${h.user})</div>`
-            ).join('');
-        } else {
-            historyDiv.textContent = 'Keine Änderungen';
-        }
-
-        // Show modal
-        document.getElementById('editInvoiceModal').classList.add('active');
-    }
-
-    function closeEditInvoice() {
-        document.getElementById('editInvoiceModal').classList.remove('active');
-    }
-
-    function saveInvoiceChanges() {
-        const invoiceId = document.getElementById('editInvoiceId').value;
-        const invoice = invoiceDatabase[invoiceId];
-        
-        if (!invoice) {
-            alert('Fehler beim Speichern');
-            return;
-        }
-
-        // Get old values for history
-        const oldAmount = invoice.amount;
-        const oldStatus = invoice.status;
-        const oldDueDate = invoice.dueDate;
-
-        // Update invoice
-        invoice.id = document.getElementById('editInvoiceNumber').value;
-        invoice.client = document.getElementById('editClientName').value;
-        invoice.amount = parseFloat(document.getElementById('editAmount').value);
-        invoice.status = document.getElementById('editStatus').value;
-        invoice.invoiceDate = document.getElementById('editInvoiceDate').value;
-        invoice.dueDate = document.getElementById('editDueDate').value;
-        invoice.paymentMethod = document.getElementById('editPaymentMethod').value;
-        invoice.skonto = parseFloat(document.getElementById('editSkonto').value);
-        invoice.skontoDeadline = document.getElementById('editSkontoDeadline').value;
-        invoice.paidDate = document.getElementById('editPaidDate').value;
-        invoice.notes = document.getElementById('editNotes').value;
-
-        // Add to history
-        const changes = [];
-        if (oldAmount !== invoice.amount) changes.push(`Betrag: ${oldAmount}€ → ${invoice.amount}€`);
-        if (oldStatus !== invoice.status) changes.push(`Status: ${oldStatus} → ${invoice.status}`);
-        if (oldDueDate !== invoice.dueDate) changes.push(`Fälligkeit: ${oldDueDate} → ${invoice.dueDate}`);
-
-        if (changes.length > 0) {
-            if (!invoice.history) invoice.history = [];
-            invoice.history.push({
-                date: new Date().toLocaleString('de-DE'),
-                change: changes.join(', '),
-                user: 'Admin'
-            });
-        }
-
-        // Save to localStorage (in real app, this would be an API call)
-        localStorage.setItem('kontiq_invoices', JSON.stringify(invoiceDatabase));
-
-        alert('Änderungen wurden gespeichert!\n\n' + (changes.length > 0 ? changes.join('\n') : 'Keine Änderungen'));
-        closeEditInvoice();
-        
-        // In production, you would reload the invoice list here
-        // location.reload();
-    }
-
-    // Load invoices from localStorage on page load
-    const savedInvoices = localStorage.getItem('kontiq_invoices');
-    if (savedInvoices) {
-        Object.assign(invoiceDatabase, JSON.parse(savedInvoices));
-    }
-</script>

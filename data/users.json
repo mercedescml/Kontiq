@@ -82,5 +82,12 @@
     "company": "asdfas",
     "passwordHash": "e8a434aefc8b73e5c87a9d445893e02c784c59b0993ea38cfe663b7666860de0",
     "created": "2026-01-04T01:17:11.278Z"
+  },
+  {
+    "email": "asf@gmail.com",
+    "name": "dafas asd",
+    "company": "ASD",
+    "passwordHash": "$2b$10$yGIcUloasrH9WiA0YZ3Kwe8XlB9ZHj5pTQb6tBNq85g3T03zNM14i",
+    "created": "2026-01-16T13:22:43.031Z"
   }
 ]

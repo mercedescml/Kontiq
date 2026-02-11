@@ -1,1 +1,44 @@
-[]
+[
+  {
+    "id": "BANK-001",
+    "bank_name": "UBS Switzerland AG",
+    "account_holder": "Kontiq GmbH",
+    "iban": "CH93 0076 2011 6238 5295 7",
+    "swift": "UBSWCHZH80A",
+    "account_type": "Geschäftskonto",
+    "currency": "CHF",
+    "balance": 45780.50,
+    "last_sync": "2026-01-26T10:30:00.000Z",
+    "status": "active",
+    "is_primary": true,
+    "createdAt": "2024-03-15T09:00:00.000Z"
+  },
+  {
+    "id": "BANK-002",
+    "bank_name": "Credit Suisse (Schweiz) AG",
+    "account_holder": "Kontiq GmbH",
+    "iban": "CH56 0483 5012 3456 7800 0",
+    "swift": "CRESCHZZ80A",
+    "account_type": "Sparkonto",
+    "currency": "CHF",
+    "balance": 85000.00,
+    "last_sync": "2026-01-26T10:30:00.000Z",
+    "status": "active",
+    "is_primary": false,
+    "createdAt": "2024-06-20T14:00:00.000Z"
+  },
+  {
+    "id": "BANK-003",
+    "bank_name": "PostFinance AG",
+    "account_holder": "Kontiq GmbH",
+    "iban": "CH31 0900 0000 1234 5678 9",
+    "swift": "POFICHBEXXX",
+    "account_type": "Geschäftskonto EUR",
+    "currency": "EUR",
+    "balance": 12450.75,
+    "last_sync": "2026-01-26T10:30:00.000Z",
+    "status": "active",
+    "is_primary": false,
+    "createdAt": "2025-01-10T11:30:00.000Z"
+  }
+]

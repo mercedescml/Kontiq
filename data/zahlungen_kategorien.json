@@ -1,0 +1,122 @@
+[
+  {
+    "id": "ZKAT-001",
+    "name": "Wareneinkauf",
+    "description": "Einkauf von Waren, Material und Produkten",
+    "color": "#1976d2",
+    "icon": "shopping-cart",
+    "isDefault": true,
+    "priority": "high",
+    "created": "2024-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "ZKAT-002",
+    "name": "Personal",
+    "description": "Löhne, Gehälter und Sozialabgaben",
+    "color": "#388e3c",
+    "icon": "users",
+    "isDefault": true,
+    "priority": "critical",
+    "created": "2024-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "ZKAT-003",
+    "name": "Miete & Nebenkosten",
+    "description": "Büromiete, Lager und Betriebskosten",
+    "color": "#f57c00",
+    "icon": "home",
+    "isDefault": true,
+    "priority": "critical",
+    "created": "2024-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "ZKAT-004",
+    "name": "Energie & Versorgung",
+    "description": "Strom, Wasser, Gas, Telekommunikation",
+    "color": "#7b1fa2",
+    "icon": "lightning",
+    "isDefault": true,
+    "priority": "high",
+    "created": "2024-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "ZKAT-005",
+    "name": "IT & Software",
+    "description": "Software-Lizenzen, Cloud-Services, Hardware",
+    "color": "#0097a7",
+    "icon": "laptop",
+    "isDefault": true,
+    "priority": "medium",
+    "created": "2024-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "ZKAT-006",
+    "name": "Marketing & Werbung",
+    "description": "Werbekosten, Online-Marketing, Printwerbung",
+    "color": "#c2185b",
+    "icon": "megaphone",
+    "isDefault": true,
+    "priority": "medium",
+    "created": "2024-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "ZKAT-007",
+    "name": "Versicherungen",
+    "description": "Betriebsversicherungen, Haftpflicht, etc.",
+    "color": "#455a64",
+    "icon": "shield",
+    "isDefault": true,
+    "priority": "high",
+    "created": "2024-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "ZKAT-008",
+    "name": "Fahrzeuge & Transport",
+    "description": "Leasing, Kraftstoff, Wartung, Versicherung",
+    "color": "#6d4c41",
+    "icon": "truck",
+    "isDefault": true,
+    "priority": "medium",
+    "created": "2024-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "ZKAT-009",
+    "name": "Steuern & Abgaben",
+    "description": "Gewerbesteuer, Umsatzsteuer, sonstige Abgaben",
+    "color": "#d32f2f",
+    "icon": "document",
+    "isDefault": true,
+    "priority": "critical",
+    "created": "2024-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "ZKAT-010",
+    "name": "Beratung & Dienstleistungen",
+    "description": "Steuerberater, Anwälte, Berater",
+    "color": "#5e35b1",
+    "icon": "briefcase",
+    "isDefault": true,
+    "priority": "medium",
+    "created": "2024-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "ZKAT-011",
+    "name": "Wartung & Reparaturen",
+    "description": "Instandhaltung, Reparaturen, Service",
+    "color": "#f9a825",
+    "icon": "wrench",
+    "isDefault": true,
+    "priority": "medium",
+    "created": "2024-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "ZKAT-012",
+    "name": "Bürobedarf & Ausstattung",
+    "description": "Büromaterial, Möbel, Kleingeräte",
+    "color": "#00897b",
+    "icon": "pen",
+    "isDefault": true,
+    "priority": "low",
+    "created": "2024-01-01T00:00:00.000Z"
+  }
+]

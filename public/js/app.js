@@ -26,6 +26,8 @@ const APP = {
     this.setupNavigation();
     // Préchargement parallèle immédiat
     this.preloadAllNow();
+    // Restore last view on reload (or default to dashboard)
+    this.restoreLastView();
   },
 
   /**
@@ -113,6 +115,29 @@ const APP = {
     localStorage.removeItem('kontiq_onboarding_progress');
     localStorage.removeItem('kontiq_company');
     localStorage.removeItem('kontiq_onboarding_complete');
+    localStorage.removeItem('kontiq_last_view');
+  },
+
+  /**
+   * Restore last view on page reload
+   */
+  restoreLastView() {
+    const lastView = localStorage.getItem('kontiq_last_view');
+    // If there's a saved view, navigate to it; otherwise default to dashboard
+    const viewToLoad = lastView || 'dashboard';
+    this.navigateTo(viewToLoad);
+  },
+
+  /**
+   * Affiche une confirmation modale
+   * @param {string} message - Message à afficher
+   * @returns {Promise<boolean>} - true si confirmé, false sinon
+   */
+  async confirm(message) {
+    return new Promise((resolve) => {
+      const confirmed = window.confirm(message);
+      resolve(confirmed);
+    });
   },
 
   /**
@@ -206,26 +231,29 @@ const APP = {
    */
   renderView(container, view, html) {
     this.currentView = view;
-    
+
+    // Save current view to localStorage for reload persistence
+    localStorage.setItem('kontiq_last_view', view);
+
     // Injecter le HTML immédiatement
     container.innerHTML = html;
     container.style.opacity = '1';
     container.style.pointerEvents = 'auto';
-    
+
     // Exécuter les scripts inline avec requestAnimationFrame pour ne pas bloquer
     requestAnimationFrame(() => {
       this.executeInlineScripts(container);
     });
-    
+
     // Charger le script externe de la vue
     this.loadViewScript(view);
-    
+
     // Appeler l'initialisation spécifique à la vue
     requestAnimationFrame(() => this.initializeView(view));
-    
+
     // Scroll to top
     window.scrollTo({ top: 0, behavior: 'instant' });
-    
+
     // Mettre à jour la nav active
     this.updateActiveNav(view);
   },
@@ -271,7 +299,7 @@ const APP = {
       'zahlungen': 'loadZahlungen',
       'kosten': 'loadKosten',
       'forderungen': 'loadForderungen',
-      'bankkonten': 'loadBankkonten',
+      'bankkonten': 'initBankkonten',
       'entitaeten': 'loadEntitaeten',
       'dashboard': 'loadDashboard'
     };
@@ -419,6 +447,13 @@ const APP = {
         resolve(false);
       });
     });
+  },
+
+  /**
+   * Alias for navigateTo (for backward compatibility)
+   */
+  navigate(view) {
+    return this.navigateTo(view);
   }
 };
 

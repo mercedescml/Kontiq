@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Zahlungsmanagement - Kontiq</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/zahlungsaufschieb-simulator.css">
     <style>
         :root {
             --navy: #0A2540;
@@ -324,7 +325,7 @@
 
         .table-header {
             display: grid;
-            grid-template-columns: 40px 180px 120px 100px 120px 120px 100px 140px;
+            grid-template-columns: 40px 180px 120px 100px 120px 80px 120px 100px 140px;
             padding: 15px 20px;
             background: #F9FAFB;
             border-bottom: 1px solid var(--light-gray);
@@ -337,7 +338,7 @@
 
         .payment-row {
             display: grid;
-            grid-template-columns: 40px 180px 120px 100px 120px 120px 100px 140px;
+            grid-template-columns: 40px 180px 120px 100px 120px 80px 120px 100px 140px;
             padding: 16px 20px;
             border-bottom: 1px solid #F3F4F6;
             align-items: center;
@@ -1677,7 +1678,7 @@
 
         @media (max-width: 1200px) {
             .table-header, .payment-row {
-                grid-template-columns: 40px 160px 110px 90px 110px 110px 90px 120px;
+                grid-template-columns: 40px 160px 110px 90px 110px 70px 110px 90px 120px;
             }
         }
 
@@ -1894,122 +1895,14 @@
             <div>Kategorie</div>
             <div>Zahlungsart</div>
             <div>Fälligkeit</div>
+            <div>MwSt.</div>
             <div>Skonto</div>
             <div>Betrag</div>
             <div></div>
         </div>
 
-        <div class="payment-row overdue">
-            <div><input type="checkbox"></div>
-            <div class="vendor-info">
-                <div class="vendor-name">Müller GmbH</div>
-                <div class="invoice-number">#INV-1523</div>
-            </div>
-            <div>Wareneinkauf</div>
-            <div><span class="badge">Überweisung</span></div>
-            <div class="date-info">
-                <div class="date-main" style="color: var(--error);">05.12.2025</div>
-                <div class="date-sub" style="color: var(--error);">Überfällig</div>
-            </div>
-            <div class="skonto-info">
-                <div class="skonto-amount">-49€</div>
-                <div class="skonto-deadline">bis heute</div>
-            </div>
-            <div class="amount">2.450€</div>
-            <div class="action-buttons">
-                <button class="btn-zahlen" onclick="openPaymentModal('INV-1523', 'Müller GmbH', 2450)">Zahlen</button>
-                <button class="btn-verschieben" onclick="openPostponeModal('INV-1523', 'Müller GmbH', 2450, '05.12.2025', 49, '04.01.2026')">Verschieben</button>
-                <button class="btn-details" onclick="openPaymentDetails('INV-1523')">Details</button>
-            </div>
-        </div>
-
-        <div class="payment-row">
-            <div><input type="checkbox"></div>
-            <div class="vendor-info">
-                <div class="vendor-name">Schmidt AG</div>
-                <div class="invoice-number">#RE-9845</div>
-            </div>
-            <div>IT/Software</div>
-            <div><span class="badge">Lastschrift</span></div>
-            <div class="date-info">
-                <div class="date-main">10.12.2025</div>
-                <div class="date-sub">In 2 Tagen</div>
-            </div>
-            <div class="skonto-info">
-                <div class="skonto-amount">-24€</div>
-                <div class="skonto-deadline">bis 10.12.</div>
-            </div>
-            <div class="amount">1.200€</div>
-            <div class="action-buttons">
-                <button class="btn-zahlen" onclick="openPaymentModal('RE-9845', 'Schmidt AG', 1200)">Zahlen</button>
-                <button class="btn-verschieben" onclick="openPostponeModal('RE-9845', 'Schmidt AG', 1200, '10.12.2025', 24, '10.12.2025')">Verschieben</button>
-                <button class="btn-details" onclick="openPaymentDetails('RE-9845')">Details</button>
-            </div>
-        </div>
-
-        <div class="payment-row paid">
-            <div><input type="checkbox"></div>
-            <div class="vendor-info">
-                <div class="vendor-name">Telekom GmbH</div>
-                <div class="invoice-number">#TEL-11-2024</div>
-            </div>
-            <div>IT/Telekom</div>
-            <div><span class="badge">Lastschrift</span></div>
-            <div class="date-info">
-                <div class="date-main" style="color: var(--teal);">01.12.2025</div>
-                <div class="date-sub" style="color: var(--teal);">Bezahlt</div>
-            </div>
-            <div>—</div>
-            <div class="amount">320€</div>
-            <div>
-                <button class="btn-details">Details</button>
-            </div>
-        </div>
-
-        <div class="payment-row">
-            <div><input type="checkbox"></div>
-            <div class="vendor-info">
-                <div class="vendor-name">Weber KG</div>
-                <div class="invoice-number">#WK-2024-156</div>
-            </div>
-            <div>Wareneinkauf</div>
-            <div><span class="badge">Überweisung</span></div>
-            <div class="date-info">
-                <div class="date-main">22.12.2025</div>
-                <div class="date-sub">In 14 Tagen</div>
-            </div>
-            <div class="skonto-info">
-                <div class="skonto-amount">-178€</div>
-                <div class="skonto-deadline" style="color: var(--error);">verpasst</div>
-            </div>
-            <div class="amount">8.900€</div>
-            <div class="action-buttons">
-                <button class="btn-zahlen" onclick="openPaymentModal('WK-2024-156', 'Weber KG', 8900)">Zahlen</button>
-                <button class="btn-verschieben" onclick="openPostponeModal('WK-2024-156', 'Weber KG', 8900, '22.12.2025', 178, '15.12.2025')">Verschieben</button>
-                <button class="btn-details" onclick="openPaymentDetails('WK-2024-156')">Details</button>
-            </div>
-        </div>
-
-        <div class="payment-row">
-            <div><input type="checkbox"></div>
-            <div class="vendor-info">
-                <div class="vendor-name">Büromiete Berlin</div>
-                <div class="invoice-number">#MIETE-12-2025</div>
-            </div>
-            <div>Miete</div>
-            <div><span class="badge">Dauerauftrag</span></div>
-            <div class="date-info">
-                <div class="date-main">01.01.2026</div>
-                <div class="date-sub">In 24 Tagen</div>
-            </div>
-            <div>—</div>
-            <div class="amount">3.500€</div>
-            <div class="action-buttons">
-                <button class="btn-zahlen" onclick="openPaymentModal('MIETE-12-2025', 'Büromiete Berlin', 3500)">Zahlen</button>
-                <button class="btn-verschieben" onclick="openPostponeModal('MIETE-12-2025', 'Büromiete Berlin', 3500, '01.01.2026', 0, null)">Verschieben</button>
-                <button class="btn-details" onclick="openPaymentDetails('MIETE-12-2025')">Details</button>
-            </div>
-        </div>
+        <!-- Payments List (Dynamically loaded) -->
+        <div class="payments-list" data-payments-container></div>
     </div>
 
     <!-- ADD PAYMENT MODAL -->
@@ -2044,6 +1937,16 @@
                         <div class="form-group">
                             <label class="form-label">Rechnungsnummer</label>
                             <input type="text" class="form-input" placeholder="#INV-...">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-input" placeholder="lieferant@beispiel.de">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Adresse</label>
+                            <input type="text" class="form-input" placeholder="Straße, PLZ, Stadt">
                         </div>
                     </div>
                     <div class="form-row">
@@ -2138,12 +2041,26 @@
                             <div style="font-size: 16px; font-weight: 700; color: var(--navy);" id="paymentVendor">-</div>
                         </div>
                         <div style="text-align: right;">
-                            <div style="font-size: 12px; color: var(--gray); text-transform: uppercase; margin-bottom: 4px; font-weight: 600;">Betrag</div>
+                            <div style="font-size: 12px; color: var(--gray); text-transform: uppercase; margin-bottom: 4px; font-weight: 600;">Brutto Betrag</div>
                             <div style="font-size: 20px; font-weight: 800; color: var(--teal); font-family: 'Roboto Mono', monospace;" id="paymentAmount">-</div>
                         </div>
                     </div>
-                    <div style="font-size: 12px; color: var(--gray);">
+                    <div style="font-size: 12px; color: var(--gray); margin-bottom: 12px;">
                         Rechnung: <span style="font-weight: 600; color: var(--navy);" id="paymentInvoice">-</span>
+                    </div>
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding-top: 12px; border-top: 1px solid var(--light-gray);">
+                        <div>
+                            <div style="font-size: 11px; color: var(--gray);">Netto</div>
+                            <div style="font-size: 13px; font-weight: 600; color: var(--navy); font-family: 'Roboto Mono', monospace;" id="paymentNetto">-</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 11px; color: var(--gray);">MwSt.</div>
+                            <div style="font-size: 13px; font-weight: 600; color: var(--navy);" id="paymentTax">-</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 11px; color: var(--gray);">Steuerbetrag</div>
+                            <div style="font-size: 13px; font-weight: 600; color: var(--teal); font-family: 'Roboto Mono', monospace;" id="paymentTaxAmount">-</div>
+                        </div>
                     </div>
                 </div>
 

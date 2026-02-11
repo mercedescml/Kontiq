@@ -49,7 +49,7 @@ function displayAbonnement(abonnement) {
 
       <div style="margin-bottom: 20px;">
         <p style="color: #6B7280; margin: 0 0 5px 0;">Preis:</p>
-        <p style="margin: 0; font-size: 18px; font-weight: 600; color: #0A2540;">CHF ${abonnement.price?.toFixed(2) || '0.00'} / Monat</p>
+        <p style="margin: 0; font-size: 18px; font-weight: 600; color: #0A2540;">€${abonnement.price?.toFixed(2) || '0.00'} / Monat</p>
       </div>
 
       <div style="margin-bottom: 20px;">
@@ -62,11 +62,11 @@ function displayAbonnement(abonnement) {
         <table style="width: 100%; border-collapse: collapse;">
           <tr style="border-bottom: 1px solid #E5E7EB;">
             <td style="padding: 8px 0; font-weight: 600;">Starter</td>
-            <td style="padding: 8px 0;">CHF 49/Mo</td>
+            <td style="padding: 8px 0;">€49/Mo</td>
           </tr>
           <tr style="border-bottom: 1px solid #E5E7EB;">
             <td style="padding: 8px 0; font-weight: 600;">Professional</td>
-            <td style="padding: 8px 0;">CHF 99/Mo</td>
+            <td style="padding: 8px 0;">€99/Mo</td>
           </tr>
           <tr>
             <td style="padding: 8px 0; font-weight: 600;">Enterprise</td>

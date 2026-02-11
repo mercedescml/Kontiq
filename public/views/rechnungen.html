@@ -1,0 +1,712 @@
+<style>
+/* ===== RECHNUNGEN - GESTION DES FACTURES ===== */
+
+/* Tabs Navigation */
+.rechnungen-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 24px;
+    border-bottom: 2px solid var(--light-gray);
+}
+
+.tab-btn {
+    padding: 12px 24px;
+    background: transparent;
+    border: none;
+    border-bottom: 3px solid transparent;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--gray);
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    bottom: -2px;
+}
+
+.tab-btn:hover {
+    color: var(--navy);
+    background: rgba(14, 177, 122, 0.05);
+}
+
+.tab-btn.active {
+    color: var(--teal);
+    border-bottom-color: var(--teal);
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* Stats Bar */
+.stats-bar {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.stat-card {
+    background: var(--white);
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    border: 1px solid var(--light-gray);
+    transition: all 0.2s;
+}
+
+.stat-card:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    transform: translateY(-2px);
+}
+
+.stat-label {
+    font-size: 11px;
+    color: var(--gray);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.stat-value {
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--navy);
+    font-family: 'Roboto Mono', monospace;
+    margin-bottom: 4px;
+    letter-spacing: -0.5px;
+}
+
+.stat-meta {
+    font-size: 12px;
+    color: var(--gray);
+    font-weight: 500;
+}
+
+/* Filter Section */
+.filter-section {
+    background: var(--white);
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    border: 1px solid var(--light-gray);
+    margin-bottom: 20px;
+}
+
+.filter-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr) auto;
+    gap: 16px;
+    align-items: end;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.filter-label {
+    font-size: 12px;
+    color: var(--gray);
+    font-weight: 600;
+}
+
+.filter-group select,
+.filter-group input {
+    padding: 10px 12px;
+    border: 1px solid var(--light-gray);
+    border-radius: 8px;
+    font-size: 13px;
+    color: var(--navy);
+    background: var(--white);
+    transition: border-color 0.2s;
+}
+
+.filter-group select:focus,
+.filter-group input:focus {
+    outline: none;
+    border-color: var(--teal);
+    box-shadow: 0 0 0 3px rgba(14, 177, 122, 0.1);
+}
+
+/* Invoices Table */
+.invoices-table {
+    background: var(--white);
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    border: 1px solid var(--light-gray);
+    overflow: hidden;
+}
+
+.table-header {
+    display: grid;
+    grid-template-columns: 140px 200px 120px 120px 100px 150px 100px 120px;
+    column-gap: 12px;
+    padding: 15px 20px;
+    background: #F9FAFB;
+    border-bottom: 1px solid var(--light-gray);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--gray);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+}
+
+.invoice-row {
+    display: grid;
+    grid-template-columns: 140px 200px 120px 120px 100px 150px 100px 120px;
+    column-gap: 12px;
+    padding: 18px 20px;
+    border-bottom: 1px solid #F3F4F6;
+    align-items: center;
+    transition: background 0.2s;
+    font-size: 13px;
+}
+
+.invoice-row:last-child {
+    border-bottom: none;
+}
+
+.invoice-row:hover {
+    background: #F9FAFB;
+}
+
+.invoice-row.received {
+    border-left: 3px solid #3B82F6;
+}
+
+.invoice-row.sent {
+    border-left: 3px solid var(--teal);
+}
+
+.invoice-number {
+    font-family: 'Roboto Mono', monospace;
+    font-size: 12px;
+    color: var(--navy);
+    font-weight: 600;
+}
+
+.supplier-name,
+.client-name {
+    font-weight: 600;
+    color: var(--navy);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.supplier-email,
+.client-email {
+    font-size: 11px;
+    color: var(--gray);
+    font-weight: 400;
+}
+
+.invoice-date {
+    font-size: 13px;
+    color: var(--navy);
+}
+
+.invoice-amount {
+    font-family: 'Roboto Mono', monospace;
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--navy);
+}
+
+.invoice-category {
+    font-size: 11px;
+    padding: 4px 10px;
+    background: #F3F4F6;
+    border-radius: 6px;
+    color: var(--gray);
+    font-weight: 600;
+    display: inline-block;
+    max-width: fit-content;
+}
+
+/* Status Badges */
+.status-badge {
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: inline-block;
+}
+
+.status-pending {
+    background: #FEF3C7;
+    color: #92400E;
+}
+
+.status-approved {
+    background: #DBEAFE;
+    color: #1E40AF;
+}
+
+.status-paid {
+    background: #D1FAE5;
+    color: #065F46;
+}
+
+.status-sent {
+    background: #E0E7FF;
+    color: #3730A3;
+}
+
+.status-rejected {
+    background: #FEE2E2;
+    color: #991B1B;
+}
+
+/* Actions */
+.invoice-actions {
+    display: flex;
+    gap: 6px;
+}
+
+.btn-icon {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 6px;
+    background: var(--light-gray);
+    color: var(--navy);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+}
+
+.btn-icon:hover {
+    background: var(--navy);
+    color: white;
+    transform: translateY(-2px);
+}
+
+.btn-icon.btn-view {
+    background: #DBEAFE;
+    color: #1E40AF;
+}
+
+.btn-icon.btn-view:hover {
+    background: #1E40AF;
+    color: white;
+}
+
+.btn-icon.btn-download {
+    background: #E0E7FF;
+    color: #3730A3;
+}
+
+.btn-icon.btn-download:hover {
+    background: #3730A3;
+    color: white;
+}
+
+.btn-icon.btn-approve {
+    background: #D1FAE5;
+    color: #065F46;
+}
+
+.btn-icon.btn-approve:hover {
+    background: #065F46;
+    color: white;
+}
+
+/* Email Settings Section */
+.email-settings {
+    background: var(--white);
+    padding: 32px;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    border: 1px solid var(--light-gray);
+    max-width: 800px;
+}
+
+.email-settings h3 {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 8px;
+}
+
+.email-settings p {
+    color: var(--gray);
+    margin-bottom: 24px;
+}
+
+.settings-option {
+    padding: 20px;
+    border: 2px solid var(--light-gray);
+    border-radius: 12px;
+    margin-bottom: 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.settings-option:hover {
+    border-color: var(--teal);
+    background: rgba(14, 177, 122, 0.03);
+}
+
+.settings-option.active {
+    border-color: var(--teal);
+    background: rgba(14, 177, 122, 0.05);
+}
+
+.option-title {
+    font-weight: 700;
+    font-size: 16px;
+    color: var(--navy);
+    margin-bottom: 4px;
+}
+
+.option-description {
+    font-size: 13px;
+    color: var(--gray);
+    line-height: 1.5;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--navy);
+    margin-bottom: 8px;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--light-gray);
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: var(--teal);
+    box-shadow: 0 0 0 3px rgba(14, 177, 122, 0.1);
+}
+
+.btn-primary {
+    padding: 12px 24px;
+    background: var(--teal);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-primary:hover {
+    background: #0A9968;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(14, 177, 122, 0.3);
+}
+
+.alert {
+    padding: 16px 20px;
+    border-radius: 10px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: start;
+    gap: 12px;
+    font-size: 14px;
+}
+
+.alert-info {
+    background: #DBEAFE;
+    border: 1px solid #3B82F6;
+    color: #1E3A8A;
+}
+
+.alert-success {
+    background: #D1FAE5;
+    border: 1px solid var(--teal);
+    color: #064E3B;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--gray);
+}
+
+.empty-state-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+    opacity: 0.5;
+}
+
+.empty-state-text {
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 8px;
+}
+
+.empty-state-subtext {
+    font-size: 13px;
+    color: var(--gray);
+}
+</style>
+
+<div class="module-header">
+    <h1>Rechnungen</h1>
+    <p>Zentrale Verwaltung aller empfangenen und gesendeten Rechnungen</p>
+</div>
+
+<!-- Tabs Navigation -->
+<div class="rechnungen-tabs">
+    <button class="tab-btn active" data-tab="received">
+        Empfangene Rechnungen
+    </button>
+    <button class="tab-btn" data-tab="sent">
+        Gesendete Rechnungen
+    </button>
+    <button class="tab-btn" data-tab="settings">
+        Email-Einstellungen
+    </button>
+</div>
+
+<!-- Tab: Factures Reçues -->
+<div class="tab-content active" id="tab-received">
+    <div class="stats-bar">
+        <div class="stat-card">
+            <div class="stat-label">Insgesamt Empfangen</div>
+            <div class="stat-value" id="stat-received-total">0</div>
+            <div class="stat-meta">Lieferantenrechnungen</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Ausstehend</div>
+            <div class="stat-value" id="stat-received-pending">0</div>
+            <div class="stat-meta" style="color: #F59E0B;">Zu genehmigen</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Genehmigt</div>
+            <div class="stat-value" id="stat-received-approved">0</div>
+            <div class="stat-meta" style="color: #3B82F6;">Zahlung ausstehend</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Bezahlt</div>
+            <div class="stat-value" id="stat-received-paid">0</div>
+            <div class="stat-meta" style="color: var(--teal);">Diesen Monat</div>
+        </div>
+    </div>
+
+    <div class="filter-section">
+        <div class="filter-grid">
+            <div class="filter-group">
+                <label class="filter-label">Zeitraum</label>
+                <select id="filter-received-period">
+                    <option value="all">Alle</option>
+                    <option value="current-month" selected>Aktueller Monat</option>
+                    <option value="last-month">Letzter Monat</option>
+                    <option value="current-year">Aktuelles Jahr</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label class="filter-label">Lieferant</label>
+                <select id="filter-received-supplier">
+                    <option value="all">Alle</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label class="filter-label">Kategorie</label>
+                <select id="filter-received-category">
+                    <option value="all">Alle</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label class="filter-label">Status</label>
+                <select id="filter-received-status">
+                    <option value="all">Alle</option>
+                    <option value="pending">Ausstehend</option>
+                    <option value="approved">Genehmigt</option>
+                    <option value="paid">Bezahlt</option>
+                    <option value="rejected">Abgelehnt</option>
+                </select>
+            </div>
+            <button class="btn-primary" onclick="applyFilters('received')">Filtern</button>
+        </div>
+    </div>
+
+    <div class="invoices-table">
+        <div class="table-header">
+            <div>Rechnungsnr.</div>
+            <div>Lieferant</div>
+            <div>Datum</div>
+            <div>Fälligkeit</div>
+            <div>Betrag</div>
+            <div>Kategorie</div>
+            <div>Status</div>
+            <div>Aktionen</div>
+        </div>
+        <div id="received-invoices-list">
+            <!-- Les factures reçues seront chargées ici par JavaScript -->
+        </div>
+    </div>
+</div>
+
+<!-- Tab: Factures Envoyées -->
+<div class="tab-content" id="tab-sent">
+    <div class="stats-bar">
+        <div class="stat-card">
+            <div class="stat-label">Insgesamt Gesendet</div>
+            <div class="stat-value" id="stat-sent-total">0</div>
+            <div class="stat-meta">Kundenrechnungen</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Gesendet</div>
+            <div class="stat-value" id="stat-sent-sent">0</div>
+            <div class="stat-meta" style="color: #3B82F6;">Zahlung ausstehend</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Gesamtbetrag</div>
+            <div class="stat-value" id="stat-sent-amount">€0</div>
+            <div class="stat-meta">Zu erhalten</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Bezahlt</div>
+            <div class="stat-value" id="stat-sent-paid">0</div>
+            <div class="stat-meta" style="color: var(--teal);">Diesen Monat</div>
+        </div>
+    </div>
+
+    <div class="filter-section">
+        <div class="filter-grid">
+            <div class="filter-group">
+                <label class="filter-label">Zeitraum</label>
+                <select id="filter-sent-period">
+                    <option value="all">Alle</option>
+                    <option value="current-month" selected>Aktueller Monat</option>
+                    <option value="last-month">Letzter Monat</option>
+                    <option value="current-year">Aktuelles Jahr</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label class="filter-label">Kunde</label>
+                <select id="filter-sent-client">
+                    <option value="all">Alle</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label class="filter-label">Kategorie</label>
+                <select id="filter-sent-category">
+                    <option value="all">Alle</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label class="filter-label">Status</label>
+                <select id="filter-sent-status">
+                    <option value="all">Alle</option>
+                    <option value="sent">Gesendet</option>
+                    <option value="paid">Bezahlt</option>
+                </select>
+            </div>
+            <button class="btn-primary" onclick="applyFilters('sent')">Filtern</button>
+        </div>
+    </div>
+
+    <div class="invoices-table">
+        <div class="table-header">
+            <div>Rechnungsnr.</div>
+            <div>Kunde</div>
+            <div>Datum</div>
+            <div>Fälligkeit</div>
+            <div>Betrag</div>
+            <div>Kategorie</div>
+            <div>Status</div>
+            <div>Aktionen</div>
+        </div>
+        <div id="sent-invoices-list">
+            <!-- Les factures envoyées seront chargées ici par JavaScript -->
+        </div>
+    </div>
+</div>
+
+<!-- Tab: Paramètres Email -->
+<div class="tab-content" id="tab-settings">
+    <div class="email-settings">
+        <h3>Konfiguration des Rechnungsempfangs</h3>
+        <p>Wählen Sie, wie Sie Ihre Lieferantenrechnungen in Kontiq empfangen möchten</p>
+
+        <div class="alert alert-info">
+            <span>Info</span>
+            <div>
+                <strong>Funktion in Entwicklung</strong><br>
+                Die automatische E-Mail-Synchronisation wird in Kürze verfügbar sein. Derzeit können Sie Ihre Rechnungen manuell im Kosten-Modul hochladen.
+            </div>
+        </div>
+
+        <div class="settings-option" onclick="selectOption('kontiq-email')">
+            <div class="option-title">Dedizierte Kontiq-E-Mail (Empfohlen)</div>
+            <div class="option-description">
+                Leiten Sie Ihre Rechnungen an <strong>rechnungen@kontiq.ch</strong> weiter oder konfigurieren Sie eine automatische Weiterleitung. Kontiq erkennt und importiert Ihre PDF-Rechnungen automatisch.
+            </div>
+        </div>
+
+        <div class="settings-option" onclick="selectOption('imap-sync')">
+            <div class="option-title">IMAP-Synchronisation</div>
+            <div class="option-description">
+                Verbinden Sie Ihr Gmail, Outlook oder anderes Postfach via IMAP. Kontiq synchronisiert automatisch Rechnungen aus einem bestimmten Ordner.
+            </div>
+        </div>
+
+        <div class="settings-option" onclick="selectOption('manual')">
+            <div class="option-title">Manueller Upload</div>
+            <div class="option-description">
+                Laden Sie Ihre PDF-Rechnungen manuell hoch. Ideal zum Testen des Systems oder wenn Sie die volle Kontrolle behalten möchten.
+            </div>
+        </div>
+
+        <div id="imap-config" style="display: none; margin-top: 24px; padding: 24px; background: #F9FAFB; border-radius: 12px;">
+            <h4 style="margin-bottom: 16px; font-size: 16px; color: var(--navy);">IMAP-Konfiguration</h4>
+
+            <div class="form-group">
+                <label>IMAP-Server</label>
+                <input type="text" placeholder="imap.gmail.com" id="imap-host">
+            </div>
+
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" placeholder="ihre@email.com" id="imap-email">
+            </div>
+
+            <div class="form-group">
+                <label>Passwort</label>
+                <input type="password" placeholder="••••••••" id="imap-password">
+            </div>
+
+            <div class="form-group">
+                <label>Rechnungsordner</label>
+                <input type="text" placeholder="Rechnungen" id="imap-folder" value="Rechnungen">
+            </div>
+
+            <button class="btn-primary">Konfiguration speichern</button>
+        </div>
+    </div>
+</div>
+
+<script src="/js/rechnungen.js"></script>

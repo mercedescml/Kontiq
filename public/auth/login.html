@@ -352,13 +352,19 @@
                 try { j = JSON.parse(text); } catch(e) { j = null }
                 if (res.ok && j && j.user) {
                     localStorage.setItem('kontiq_user', JSON.stringify({ email: j.user.email, name: j.user.name, company: j.user.company, loggedIn: true }));
+                    // Store JWT token for API authentication
+                    if (j.token) {
+                        localStorage.setItem('token', j.token);
+                    }
+                    // Set initial view to dashboard on login
+                    localStorage.setItem('kontiq_last_view', 'dashboard');
                     // check server-side onboarding
                     try {
                         const r2 = await fetch('/api/onboarding?email=' + encodeURIComponent(email));
                         const o = await r2.json();
                         if (o && o.data) {
                             localStorage.setItem('kontiq_onboarding_complete', 'true');
-                            window.location.href = '/index.html';
+                            window.location.href = '/app';
                         } else {
                             localStorage.setItem('kontiq_onboarding_complete', 'false');
                             window.location.href = '/onboarding.html';
@@ -391,7 +397,7 @@
         if (user) {
             const userData = JSON.parse(user);
             if (userData.loggedIn) {
-                window.location.href = '/index.html';
+                window.location.href = '/app';
             }
         }
     </script>

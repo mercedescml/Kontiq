@@ -30,6 +30,13 @@ const API = {
       method,
       headers: { 'Content-Type': 'application/json' }
     };
+
+    // Add JWT token to Authorization header
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers['Authorization'] = `Bearer ${token}`;
+    }
+
     if (data) config.body = JSON.stringify(data);
 
     const response = await fetch(`${this.BASE_URL}${endpoint}`, config);

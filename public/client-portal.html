@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rechnungen - Kundenportal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --navy: #0A2540;
+            --teal: #0EB17A;
+            --gray: #6B7280;
+            --light-gray: #E5E7EB;
+            --light-bg: #F8FAFC;
+            --white: #FFFFFF;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--light-bg);
+            color: var(--navy);
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            padding: 32px;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+            margin-bottom: 24px;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--navy);
+            margin-bottom: 8px;
+        }
+
+        .client-name {
+            font-size: 16px;
+            color: var(--gray);
+        }
+
+        .invoices-grid {
+            display: grid;
+            gap: 16px;
+        }
+
+        .invoice-card {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+            border-left: 4px solid var(--teal);
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .invoice-info h3 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .invoice-meta {
+            display: flex;
+            gap: 16px;
+            font-size: 14px;
+            color: var(--gray);
+        }
+
+        .invoice-amount {
+            font-size: 24px;
+            font-weight: 700;
+            font-family: 'Roboto Mono', monospace;
+            color: var(--navy);
+            text-align: right;
+        }
+
+        .invoice-status {
+            font-size: 12px;
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-weight: 600;
+            margin-top: 8px;
+            display: inline-block;
+        }
+
+        .status-paid {
+            background: #D1FAE5;
+            color: #065F46;
+        }
+
+        .status-open {
+            background: #FEF3C7;
+            color: #92400E;
+        }
+
+        .status-overdue {
+            background: #FEE2E2;
+            color: #991B1B;
+        }
+
+        .empty-state {
+            background: white;
+            padding: 60px 32px;
+            border-radius: 12px;
+            text-align: center;
+            color: var(--gray);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--gray);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Ihre Rechnungen</h1>
+            <p class="client-name" id="client-name">Laden...</p>
+        </div>
+
+        <div id="loading" class="loading">
+            Laden Sie Ihre Rechnungen...
+        </div>
+
+        <div id="invoices-grid" class="invoices-grid" style="display: none;">
+            <!-- Invoices will be loaded here -->
+        </div>
+
+        <div id="empty-state" class="empty-state" style="display: none;">
+            <p>Keine Rechnungen gefunden</p>
+        </div>
+    </div>
+
+    <script>
+        // Get token from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const token = urlParams.get('token') || window.location.pathname.split('/').pop();
+
+        async function loadInvoices() {
+            try {
+                const res = await fetch(`/api/client-portal/${token}`);
+                const data = await res.json();
+
+                if (!res.ok) {
+                    throw new Error(data.error || 'Fehler beim Laden');
+                }
+
+                // Update client name
+                document.getElementById('client-name').textContent = data.client.name;
+
+                // Hide loading
+                document.getElementById('loading').style.display = 'none';
+
+                if (data.invoices && data.invoices.length > 0) {
+                    // Show invoices
+                    document.getElementById('invoices-grid').style.display = 'grid';
+                    renderInvoices(data.invoices);
+                } else {
+                    // Show empty state
+                    document.getElementById('empty-state').style.display = 'block';
+                }
+            } catch (err) {
+                console.error('Error loading invoices:', err);
+                document.getElementById('loading').innerHTML = `
+                    <p style="color: #DC2626;">❌ ${err.message}</p>
+                    <p style="margin-top: 8px;">Ungültiger Zugangslink oder Rechnungen konnten nicht geladen werden.</p>
+                `;
+            }
+        }
+
+        function renderInvoices(invoices) {
+            const grid = document.getElementById('invoices-grid');
+
+            grid.innerHTML = invoices.map(invoice => {
+                const dueDate = new Date(invoice.dueDate || invoice.due_date);
+                const isOverdue = dueDate < new Date() && invoice.status !== 'paid' && invoice.payment_status !== 'paid';
+                const isPaid = invoice.status === 'paid' || invoice.payment_status === 'paid';
+
+                let statusClass = 'status-open';
+                let statusText = 'Offen';
+
+                if (isPaid) {
+                    statusClass = 'status-paid';
+                    statusText = 'Bezahlt';
+                } else if (isOverdue) {
+                    statusClass = 'status-overdue';
+                    statusText = 'Überfällig';
+                }
+
+                const amount = invoice.total || invoice.amount || 0;
+
+                return `
+                    <div class="invoice-card">
+                        <div class="invoice-info">
+                            <h3>Rechnung ${invoice.invoiceNumber || invoice.invoice_number}</h3>
+                            <div class="invoice-meta">
+                                <span>Datum: ${new Date(invoice.createdAt || invoice.invoice_date).toLocaleDateString('de-DE')}</span>
+                                <span>Fällig: ${dueDate.toLocaleDateString('de-DE')}</span>
+                            </div>
+                            <span class="invoice-status ${statusClass}">${statusText}</span>
+                        </div>
+                        <div class="invoice-amount">
+                            €${parseFloat(amount).toFixed(2)}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Load on page load
+        loadInvoices();
+    </script>
+</body>
+</html>
